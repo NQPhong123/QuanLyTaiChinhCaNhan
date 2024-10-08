@@ -16,17 +16,20 @@ public class RegisterServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String email = request.getParameter("email");
+		
+		String email = request.getParameter("email"); 
 		String password = request.getParameter("password");
+		
 		User user = new User();
 		user.setEmail(email);
 		user.setPassWord(password);
+		
 		UserDao userDao = new UserDao();
 		if(userDao.saveUser(user)) {
 			response.sendRedirect("login");
 		}else {
 			request.setAttribute("errorMessage", "Registration failed. Please try again.");
-			request.getRequestDispatcher("/WEB-INF/jsp/register.jsp").forward(request, response);
+			request.getRequestDispatcher("register").forward(request, response);
 		}
 	}
 

@@ -3,12 +3,12 @@ package com.handle.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+// Đối tượng kết nối cơ sở dữ liệu
 public class ConnectDB {
-	private static final String URL = "jdbc:mysql://localhost:3306/quanlychitieu";
+	private static final String URL = "jdbc:mysql://localhost:3307/quanlychitieu";
 	private static final String USER = "root";
 	private static final String PASSWORD = "";
-
+	//Hàm kết nối cơ sở dữ liệu
 	public static Connection getConection() {
 		Connection conn = null;
 		try {
@@ -20,7 +20,7 @@ public class ConnectDB {
 		}
 		return conn;
 	}
-
+	//Hàm hủy kết nối cơ sở dữ liệu
 	public static void closeConnection(Connection conn) {
 		if (conn != null) {
 			try {

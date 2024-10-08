@@ -15,13 +15,19 @@
         </div>
         <div class="login-box">
             <h2>Log In</h2>
+            <%
+			String errorMessage = (String) request.getAttribute("errorMessage");
+			if(errorMessage != null && !errorMessage.isEmpty()){
+				%> <div class="error" style="color:red"><%= errorMessage %></div> <% 
+			}
+			%>
             <div class="social-login">
                 <button class="google">Connect with Google</button>
                 <button class="facebook">Connect with Facebook</button>
                 <button class="apple">Sign in with Apple</button>
             </div>
             <div class="divider">or</div>
-            <form class="login-form" >
+            <form class="login-form" action="LoginServlet" method="post">
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
                 <a href="#" class="forgot-password">Forgot Password?</a>
