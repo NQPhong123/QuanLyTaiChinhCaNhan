@@ -8,15 +8,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/hungt/Downloads/apache-tomcat-10.1.25-windows-x64/apache-tomcat-10.1.25/lib/servlet-api.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/hungt/Downloads/apache-tomcat-10.1.25-windows-x64/apache-tomcat-10.1.25/lib/jsp-api.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/hungt/Downloads/apache-tomcat-10.1.25-windows-x64/apache-tomcat-10.1.25/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
