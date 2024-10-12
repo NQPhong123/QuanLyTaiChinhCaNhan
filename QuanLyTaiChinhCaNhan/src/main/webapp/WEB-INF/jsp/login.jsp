@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="jakarta.servlet.http.HttpSession" %> <!-- Import HttpSession -->
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -70,7 +70,7 @@
 <%
     }
 %>
-            <p>Don't have an account? <a href="${pageContext.request.contextPath}/register.jsp">Register</a></p> <!-- Sửa đường dẫn -->
+            <p>Don't have an account? <a href="${pageContext.request.contextPath}/register">Register</a></p> <!-- Sửa đường dẫn -->
         </div>
     </div>
 </body>
