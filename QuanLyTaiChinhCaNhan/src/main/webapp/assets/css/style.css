@@ -150,6 +150,74 @@ body {
    
 }
 
+/* -----------------form thêm giao dịch----------------------------------*/
 
+#transactionForm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+/* Modal content styling */
+#transactionForm div {
+    width: 30%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+.transaction-btn-container {
+    display: flex;
+}
+
+/* Form elements */
+h3 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Button styling */
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+}
+
+button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button.save-btn {
+    background-color: #ccc;
+    cursor: not-allowed;
+    flex-basis: 48%; /* Ensures the buttons take equal width */
+}
+
+button.cancel-btn {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    flex-basis: 48%; /* Ensures the buttons take equal width */
+}
 
 

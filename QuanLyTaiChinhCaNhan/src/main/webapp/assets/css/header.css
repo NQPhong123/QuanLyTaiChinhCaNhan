@@ -1,0 +1,185 @@
+@charset "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: Arial, Helvetica, sans-serif;
+	/* Sửa: không cần lặp lại Arial */
+}
+
+.sidebar {
+	width: 15%;
+	height: 100vh;
+	background-color: #fff;
+	position: fixed;
+	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .menu-item {
+	padding: 15px 20px;
+	display: flex;
+	align-items: center;
+	color: #666;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.sidebar .menu-item:hover {
+	background-color: #f0f0f0;
+}
+
+.sidebar .menu-item i {
+	margin-right: 10px;
+}
+
+.sidebar .menu-item.active {
+	color: #4caf50;
+}
+
+.sidebar .menu-item.active i {
+	color: #4caf50;
+}
+
+.sidebar .menu-item:last-child {
+	margin-top: auto;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #fff;
+	padding: 10px 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	width: 85%;
+	margin-left: 15%;
+}
+
+.header .user-info {
+	display: flex;
+	align-items: center;
+}
+
+.header .user-info img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 10px;
+}
+
+.header .user-info span {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.header .actions {
+	display: flex;
+	align-items: center;
+}
+
+.fa-search {
+	font-size: 20px;
+	margin-right: 20px;
+	cursor: pointer;
+}
+
+#btn-addTransaction {
+	background-color: #4caf50;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+/*-------------------------search-contaiter------------------------*/
+#search-container {
+	width: 85%; /* Đảm bảo chiều rộng chiếm toàn bộ màn hình */
+	margin-left:15%;
+	padding: 20px;
+	background-color: white; /* Màu nền là trắng để dễ nhìn */
+	border-radius: 0 0 8px 8px; /* Bo góc phía dưới */
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	position: fixed;
+	display: flex;
+	flex-direction: column; /* Đảm bảo các phần tử xếp theo chiều dọc */
+}
+
+.search-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.search-header h2 {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.fa-solid.fa-arrow-left-long {
+	font-size: 28px;
+	cursor: pointer;
+}
+#btn-close-form, #btn-search{
+	border: none;
+	background-color: white;
+	
+}
+.reset-button {
+	background: none;
+	border: none;
+	color: #333;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.search-form {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	flex-wrap: wrap; /* Đảm bảo các phần tử tự động xuống dòng nếu cần */
+}
+
+.field.amount {
+	display: flex;
+	flex-direction: column;
+}
+
+.field button {
+	padding: 10px;
+	border: 1px solid #2c2a2ada;
+	border-radius: 4px;
+	background-color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.field span, label {
+	color: black;
+	font-size: 18px;
+}
+
+.fa-greater-than {
+	padding-left: 30px;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+input[type="range"] {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.range-values {
+	display: flex;
+	justify-content: space-between;
+	font-size: 14px;
+	color: #666;
+	margin-top: 5px;
+}

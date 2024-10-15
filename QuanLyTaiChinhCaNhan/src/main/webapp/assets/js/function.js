@@ -1,68 +1,91 @@
-function showTransactionForm() {
-    // Create a new div for the modal
-    const modal = document.createElement("div");
-    modal.setAttribute("id", "transactionModal");
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    modal.style.zIndex = "1000"; // Ensures it's on top
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
 
-    // Create the form HTML inside the modal
-    modal.innerHTML = `
-        <div style="width: 400px; background-color: white; padding: 20px; border-radius: 10px;">
-            <h3 style="text-align: center;">Thêm giao dịch</h3>
 
-            <div style="margin-bottom: 10px;">
-                <label for="vi" style="display: block; margin-bottom: 5px;">Ví</label>
-                <select id="vi" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-                    <option>Tiền mặt</option>
-                </select>
-            </div>
+// lớp Button tạo nút
+class Button {
+	constructor(htmlContent, idName,isOpen) {
+		this.htmlContent = htmlContent;
+		this.idName = idName;
+		this.isOpen = false;
+	}
+	openButton() {
+		if(!this.isOpen){
+			this.isOpen = true;
+			const modal = document.createElement('div');
+			modal.setAttribute('id', this.idName);
+			modal.innerHTML = this.htmlContent;
+			document.body.appendChild(modal);
+		}
 
-            <div style="margin-bottom: 10px;">
-                <label for="nhom" style="display: block; margin-bottom: 5px;">Nhóm</label>
-                <select id="nhom" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-                    <option>Chọn nhóm</option>
-                </select>
-            </div>
-
-            <div style="margin-bottom: 10px;">
-                <label for="so-tien" style="display: block; margin-bottom: 5px;">Số tiền</label>
-                <input type="number" id="so-tien" value="0" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-            </div>
-
-            <div style="margin-bottom: 10px;">
-                <label for="ngay" style="display: block; margin-bottom: 5px;">Ngày</label>
-                <input type="date" id="ngay" value="2019-06-11" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-            </div>
-
-            <div style="margin-bottom: 10px;">
-                <label for="ghi-chu" style="display: block; margin-bottom: 5px;">Ghi chú</label>
-                <input type="text" id="ghi-chu" placeholder="Ghi chú" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-            </div>
-
-            <div style="text-align: right;">
-                <button style="padding: 8px 16px; background-color: #ccc; border: none; border-radius: 5px; cursor: not-allowed;">Lưu</button>
-                <button style="padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;" onclick="closeModal()">Hủy</button>
-            </div>
-        </div>
-    `;
-
-    // Append the modal to the body
-    document.body.appendChild(modal);
+	}
+	closeButton() {
+		const modal = document.getElementById(this.idName);
+		if (modal) {
+			modal.remove();
+			this.isOpen= false;
+		}
+	}
 }
 
-// Function to close the modal
-function closeModal() {
-    const modal = document.getElementById("transactionModal");
-    if (modal) {
-        modal.remove();
-    }
-}
+const searchButton = new Button();
+searchButton.htmlContent = `<div class="search-header">
+  <button id="btn-close-form" onclick="searchButton.closeButton();"><i class="fa-solid fa-arrow-left-long"></i> </button>
+  <h2>Tìm kiếm giao dịch</h2>
+  <button class="reset-button">Reset</button>
+</div>
 
+<div class="search-form">
+  <div class="field">
+    <button>
+      <span>CHỌN THỂ LOẠI</span>
+      <i class="fa-regular fa-greater-than"></i>
+    </button>
+  </div>
+
+  <div class="field">
+    <button>
+      <span>CHỌN THỂ LOẠI</span>
+      <i class="fa-regular fa-greater-than"></i>
+    </button>
+  </div>
+
+  <div class="field amount">
+    <label for="amount">Số tiền</label>
+    <input type="range" id="amount" min="10" max="7000" value="10" />
+    <div class="range-values">
+      <span>10</span>
+      <span>7000</span>
+    </div>
+  </div>
+</div>`;
+searchButton.idName = 'search-container';
+
+const addTransaction = new Button();
+addTransaction.htmlContent = `
+			<div>
+            <h3>Thêm giao dịch</h3>
+
+            <label for="vi">Ví</label>
+            <select id="vi">
+                <option>Tiền mặt</option>
+            </select>
+
+            <label for="nhom">Nhóm</label>
+            <select id="nhom">
+                <option>Chọn nhóm</option>
+            </select>
+
+            <label for="so-tien">Số tiền</label>
+            <input type="number" id="so-tien" value="0">
+
+            <label for="ngay">Ngày</label>
+            <input type="date" id="ngay" value="2019-06-11">
+
+            <label for="ghi-chu">Ghi chú</label>
+            <input type="text" id="ghi-chu" placeholder="Ghi chú">
+
+            <div class="transaction-btn-container">
+                <button class="save-btn" disabled>Lưu</button>
+                <button class="cancel-btn" onclick="addTransaction.closeButton()">Hủy</button>
+            </div>
+        </div>`;
+addTransaction.idName = 'transactionForm'
