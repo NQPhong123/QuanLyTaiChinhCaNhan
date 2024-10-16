@@ -16,9 +16,6 @@ body {
 	display:flex;
 	justify-content:space-around;
 }
-.div#content.main-content{
-	width: 100%;
-}
 
 .transaction-content{
 	padding: 20px;
@@ -29,7 +26,6 @@ body {
 }
 div.transaction-content{
 
-	
 	width: 50%;
 	min-width: 700px
 	
