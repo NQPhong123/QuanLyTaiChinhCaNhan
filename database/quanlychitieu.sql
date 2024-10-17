@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Oct 16, 2024 at 02:59 PM
+-- Generation Time: Oct 17, 2024 at 09:10 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,22 +38,22 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`CategoryID`, `CategoryName`, `Type`) VALUES
-(1, 'Collect Interest', 'Income'),
-(2, 'Incoming Transfer', 'Income'),
-(3, 'Other Income', 'Income'),
-(4, 'Salary', 'Income'),
-(5, 'Education', 'Expense'),
-(6, 'Food & Beverage', 'Expense'),
-(7, 'Gas Bill', 'Expense'),
-(8, 'Gifts & Donations', 'Expense'),
-(9, 'Home Maintenance', 'Expense'),
-(10, 'Houseware', 'Expense'),
-(11, 'Investment', 'Expense'),
-(12, 'Makeup', 'Expense'),
-(13, 'Other Expense', 'Expense'),
-(14, 'Personal Items', 'Expense'),
-(15, 'Phone Bill', 'Expense'),
-(16, 'Vehicle Maintenance', 'Expense');
+(1, 'Lợi nhuận thu được', 'Income'),
+(2, 'Chuyển khoản đến', 'Income'),
+(3, 'Thu nhập khác', 'Income'),
+(4, 'Lương', 'Income'),
+(5, 'Giáo dục', 'Expense'),
+(6, 'Thực phẩm & Đồ uống', 'Expense'),
+(7, 'Hóa đơn gas', 'Expense'),
+(8, 'Quà tặng & Từ thiện', 'Expense'),
+(9, 'Bảo trì nhà', 'Expense'),
+(10, 'Đồ dùng gia đình', 'Expense'),
+(11, 'Đầu tư', 'Expense'),
+(12, 'Trang điểm', 'Expense'),
+(13, 'Chi phí khác', 'Expense'),
+(14, 'Đồ dùng cá nhân', 'Expense'),
+(15, 'Hóa đơn điện thoại', 'Expense'),
+(16, 'Bảo trì phương tiện', 'Expense');
 
 -- --------------------------------------------------------
 
@@ -66,24 +66,78 @@ CREATE TABLE `expense` (
   `UserID` int(11) DEFAULT NULL,
   `CategoryID` int(11) DEFAULT NULL,
   `Amount` decimal(10,2) NOT NULL,
-  `Decription` varchar(255) DEFAULT NULL,
+  `Description` varchar(255) DEFAULT NULL,
   `ExpenseDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `expense`
+--
+
+INSERT INTO `expense` (`ExpenseID`, `UserID`, `CategoryID`, `Amount`, `Description`, `ExpenseDate`) VALUES
+(1, 1, 5, 596.86, 'Học phí', '2024-10-01'),
+(2, 2, 6, 248.43, 'Bữa tối ngoài', '2024-10-02'),
+(3, 3, 7, 208.11, 'Mua xăng', '2024-10-03'),
+(4, 1, 8, 146.69, 'Quà tặng cho bạn', '2024-10-04'),
+(5, 2, 9, 161.70, 'Sửa chữa nhà', '2024-10-05'),
+(6, 3, 10, 43.54, 'Nội thất mới', '2024-10-06'),
+(7, 1, 11, 29.66, 'Đầu tư chứng khoán', '2024-10-07'),
+(8, 2, 12, 26.66, 'Sản phẩm làm đẹp', '2024-10-08'),
+(9, 3, 13, 117.26, 'Chi phí khác', '2024-10-09'),
+(10, 1, 14, 15.49, 'Quần áo', '2024-10-10'),
+(11, 2, 15, 39.90, 'Thanh toán hóa đơn điện thoại', '2024-10-11'),
+(12, 3, 16, 14.14, 'Bảo trì xe', '2024-10-12'),
+(13, 1, 5, 477.51, 'Học trực tuyến', '2024-10-13'),
+(14, 2, 6, 175.93, 'Mua sắm thực phẩm', '2024-10-14'),
+(15, 3, 7, 42.49, 'Thẻ giao thông công cộng', '2024-10-15'),
+(16, 1, 8, 27.44, 'Quà tặng từ thiện', '2024-10-16'),
+(17, 2, 9, 108.00, 'Chi phí vật nuôi', '2024-10-17'),
+(18, 3, 10, 38.53, 'Dọn dẹp nhà cửa', '2024-10-18'),
+(19, 1, 11, 171.38, 'Đầu tư vào cổ phiếu', '2024-10-19'),
+(20, 2, 12, 207.49, 'Thành viên phòng gym', '2024-10-20'),
+(21, 3, 13, 258.56, 'Chi phí khác', '2024-10-21');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `imcome`
+-- Table structure for table `income`
 --
 
-CREATE TABLE `imcome` (
-  `ImcomeID` int(11) NOT NULL,
+CREATE TABLE `income` (
+  `incomeID` int(11) NOT NULL,
   `UserID` int(11) DEFAULT NULL,
   `CategoryID` int(11) DEFAULT NULL,
   `Amount` decimal(10,2) NOT NULL,
-  `Decription` varchar(255) DEFAULT NULL,
-  `ImcomeDate` date NOT NULL
+  `Description` varchar(255) DEFAULT NULL,
+  `IncomeDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `income`
+--
+
+INSERT INTO `income` (`incomeID`, `UserID`, `CategoryID`, `Amount`, `Description`, `IncomeDate`) VALUES
+(1, 1, 1, 2947.91, 'Lợi nhuận thu được', '2024-10-01'),
+(2, 2, 2, 601.57, 'Chuyển khoản từ phụ huynh', '2024-10-02'),
+(3, 3, 3, 1608.09, 'Thu nhập từ công việc phụ', '2024-10-03'),
+(4, 1, 4, 2845.27, 'Lương tháng 10', '2024-10-04'),
+(5, 2, 1, 1515.95, 'Tiền lãi từ tiết kiệm', '2024-10-05'),
+(6, 3, 2, 1283.77, 'Công việc tự do', '2024-10-06'),
+(7, 1, 3, 1489.57, 'Cổ tức', '2024-10-07'),
+(8, 2, 4, 2889.94, 'Lương hàng tháng', '2024-10-08'),
+(9, 3, 1, 2909.32, 'Thu nhập khác', '2024-10-09'),
+(10, 1, 2, 174.93, 'Quà từ người thân', '2024-10-10'),
+(11, 2, 3, 1318.25, 'Thưởng từ công việc', '2024-10-11'),
+(12, 3, 4, 668.81, 'Hợp đồng tự do', '2024-10-12'),
+(13, 1, 1, 2194.51, 'Lợi tức đầu tư', '2024-10-13'),
+(14, 2, 2, 608.08, 'Thu nhập cho thuê', '2024-10-14'),
+(15, 3, 3, 107.16, 'Di sản', '2024-10-15'),
+(16, 1, 4, 3865.87, 'Lương tháng 11', '2024-10-16'),
+(17, 2, 1, 3076.65, 'Phí tư vấn', '2024-10-17'),
+(18, 3, 2, 4545.62, 'Hoa hồng', '2024-10-18'),
+(19, 1, 3, 2184.47, 'Thu nhập từ kinh doanh phụ', '2024-10-19'),
+(20, 2, 4, 1805.54, 'Thưởng hàng tháng', '2024-10-20'),
+(21, 3, 1, 3890.40, 'Công việc bán thời gian', '2024-10-21');
 
 -- --------------------------------------------------------
 
@@ -127,10 +181,10 @@ ALTER TABLE `expense`
   ADD KEY `CategoryID` (`CategoryID`);
 
 --
--- Indexes for table `imcome`
+-- Indexes for table `income`
 --
-ALTER TABLE `imcome`
-  ADD PRIMARY KEY (`ImcomeID`),
+ALTER TABLE `income`
+  ADD PRIMARY KEY (`incomeID`),
   ADD KEY `UserID` (`UserID`),
   ADD KEY `CategoryID` (`CategoryID`);
 
@@ -155,13 +209,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `expense`
 --
 ALTER TABLE `expense`
-  MODIFY `ExpenseID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `imcome`
---
-ALTER TABLE `imcome`
-  MODIFY `ImcomeID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ExpenseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -181,11 +229,11 @@ ALTER TABLE `expense`
   ADD CONSTRAINT `expense_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);
 
 --
--- Constraints for table `imcome`
+-- Constraints for table `income`
 --
-ALTER TABLE `imcome`
-  ADD CONSTRAINT `imcome_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
-  ADD CONSTRAINT `imcome_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);
+ALTER TABLE `income`
+  ADD CONSTRAINT `income_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
+  ADD CONSTRAINT `income_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
