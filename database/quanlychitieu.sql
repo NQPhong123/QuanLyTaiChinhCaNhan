@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Oct 07, 2024 at 05:12 PM
+-- Generation Time: Oct 16, 2024 at 02:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -103,10 +103,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`UserID`, `Email`, `PasswordHash`, `CreateAt`) VALUES
-(1, 'nqphong.male1203@gmail.com', '123', '2024-10-07 11:37:51'),
-(9, 'asdfasf@gmail.com', '123', '2024-10-07 11:55:17'),
-(10, 'asdasdfafasf@gmail.com', '123', '2024-10-07 11:56:17'),
-(11, 'asfasdfasdffasfd@gmail.com', '124345234', '2024-10-07 11:56:44');
+(1, 'nqphong.male1203@gmail.com', '$2a$10$xDIg61.GtnYt4IVmcmG/xu0XB4ZPmuiO7E4NT38FCcC5FhHnPIifa', '2024-10-08 21:46:26'),
+(2, '2251120232@gmail.com', '$2a$10$7FaXj7NDya4xnXaw0GulhevuEeiXhD6ZCZ1GRvGBdRSu1qUp25VxC', '2024-10-11 20:42:47'),
+(3, 'nqphong.male120311111@gmail.com', '$2a$10$GiRbqe4fdjoYV.vskA1R3OcaxsfM8CDKl7sld2Ebh7rSYAqdIGuIa', '2024-10-11 20:47:54'),
+(6, 'nqphong.male12031111@gmail.com', '$2a$10$IDtorKb4A99zG0RC0axwFeUuLb45a8puz93qZpQ/2IG7mpOvGXwd6', '2024-10-12 10:32:25');
 
 --
 -- Indexes for dumped tables
@@ -167,7 +167,7 @@ ALTER TABLE `imcome`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
