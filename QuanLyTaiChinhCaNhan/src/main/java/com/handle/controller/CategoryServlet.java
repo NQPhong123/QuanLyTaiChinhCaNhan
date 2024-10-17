@@ -21,13 +21,20 @@ public class CategoryServlet extends HttpServlet {
 			throws ServletException, IOException {
 		CategoryDAO categoryDAO = new CategoryDAO();
 		List<Category> categories = categoryDAO.getAllCategory();
-		ObjectMapper mapper = new ObjectMapper();
-		String json = mapper.writeValueAsString(categories); // chuyển đổ categories(LIST) thành chuỗi JSON
-		// định nghĩa dữ liệu servlet trả về
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		// trả về json
-		response.getWriter().write(json);
+
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(categories); // chuyển đổ categories(LIST) thành chuỗi JSON
+			// định nghĩa dữ liệu servlet trả về
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			// trả về json
+			response.getWriter().write(json);
+		} catch (Exception e) {
+
+			response.getWriter().write(e.getMessage());
+		}
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

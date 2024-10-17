@@ -31,7 +31,7 @@
 
 				<button id="btn-addTransaction" onclick="addTransaction.openButton()">THÊM
 					GIAO DỊCH</button>
-				<script src="assets/js/function.js"></script>
+				<script src="assets/js/button.js"></script>
 			</div>
 		</div>
 	</nav>
