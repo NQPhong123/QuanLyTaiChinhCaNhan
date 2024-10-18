@@ -32,19 +32,69 @@ searchButton.htmlContent = `<div class="search-header">
 </div>
 
 <div class="search-form">
-  <div class="field">
-    <button>
-      <span>CHỌN THỂ LOẠI</span>
-      <i class="fa-regular fa-greater-than"></i>
-    </button>
-  </div>
-
-  <div class="field">
-    <button>
-      <span>CHỌN THỂ LOẠI</span>
-      <i class="fa-regular fa-greater-than"></i>
-    </button>
-  </div>
+	<div class="category-wrapper">
+	    <button id="choose-category-btn-left">
+	      <span>CHỌN THỂ LOẠI</span>
+	      <i class="fa-regular fa-greater-than"></i>
+	    </button>
+	    
+	    <div class="category-selector">
+	      <div class="header">
+	        <span>Select category</span>
+	        <input type="text" placeholder="Search">
+	      </div>
+	
+	      <div class="tabs">
+	        <button class="tab active">DEBT/LOAN</button>
+	        <button class="tab">EXPENSE</button>
+	        <button class="tab">INCOME</button>
+	      </div>
+	
+	      <ul class="category-list">
+	        <li class="category-item">
+	          <img src="icon1.png" alt="All Categories"> All Categories
+	        </li>
+	        <li class="category-item">
+	          <img src="icon2.png" alt="Education"> Education
+	        </li>
+	        <li class="category-item selected">
+	          <img src="icon3.png" alt="Food & Beverage"> Food & Beverage
+	          <i class="fa fa-check"></i>
+	        </li>
+	        <li class="category-item">
+	          <img src="icon4.png" alt="Gas Bill"> Gas Bill
+	        </li>
+	        <li class="category-item">
+	          <img src="icon5.png" alt="Gifts & Donations"> Gifts & Donations
+	        </li>
+	        <li class="category-item">
+	          <img src="icon6.png" alt="Home Maintenance"> Home Maintenance
+	        </li>
+	        <li class="category-item">
+	          <img src="icon7.png" alt="Houseware"> Houseware
+	        </li>
+	        <li class="category-item">
+	          <img src="icon8.png" alt="Investment"> Investment
+	        </li>
+	      </ul>
+	
+	    </div>    
+	</div>
+	
+	<div class="category-wrapper-right">
+	    <button id="choose-category-btn-right">
+	        <span>CHỌN NGÀY</span>
+	        <i class="fa-regular fa-greater-than"></i>
+	    </button>
+	    <input type="date" id="date-picker" style="display: none;">
+	</div>
+	<script>
+	    document.getElementById("choose-category-btn-right").addEventListener("click", function() {
+	        document.getElementById("date-picker").style.display = "block";
+	    });
+	</script>
+	
+	
 
   <div class="field amount">
     <label for="amount">Số tiền</label>
@@ -56,6 +106,10 @@ searchButton.htmlContent = `<div class="search-header">
   </div>
 </div>`;
 searchButton.idName = 'search-container';
+
+document.getElementById("choose-category-btn-right").addEventListener("click", function() {
+        document.getElementById("date-picker").style.display = "block";
+});
 
 const addTransaction = new Button();
 addTransaction.htmlContent = `
@@ -87,3 +141,7 @@ addTransaction.htmlContent = `
             </div>
         </div>`;
 addTransaction.idName = 'transactionForm'
+
+
+
+

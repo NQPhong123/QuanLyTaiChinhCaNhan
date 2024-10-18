@@ -183,3 +183,63 @@ input[type="range"] {
 	color: #666;
 	margin-top: 5px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.search-form{
+	justify-content: space-between;
+}
+
+
+
+.category-selector {
+    display: none; /* Ẩn menu theo mặc định */
+    position: absolute; /* Đặt vị trí của menu */
+    background-color: white; /* Nền trắng cho menu */
+    border: 1px solid #ccc; /* Đường viền cho menu */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho menu */
+    z-index: 1000; /* Đảm bảo menu nằm trên các phần tử khác */
+}
+
+.category-wrapper {
+    position: relative; /* Đặt vị trí tương đối cho wrapper */
+    display:flex;
+    text-align:center;
+    justify-content: space-between;
+}
+
+.category-wrapper-right {
+    position: relative; /* Đặt vị trí tương đối cho wrapper */
+    display:flex;
+    text-align:center;
+    justify-content: space-between;
+}
+
+/* Hiển thị menu khi hover vào category-wrapper */
+.category-wrapper:hover .category-selector {
+    display: block; /* Hiển thị menu khi hover */
+}
+
+.category-item {
+    padding: 10px; /* Khoảng cách cho từng mục */
+    cursor: pointer; /* Con trỏ khi hover */
+}
+
+.category-item:hover {
+    background-color: #f0f0f0; /* Nền khi hover */
+}
+
+
+
