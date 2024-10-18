@@ -14,15 +14,16 @@
 				class="fas fa-file-alt"></i> Sổ giao dịch
 			</a> <a class="menu-item" href="report"> <i class="fas fa-chart-bar"></i>
 				Báo cáo
-			</a> <a class="menu-item" href="LogoutServlet" method="post"> <i class="fa-solid fa-right-from-bracket"></i>
-				Đăng xuất
-			</a> 
+			</a> <a class="menu-item" href="#"> <i class="fas fa-wallet"></i>
+				Ngân sách
+			</a> <a class="menu-item" href="#"> <i class="fas fa-question-circle"></i>
+				Trợ giúp
+			</a>
 		</div>
 		<div class="header">
 			<div class="user-info">
 				<img alt="User Avatar"
 					src="https://storage.googleapis.com/a1aa/image/rsKzFeIQXA0aGiDTVe4khscIXuI1O9vmq1dyHeO7Yx7IC5FnA.jpg" />
-					
 				<span> Tiền mặt - 19,645,000.00 </span>
 			</div>
 			<div class="actions">

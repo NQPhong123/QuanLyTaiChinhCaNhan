@@ -1,13 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	
-<%
-String emailUser = (String) session.getAttribute("email");
-if(emailUser == null){
-	response.sendRedirect("login");
-	return;
-}
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,6 +15,7 @@ if(emailUser == null){
 
 </head>
 <body>
+
 	<%@ include file="/WEB-INF/includes/header.jsp"%>
 	<div class="content">
     <div class="transaction-content">

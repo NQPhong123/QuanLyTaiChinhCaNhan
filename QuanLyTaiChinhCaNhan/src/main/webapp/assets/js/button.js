@@ -83,16 +83,9 @@ searchButton.htmlContent = `<div class="search-header">
 	
 	<div class="category-wrapper-right">
 	    <button id="choose-category-btn-right">
-	        <span>CHỌN NGÀY</span>
-	        <i class="fa-regular fa-greater-than"></i>
+	        <input id="myID" placeholder="CHỌN NGÀY">
 	    </button>
-	    <input type="date" id="date-picker" style="display: none;">
 	</div>
-	<script>
-	    document.getElementById("choose-category-btn-right").addEventListener("click", function() {
-	        document.getElementById("date-picker").style.display = "block";
-	    });
-	</script>
 	
 	
 
@@ -107,9 +100,7 @@ searchButton.htmlContent = `<div class="search-header">
 </div>`;
 searchButton.idName = 'search-container';
 
-document.getElementById("choose-category-btn-right").addEventListener("click", function() {
-        document.getElementById("date-picker").style.display = "block";
-});
+flatpickr("#myID", {});
 
 const addTransaction = new Button();
 addTransaction.htmlContent = `
