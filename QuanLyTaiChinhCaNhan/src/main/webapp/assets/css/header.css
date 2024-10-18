@@ -242,4 +242,72 @@ input[type="range"] {
 }
 
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.header input {
+  padding: 5px;
+  width: 150px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.tab {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 5px 10px;
+  color: #888;
+}
+
+.tab.active {
+  color: #4caf50;
+  border-bottom: 2px solid #4caf50;
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.category-item img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.category-item:hover {
+  background-color: #f4f4f4;
+}
+
+.category-item.selected {
+  background-color: #e0f7fa;
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.category-item.selected i {
+  margin-left: auto;
+  color: #4caf50;
+} 
+
 

@@ -41,7 +41,6 @@ searchButton.htmlContent = `<div class="search-header">
 	    <div class="category-selector">
 	      <div class="header">
 	        <span>Select category</span>
-	        <input type="text" placeholder="Search">
 	      </div>
 	
 	      <div class="tabs">
@@ -83,11 +82,10 @@ searchButton.htmlContent = `<div class="search-header">
 	
 	<div class="category-wrapper-right">
 	    <button id="choose-category-btn-right">
-	        <input id="myID" placeholder="CHỌN NGÀY">
+	        <input type="date" id="myID" placeholder="CHỌN NGÀY">
 	    </button>
 	</div>
-	
-	
+
 
   <div class="field amount">
     <label for="amount">Số tiền</label>
