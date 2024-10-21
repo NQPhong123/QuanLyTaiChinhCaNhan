@@ -37,13 +37,15 @@ public class SearchServlet extends HttpServlet {
 		JsonNode jsonNode = objectMapper.readTree(jsonString);
 		int categoryID = jsonNode.get("categoryID").asInt();
 		String date = jsonNode.get("date").asText();
+		double amount = jsonNode.get("amount").asDouble();
 
 		// Prepare response data
 		Map<String, String> responseData = new HashMap<>();
 		responseData.put("status", "success");
 		responseData.put("message", "Dữ liệu đã được nhận");
-		responseData.put("categoryID", String.valueOf(categoryID)); // Use the extracted categoryID
+		responseData.put("categoryID", String.valueOf(categoryID)); 
 		responseData.put("date", date);
+		responseData.put("amount", String.valueOf(amount));
 
 		// Set response headers and return JSON response
 		response.setContentType("application/json");
