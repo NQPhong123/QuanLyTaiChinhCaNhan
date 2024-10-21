@@ -1,5 +1,6 @@
 package com.handle.dao;
 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.handle.model.Category;
-
+// Đối tượng lấy dữ liệu của category
 public class CategoryDAO {
 	public List<Category> getAllCategory() {
 		List<Category> categories = new ArrayList<>();
@@ -19,7 +20,8 @@ public class CategoryDAO {
 				int categoryID = rs.getInt("CategoryID");
 				String categoryName = rs.getString("CategoryName");
 				String type = rs.getString("type");
-				Category category = new Category(categoryID, categoryName, type);
+				String URLImage = rs.getString("URL_Image");
+				Category category = new Category(categoryID, categoryName, type,URLImage);
 				categories.add(category);
 			}
 		} catch (SQLException e) {

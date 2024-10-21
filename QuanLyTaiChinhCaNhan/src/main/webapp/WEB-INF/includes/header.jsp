@@ -6,6 +6,11 @@
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 <link rel="stylesheet" href="assets/css/header.css">
+
+<script type="module" src="assets/js/api/CategoryApi.js"></script>  
+<script type="module" src="assets/js/api/SearchApi.js"></script>
+<script type="module" src="assets/js/button.js "></script>
+
 </head>
 <body>
 	<nav>
@@ -14,10 +19,8 @@
 				class="fas fa-file-alt"></i> Sổ giao dịch
 			</a> <a class="menu-item" href="report"> <i class="fas fa-chart-bar"></i>
 				Báo cáo
-			</a> <a class="menu-item" href="#"> <i class="fas fa-wallet"></i>
-				Ngân sách
-			</a> <a class="menu-item" href="#"> <i class="fas fa-question-circle"></i>
-				Trợ giúp
+			</a> <a class="menu-item" href="LogoutServlet"> <i
+				class="fa-solid fa-right-from-bracket"></i> Đăng xuất
 			</a>
 		</div>
 		<div class="header">
@@ -27,13 +30,16 @@
 				<span> Tiền mặt - 19,645,000.00 </span>
 			</div>
 			<div class="actions">
-				<button id="btn-search" onclick="searchButton.openButton() "><i class="fas fa-search"></i></button>
+				<button id="btn-search" onclick="searchButton.openButton() ">
+					<i class="fas fa-search"></i>
+				</button>
 
-				<button id="btn-addTransaction" onclick="addTransaction.openButton()">THÊM
-					GIAO DỊCH</button>
-				<script src="assets/js/button.js"></script>
+				<button id="btn-addTransaction"
+					onclick="addTransaction.openButton()">THÊM GIAO DỊCH</button>
+
 			</div>
 		</div>
 	</nav>
+
 </body>
 </html>

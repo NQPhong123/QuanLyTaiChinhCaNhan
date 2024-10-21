@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.handle.model.Income;
 
 public class IncomeDAO extends TransactionDAO<Income> {
@@ -83,5 +84,29 @@ public class IncomeDAO extends TransactionDAO<Income> {
 		}
 		return incomes;
 	}
-
+	@Override
+	public List<Income> excuteQuerySearch(String query){
+		 System.out.println("Executing query: " + query);
+		 List<Income> incomes = new ArrayList<>();
+		 try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
+				ResultSet rs = ptst.executeQuery();
+				while(rs.next()) {
+					int exID = rs.getInt("ExpenseID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String deciption = rs.getString("description");
+					LocalDate date = rs.getDate("Date").toLocalDate();
+					Income income = new Income(exID,uID,ceID,amt,deciption,date);
+					incomes.add(income);
+				}
+			} catch (SQLException e) {
+				e.getStackTrace();
+				System.out.println(e.getMessage());
+			}
+		 return incomes;
+	}
+	
+	
+	
 }

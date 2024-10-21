@@ -1,28 +1,26 @@
-
-
 // lớp Button tạo nút
 class Button {
-	constructor(htmlContent, idName) {
-		this.htmlContent = htmlContent;
-		this.idName = idName;
-	}
-	openButton() {
+  constructor(htmlContent, idName) {
+    this.htmlContent = htmlContent;
+    this.idName = idName;
+  }
+  openButton() {
+    this.isOpen = true;
+    const modal = document.createElement("div");
+    modal.setAttribute("id", this.idName);
+    modal.innerHTML = this.htmlContent;
+    document.body.appendChild(modal);
+  }
 
-		this.isOpen = true;
-		const modal = document.createElement('div');
-		modal.setAttribute('id', this.idName);
-		modal.innerHTML = this.htmlContent;
-		document.body.appendChild(modal);
-
-
-	}
-	closeButton() {
-		const modal = document.getElementById(this.idName);
-		if (modal) {
-			modal.remove();
-		}
-	}
+  closeButton() {
+    const modal = document.getElementById(this.idName);
+    if (modal) {
+      modal.remove();
+    }
+  }
 }
+
+// Đảm bảo rằng fetchCategories đã được định nghĩa trước khi gọi
 
 const searchButton = new Button();
 searchButton.htmlContent = `<div class="search-header">
@@ -50,39 +48,15 @@ searchButton.htmlContent = `<div class="search-header">
 	      </div>
 	
 	      <ul class="category-list">
-	        <li class="category-item">
-	          <img src="icon1.png" alt="All Categories"> All Categories
-	        </li>
-	        <li class="category-item">
-	          <img src="icon2.png" alt="Education"> Education
-	        </li>
-	        <li class="category-item selected">
-	          <img src="icon3.png" alt="Food & Beverage"> Food & Beverage
-	          <i class="fa fa-check"></i>
-	        </li>
-	        <li class="category-item">
-	          <img src="icon4.png" alt="Gas Bill"> Gas Bill
-	        </li>
-	        <li class="category-item">
-	          <img src="icon5.png" alt="Gifts & Donations"> Gifts & Donations
-	        </li>
-	        <li class="category-item">
-	          <img src="icon6.png" alt="Home Maintenance"> Home Maintenance
-	        </li>
-	        <li class="category-item">
-	          <img src="icon7.png" alt="Houseware"> Houseware
-	        </li>
-	        <li class="category-item">
-	          <img src="icon8.png" alt="Investment"> Investment
-	        </li>
+		  <!-- danh sách thể loại sẽ được render động-->
 	      </ul>
 	
 	    </div>    
 	</div>
 	
 	<div class="category-wrapper-right">
-	    <button id="choose-category-btn-right">
-	        <input type="date" id="myID" placeholder="CHỌN NGÀY">
+	    <button id="btn-choose-date">
+	        <input type="date" id="inputDate" placeholder="CHỌN NGÀY">
 	    </button>
 	</div>
 
@@ -96,9 +70,9 @@ searchButton.htmlContent = `<div class="search-header">
     </div>
   </div>
 </div>`;
-searchButton.idName = 'search-container';
+searchButton.idName = "search-container";
 
-flatpickr("#myID", {});
+// hàm lấy ngày được chọn
 
 const addTransaction = new Button();
 addTransaction.htmlContent = `
@@ -129,8 +103,67 @@ addTransaction.htmlContent = `
                 <button class="cancel-btn" onclick="addTransaction.closeButton()">Hủy</button>
             </div>
         </div>`;
-addTransaction.idName = 'transactionForm'
+addTransaction.idName = "transactionForm";
 
 
 
+import { fetchCategories } from "./api/CategoryApi.js";
+import {pushData} from "./api/SearchApi.js";
 
+// hàm xử lý thể loại được lấy từ database tạo ra các thẻ li tương ứng
+async function getCategories() {
+  try {
+    const categories = await fetchCategories();
+    console.log(categories); // In ra để kiểm tra
+    let li = "";
+    if (Array.isArray(categories)) {
+      categories.forEach((category) => {
+        li += `<li class="category-item">
+				  <img src="${category.urlimage}" alt="${category.categoryName}"> ${category.categoryName}
+				</li>`;
+      });
+    } else {
+      console.error("Expected categories to be an array, but got:", categories);
+    }
+    return li;
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+  }
+}
+
+// hàm tạo ra dánh sách thể loại
+async function renderCategoryList() {
+  const categoryListElement = document.querySelector(".category-list");
+  if (categoryListElement) {
+    const categoryItems = await getCategories();
+    categoryListElement.innerHTML = categoryItems;
+  }
+}
+
+// hàm lấy ngày người dùng chọn và đẩy dữ liệu lên server xử lý
+function addDateChangeListener() {
+  const inputDate = document.getElementById("inputDate");
+  if (inputDate) {
+    inputDate.addEventListener("change", (event) => {
+      const selectedDate = event.target.value; // Lấy giá trị ngày đã chọn
+      console.log(selectedDate);
+      pushData(selectedDate); 
+    });
+  }
+}
+
+
+// overide lại phương thức để thực thi 2 hàm riêng của searchButton
+searchButton.openButton = function () {
+  this.isOpen = true;
+  const modal = document.createElement("div");
+  modal.setAttribute("id", this.idName);
+  modal.innerHTML = this.htmlContent;
+  document.body.appendChild(modal);
+  renderCategoryList();
+  addDateChangeListener();
+};
+
+// đưa 2 object này thành global vì sử dụng type = module
+window.searchButton = searchButton;
+window.addTransaction = addTransaction;
