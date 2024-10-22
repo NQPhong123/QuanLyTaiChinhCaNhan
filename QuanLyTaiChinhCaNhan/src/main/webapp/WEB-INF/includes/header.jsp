@@ -36,7 +36,6 @@
 
 				<button id="btn-addTransaction"
 					onclick="addTransaction.openButton()">THÊM GIAO DỊCH</button>
-
 			</div>
 		</div>
 	</nav>

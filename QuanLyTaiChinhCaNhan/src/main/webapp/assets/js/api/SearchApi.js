@@ -1,9 +1,10 @@
 const URL_SEARCH = "SearchServlet"; // URL đến servlet của bạn
 
-export function pushData(date) {
+export function pushData(categoryID,date,amount) {
 	const searchData = {
-		categoryID: "1",
+		categoryID: categoryID,
 		date: date, 
+		amount:amount
 	};
 
 	fetch(URL_SEARCH, {
