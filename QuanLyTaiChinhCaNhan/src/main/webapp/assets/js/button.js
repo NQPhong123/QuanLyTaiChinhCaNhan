@@ -40,42 +40,37 @@ searchButton.htmlContent = `<div class="search-header">
 	      <div class="header">
 	        <span>Select category</span>
 	      </div>
-		  <div class="category-left">
-		                  <ul>
-		                      <li class="category-left-li expence"><p>Expence</p>
-		                          <ul class="subcategory sub-expence">
-		                              <li><p>Expence 1 </p></li>
-		                              <li><p>Expence 2</p></li>
-		                          </ul>
-		                      </li>
-							  <li class="category-left-li income"><p>Income</p>
-							  	<ul class="subcategory sub-income">
-							  		<li><p>Income 1</p></li>
-							  		<li><p>Income 2</p></li>
-							  	</ul>
-							  </li>
-		                      
-		                  </ul>
-		              </div>
+	
+	      <div class="tabs">
+	        <button class="tab active">DEBT/LOAN</button>
+	        <button class="tab">EXPENSE</button>
+	        <button class="tab">INCOME</button>
+	      </div>
+	
+	      <ul class="category-list">
+		  <!-- danh sách thể loại sẽ được render động-->
+	      </ul>
+	
 	    </div>    
 	</div>
 	
 	<div class="category-wrapper-right">
-	    <input type="date" id="myID" placeholder="CHỌN NGÀY">
+	    <button id="btn-choose-date">
+	        <input type="date" id="inputDateSearch" placeholder="CHỌN NGÀY">
+	    </button>
 	</div>
 
 
   <div class="field amount">
     <label for="amount">Số tiền</label>
-    <input type="range" id="amount" min="10" max="7000" value="10" />
+    <input type="range" id="amountSearch" min="10" max="7000" value="10" />
     <div class="range-values">
       <span>10</span>
       <span>7000</span>
     </div>
   </div>
 </div>`;
-
-searchButton.idName = 'search-container'; 
+searchButton.idName = "search-container";
 
 // hàm lấy ngày được chọn
 
