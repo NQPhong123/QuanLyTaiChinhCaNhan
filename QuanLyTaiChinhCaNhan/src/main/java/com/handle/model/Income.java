@@ -24,7 +24,7 @@ public class Income extends Transaction {
 
 	@Override
 	public String toString() {
-		super.toString();
+		
 		return super.toString()+"Income [incomeID=" + incomeID + "]";
 	}
 

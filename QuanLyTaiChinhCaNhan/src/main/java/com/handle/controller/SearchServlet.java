@@ -17,6 +17,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.handle.dao.ExpenseDAO;
 import com.handle.dao.IncomeDAO;
 import com.handle.model.Expense;
@@ -43,11 +44,13 @@ public class SearchServlet extends HttpServlet {
 
 			// Parse JSON input
 			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new JavaTimeModule()); // hiểu được serialize của LocalDate
+			
 			JsonNode jsonNode = objectMapper.readTree(jsonString);
-			int categoryID = jsonNode.get("categoryID").asInt();
+			Integer categoryID = jsonNode.get("categoryID").isNull() ? null : jsonNode.get("categoryID").asInt();
 			String dateString = jsonNode.get("date").asText();
-			double amount = jsonNode.get("amount").asDouble();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd"); // chuyển dateString sang LocalDate
+			Double amount = jsonNode.get("amount").isNull() ? null : jsonNode.get("amount").asDouble();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // chuyển dateString sang LocalDate
 			LocalDate date = LocalDate.parse(dateString,formatter);
 			
 			// Prepare response data

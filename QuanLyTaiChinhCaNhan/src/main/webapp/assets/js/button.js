@@ -115,7 +115,7 @@ import { pushData } from "./api/SearchApi.js";
 async function getCategories() {
 	try {
 		const categories = await fetchCategories();
-		console.log(categories); // In ra để kiểm tra
+		
 		return categories;
 	} catch (error) {
 		console.error("Failed to fetch categories:", error);

@@ -24,8 +24,9 @@ public class Expense extends Transaction{
 
 	@Override
 	public String toString() {
-		return super.toString()+"Expense [expenseID=" + expenseID + "]";
+	    return super.toString() + " Expense [expenseID=" + expenseID + "]";
 	}
+
 
 
 }

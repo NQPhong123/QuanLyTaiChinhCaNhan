@@ -91,7 +91,7 @@ public class IncomeDAO extends TransactionDAO<Income> {
 		 try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
 				ResultSet rs = ptst.executeQuery();
 				while(rs.next()) {
-					int exID = rs.getInt("ExpenseID");
+					int exID = rs.getInt("IncomeID");
 					int uID = rs.getInt("UserID");
 					int ceID = rs.getInt("categoryID");
 					double amt = rs.getDouble("amount");
@@ -107,6 +107,16 @@ public class IncomeDAO extends TransactionDAO<Income> {
 		 return incomes;
 	}
 	
-	
+	public static void main(String[] args) {
+    	IncomeDAO incomeDAO = new IncomeDAO();
+        // Tìm kiếm expense với categoryID = 1 và ngày giao dịch cụ thể
+        List<Income> incomesWithDate = incomeDAO.searchTransactions(null, LocalDate.of(2024, 10, 1), null);
+
+        for (Income income : incomesWithDate) {
+            System.out.println(income.toString());
+        }
+        System.out.println(incomesWithDate);
+
+	}
 	
 }

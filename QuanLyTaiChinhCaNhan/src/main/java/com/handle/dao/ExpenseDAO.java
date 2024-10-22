@@ -109,27 +109,13 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 	
 	public static void main(String[] args) {
     	ExpenseDAO expenseDAO = new ExpenseDAO();
-
-        // Tìm kiếm expense với categoryID = 1
-        List<Expense> expenses = expenseDAO.searchTransactions(1, null, null);
-
-        // Vòng lặp để show thông tin của các expense
-        for (Expense expense : expenses) {
-            System.out.println(expense.toString()); // In ra thông tin của từng expense
-        }
-
         // Tìm kiếm expense với categoryID = 1 và ngày giao dịch cụ thể
-        List<Expense> expensesWithDate = expenseDAO.searchTransactions(1, LocalDate.of(2023, 10, 10), null);
+        List<Expense> expensesWithDate = expenseDAO.searchTransactions(null, LocalDate.of(2024, 10, 1), null);
 
         for (Expense expense : expensesWithDate) {
             System.out.println(expense.toString());
         }
+        System.out.println(expensesWithDate);
 
-        // Tìm kiếm expense với categoryID = 1, ngày và số tiền cụ thể
-        List<Expense> expensesWithDateAndAmount = expenseDAO.searchTransactions(null, LocalDate.of(2023, 10, 10), 500.0);
-
-        for (Expense expense : expensesWithDateAndAmount) {
-            System.out.println(expense.toString());
-        }
 	}
 }
