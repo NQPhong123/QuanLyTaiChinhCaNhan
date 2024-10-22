@@ -311,3 +311,54 @@ input[type="range"] {
 } 
 
 
+
+
+
+
+
+
+.category-left ul li {
+    padding:12px 0;
+    margin : 0 20px;
+}
+
+.category-left ul li>p{
+    color:black;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.category-left ul li ul li {
+    padding-left: 10px;
+}
+
+.category-left-li ul{
+    display: none;
+}
+
+.category-left-li.block ul{
+    display: block;
+}
+
+.category-left ul li ul li p{
+    color:#333333;
+    font-size: 14px;
+}
+
+/* Ẩn tất cả subcategory theo mặc định */
+.subcategory {
+    display: none;
+}
+
+/* Hiển thị subcategory khi hover vào li.expence hoặc li.income */
+.category-left-li:hover .subcategory {
+    display: block;
+}
+
+.subcategory li {
+    margin-top: 5px;
+}
+
+
+
