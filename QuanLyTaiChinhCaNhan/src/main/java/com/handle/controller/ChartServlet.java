@@ -39,7 +39,7 @@ public class ChartServlet extends HttpServlet {
         responseData.put("status", "success");
         responseData.put("message", "Tháng đã được lưu: " + selectedMonth);
         responseData.put("month", selectedMonth);
-
+		/* kjk */
         // Gửi phản hồi JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
