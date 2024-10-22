@@ -58,8 +58,6 @@
 	margin-top: 10px;
 }
 
-
-
 .chart-container {
 	display: flex;
 	justify-content: space-between;
@@ -79,31 +77,31 @@
 	<%
 	java.time.LocalDate currentDate = java.time.LocalDate.now();
 
-	// Lấy tháng hiện tại
-	int currentMonth = currentDate.getMonthValue();
+	// Lấy tháng và năm hiện tại
+	String currentMonthYear = currentDate.getMonthValue() + "/" + currentDate.getYear();
 
-	// Lấy tháng trước
-	int lastMonth = currentDate.minusMonths(1).getMonthValue();
+	// Lấy tháng và năm trước
+	String lastMonthYear = currentDate.minusMonths(1).getMonthValue() + "/" + currentDate.minusMonths(1).getYear();
 
-	// Lấy tháng sau
-	int nextMonth = currentDate.plusMonths(1).getMonthValue();
+	// Lấy tháng và năm sau
+	String nextMonthYear = currentDate.plusMonths(1).getMonthValue() + "/" + currentDate.plusMonths(1).getYear();
 
 	// Đặt các giá trị vào request để sử dụng trong JSP
-	request.setAttribute("currentMonth", currentMonth);
-	request.setAttribute("lastMonth", lastMonth);
-	request.setAttribute("nextMonth", nextMonth);
+	request.setAttribute("currentMonthYear", currentMonthYear);
+	request.setAttribute("lastMonthYear", lastMonthYear);
+	request.setAttribute("nextMonthYear", nextMonthYear);
 	%>
 
 	<div class="content">
 		<div class="tabs">
 			<div class="tab active" onclick="showTab('last')">
-				Tháng trước (<%=request.getAttribute("lastMonth")%>)
+				Tháng trước (<%=request.getAttribute("lastMonthYear")%>)
 			</div>
 			<div class="tab" onclick="showTab('current')">
-				Hiện tại (<%=request.getAttribute("currentMonth")%>)
+				Hiện tại (<%=request.getAttribute("currentMonthYear")%>)
 			</div>
 			<div class="tab" onclick="showTab('future')">
-				Tương lai (<%=request.getAttribute("nextMonth")%>)
+				Tương lai (<%=request.getAttribute("nextMonthYear")%>)
 			</div>
 		</div>
 
@@ -138,14 +136,14 @@
 	<script src="assets/js/chart.js"></script>
 
 	<script>
-    // Gán giá trị tháng từ JSP vào JavaScript
-    const lastMonth = <%=request.getAttribute("lastMonth")%>;
-    const currentMonth = <%=request.getAttribute("currentMonth")%>;
-    const nextMonth = <%=request.getAttribute("nextMonth")%>;
+    // Gán giá trị tháng và năm từ JSP vào JavaScript
+    const lastMonthYear = "<%=request.getAttribute("lastMonthYear")%>";
+    const currentMonthYear = "<%=request.getAttribute("currentMonthYear")%>";
+    const nextMonthYear = "<%=request.getAttribute("nextMonthYear")%>";
 
-    // Hàm gửi tháng lên server
-    function sendMonthToServer(selectedMonth) {
-        const data = { month: selectedMonth };
+    // Hàm gửi tháng và năm lên server
+    function sendMonthToServer(selectedMonthYear) {
+        const data = { monthYear: selectedMonthYear };
 
         fetch('ChartServlet', {
             method: 'POST',
@@ -168,23 +166,23 @@
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(t => t.classList.remove('active'));
 
-        let selectedMonth;
+        let selectedMonthYear;
         if (tab === 'last') {
             tabs[0].classList.add('active');
-            selectedMonth = lastMonth;
+            selectedMonthYear = lastMonthYear;
             updateChart("+500,000,000 đ", "-300,000,000 đ", [4000000, 800000], [100000, 50000]);
         } else if (tab === 'current') {
             tabs[1].classList.add('active');
-            selectedMonth = currentMonth;
+            selectedMonthYear = currentMonthYear;
             updateChart("+698,626,843.72 đ", "-562,687,198.62 đ", [6000000, 1200000], [100000, 200000]);
         } else if (tab === 'future') {
             tabs[2].classList.add('active');
-            selectedMonth = nextMonth;
+            selectedMonthYear = nextMonthYear;
             updateChart("+1,000,000,000 đ", "-400,000,000 đ", [8000000, 1600000], [200000, 100000]);
         }
 
-        // Gửi tháng đã chọn lên server
-        sendMonthToServer(selectedMonth);
+        // Gửi tháng và năm đã chọn lên server
+        sendMonthToServer(selectedMonthYear);
     }
 
     // Hàm cập nhật biểu đồ và số liệu
