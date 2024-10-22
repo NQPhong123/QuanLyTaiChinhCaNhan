@@ -135,7 +135,7 @@ async function renderCategory() {
 		if (Array.isArray(categories)) {
 			categories.forEach((category) => {
 				li += `<li class="category-item">
-				  <img src="${category.urlimage}" alt="${category.categoryName}"> ${category.categoryName}
+				  <img src="image/${category.urlimage}" alt="${category.categoryName}"> ${category.categoryName}
 				</li>`;
 			});
 		} else {
