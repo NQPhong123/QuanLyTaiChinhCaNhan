@@ -51,6 +51,14 @@
 		<servlet-name>registerNavigation</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
-
+<!-- Cấu hình cho ChartServlet -->
+<!-- 	<servlet>
+		<servlet-name>ChartServlet</servlet-name>
+		<servlet-class>com.handle.controller.ChartServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ChartServlet</servlet-name>
+		<url-pattern>/ChartServlet</url-pattern>
+	</servlet-mapping> -->
 
 </web-app>

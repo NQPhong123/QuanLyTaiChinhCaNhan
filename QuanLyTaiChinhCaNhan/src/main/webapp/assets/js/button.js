@@ -130,7 +130,10 @@ async function getCategories() {
     console.error("Failed to fetch categories:", error);
   }
 }
-
+// Hàm format số tiền
+function formatCurrency(amount) {
+    return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VND';
+}
 // hàm tạo ra dánh sách thể loại
 async function renderCategoryList() {
   const categoryListElement = document.querySelector(".category-list");

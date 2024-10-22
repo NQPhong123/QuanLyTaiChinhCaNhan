@@ -17,12 +17,19 @@ public class RegisterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        try {
+            handleRegister(request, response);
+        } catch (Exception e) {
+            throw new ServletException(e); // Chuyển lỗi lên ServletException
+        }
+    }
+
+    private void handleRegister(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirm_password");
 
-        // Regex for email and password
+        // Regex  email and password
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$"; // At least 8 chars, 1 digit, 1 lower, 1 upper case
 
@@ -59,8 +66,8 @@ public class RegisterServlet extends HttpServlet {
 
         UserDao userDao = new UserDao();
         if (userDao.saveUser(user)) {
-        	 HttpSession session = request.getSession();
-             session.setAttribute("successMessage", "Đăng kí thành công! Bạn có thể đăng nhập.");
+            HttpSession session = request.getSession();
+            session.setAttribute("successMessage", "Đăng kí thành công! Bạn có thể đăng nhập.");
             response.sendRedirect("login");
         } else {
             request.setAttribute("errorMessage", "Email đã tồn tại, vui lòng thử lại");

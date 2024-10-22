@@ -17,17 +17,39 @@ public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            handleLogin(request, response);
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+
+    // Hàm chính xử lý đăng nhập
+    private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        // Gọi hàm tạo đối tượng User
+        User user = createUser(email, password);
+
+        // Gọi hàm kiểm tra và xử lý kết quả đăng nhập
+        processLogin(user, request, response);
+    }
+
+    // Hàm tạo đối tượng User
+    private User createUser(String email, String password) {
         User user = new User();
         user.setEmail(email);
         user.setPassWord(password);
+        return user;
+    }
 
+    // Hàm xử lý kết quả đăng nhập
+    private void processLogin(User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserDao userDao = new UserDao();
         if (userDao.checkUser(user)) {
             HttpSession session = request.getSession();
-            session.setAttribute("email", email);
+            session.setAttribute("email", user.getEmail());
             session.setAttribute("successMessage", "Đăng nhập thành công!");
             response.sendRedirect("index"); // Chuyển hướng đến trang index sau khi đăng nhập thành công
         } else {
