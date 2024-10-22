@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Oct 17, 2024 at 09:10 AM
+-- Generation Time: Oct 22, 2024 at 09:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,30 +30,31 @@ SET time_zone = "+00:00";
 CREATE TABLE `category` (
   `CategoryID` int(11) NOT NULL,
   `CategoryName` varchar(255) NOT NULL,
-  `Type` enum('Expense','Income') NOT NULL
+  `Type` enum('Expense','Income') NOT NULL,
+  `URL_Image` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`CategoryID`, `CategoryName`, `Type`) VALUES
-(1, 'Lợi nhuận thu được', 'Income'),
-(2, 'Chuyển khoản đến', 'Income'),
-(3, 'Thu nhập khác', 'Income'),
-(4, 'Lương', 'Income'),
-(5, 'Giáo dục', 'Expense'),
-(6, 'Thực phẩm & Đồ uống', 'Expense'),
-(7, 'Hóa đơn gas', 'Expense'),
-(8, 'Quà tặng & Từ thiện', 'Expense'),
-(9, 'Bảo trì nhà', 'Expense'),
-(10, 'Đồ dùng gia đình', 'Expense'),
-(11, 'Đầu tư', 'Expense'),
-(12, 'Trang điểm', 'Expense'),
-(13, 'Chi phí khác', 'Expense'),
-(14, 'Đồ dùng cá nhân', 'Expense'),
-(15, 'Hóa đơn điện thoại', 'Expense'),
-(16, 'Bảo trì phương tiện', 'Expense');
+INSERT INTO `category` (`CategoryID`, `CategoryName`, `Type`, `URL_Image`) VALUES
+(1, 'Lợi nhuận thu được', 'Income', 'icon_118.png'),
+(2, 'Chuyển khoản đến', 'Income', 'icon_143.png'),
+(3, 'Thu nhập khác', 'Income', 'ic_category_other_income.png'),
+(4, 'Lương', 'Income', 'ic_category_salary.png'),
+(5, 'Giáo dục', 'Expense', 'ic_category_education.png'),
+(6, 'Thực phẩm & Đồ uống', 'Expense', 'ic_category_foodndrink.png'),
+(7, 'Hóa đơn gas', 'Expense', 'icon_gas.png'),
+(8, 'Quà tặng & Từ thiện', 'Expense', 'ic_category_donations.png'),
+(9, 'Bảo trì nhà', 'Expense', 'icon_29.png'),
+(10, 'Đồ dùng gia đình', 'Expense', 'icon_107.png'),
+(11, 'Đầu tư', 'Expense', 'ic_category_invest.png'),
+(12, 'Trang điểm', 'Expense', 'icon_63.png'),
+(13, 'Chi phí khác', 'Expense', 'ic_category_other_expense.png'),
+(14, 'Đồ dùng cá nhân', 'Expense', 'icon_persional.png'),
+(15, 'Hóa đơn điện thoại', 'Expense', 'icon_134.png'),
+(16, 'Bảo trì phương tiện', 'Expense', 'icon_130.png');
 
 -- --------------------------------------------------------
 
@@ -67,14 +68,14 @@ CREATE TABLE `expense` (
   `CategoryID` int(11) DEFAULT NULL,
   `Amount` decimal(10,2) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
-  `ExpenseDate` date NOT NULL
+  `Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `expense`
 --
 
-INSERT INTO `expense` (`ExpenseID`, `UserID`, `CategoryID`, `Amount`, `Description`, `ExpenseDate`) VALUES
+INSERT INTO `expense` (`ExpenseID`, `UserID`, `CategoryID`, `Amount`, `Description`, `Date`) VALUES
 (1, 1, 5, 596.86, 'Học phí', '2024-10-01'),
 (2, 2, 6, 248.43, 'Bữa tối ngoài', '2024-10-02'),
 (3, 3, 7, 208.11, 'Mua xăng', '2024-10-03'),
@@ -109,14 +110,14 @@ CREATE TABLE `income` (
   `CategoryID` int(11) DEFAULT NULL,
   `Amount` decimal(10,2) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
-  `IncomeDate` date DEFAULT NULL
+  `Date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `income`
 --
 
-INSERT INTO `income` (`incomeID`, `UserID`, `CategoryID`, `Amount`, `Description`, `IncomeDate`) VALUES
+INSERT INTO `income` (`incomeID`, `UserID`, `CategoryID`, `Amount`, `Description`, `Date`) VALUES
 (1, 1, 1, 2947.91, 'Lợi nhuận thu được', '2024-10-01'),
 (2, 2, 2, 601.57, 'Chuyển khoản từ phụ huynh', '2024-10-02'),
 (3, 3, 3, 1608.09, 'Thu nhập từ công việc phụ', '2024-10-03'),
@@ -160,7 +161,8 @@ INSERT INTO `user` (`UserID`, `Email`, `PasswordHash`, `CreateAt`) VALUES
 (1, 'nqphong.male1203@gmail.com', '$2a$10$xDIg61.GtnYt4IVmcmG/xu0XB4ZPmuiO7E4NT38FCcC5FhHnPIifa', '2024-10-08 21:46:26'),
 (2, '2251120232@gmail.com', '$2a$10$7FaXj7NDya4xnXaw0GulhevuEeiXhD6ZCZ1GRvGBdRSu1qUp25VxC', '2024-10-11 20:42:47'),
 (3, 'nqphong.male120311111@gmail.com', '$2a$10$GiRbqe4fdjoYV.vskA1R3OcaxsfM8CDKl7sld2Ebh7rSYAqdIGuIa', '2024-10-11 20:47:54'),
-(6, 'nqphong.male12031111@gmail.com', '$2a$10$IDtorKb4A99zG0RC0axwFeUuLb45a8puz93qZpQ/2IG7mpOvGXwd6', '2024-10-12 10:32:25');
+(6, 'nqphong.male12031111@gmail.com', '$2a$10$IDtorKb4A99zG0RC0axwFeUuLb45a8puz93qZpQ/2IG7mpOvGXwd6', '2024-10-12 10:32:25'),
+(8, 'test@test', '1', '2024-10-21 15:47:00');
 
 --
 -- Indexes for dumped tables
@@ -215,7 +217,7 @@ ALTER TABLE `expense`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
