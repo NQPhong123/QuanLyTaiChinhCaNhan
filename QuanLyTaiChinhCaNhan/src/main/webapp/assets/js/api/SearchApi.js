@@ -1,10 +1,10 @@
-const URL_SEARCH = "SearchServlet"; // URL đến servlet của bạn
 
-export function pushData(categoryID,date,amount) {
+const URL_SEARCH = "SearchServlet"; 
+export function pushData(categoryID, date, amount) {
 	const searchData = {
 		categoryID: categoryID,
-		date: date, 
-		amount:amount
+		date: date,
+		amount: amount
 	};
 
 	fetch(URL_SEARCH, {
@@ -22,9 +22,19 @@ export function pushData(categoryID,date,amount) {
 		})
 		.then((data) => {
 			console.log("Success:", data);
-			// Xử lý dữ liệu trả về từ server nếu cần
 		})
 		.catch((error) => {
 			console.error("Error:", error);
 		});
+}
+
+export function pullTransaction(){
+	fetch(URL_SEARCH)
+	.then(response => response.json())
+	.then(data =>{
+		console.log(data);
+	})
+	.catch(error =>{
+		console.error("Error:", error);
+	})
 }
