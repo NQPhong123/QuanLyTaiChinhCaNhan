@@ -47,7 +47,6 @@ public class UserDao {
 				}
 
 			} catch (SQLException e) {
-				e.getStackTrace();
 				System.out.println(e.getMessage());
 			}
 		}
@@ -70,7 +69,7 @@ public class UserDao {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.out.println(e.getMessage());
         }
 
         return user;

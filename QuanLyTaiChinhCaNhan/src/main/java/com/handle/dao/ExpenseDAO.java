@@ -29,7 +29,7 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 				expenses.add(expense);
 			}
 		} catch (SQLException e) {
-			e.getStackTrace();
+			
 			System.out.println(e.getMessage());
 		}
 		return expenses;
@@ -53,7 +53,7 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 				expenses.add(expense);
 			}
 		} catch (SQLException e) {
-			e.getStackTrace();
+			
 			System.out.println(e.getMessage());
 		}
 		return expenses;
@@ -77,7 +77,7 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 				expenses.add(expense);
 			}
 		} catch (SQLException e) {
-			e.getStackTrace();
+			
 			System.out.println(e.getMessage());
 		}
 		return expenses;
@@ -100,7 +100,7 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 					expenses.add(expense);
 				}
 			} catch (SQLException e) {
-				e.getStackTrace();
+				
 				System.out.println(e.getMessage());
 			}
 		 return expenses;

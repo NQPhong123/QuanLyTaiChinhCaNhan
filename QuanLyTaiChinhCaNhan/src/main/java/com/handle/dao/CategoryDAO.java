@@ -25,7 +25,7 @@ public class CategoryDAO {
 				categories.add(category);
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getStackTrace());
+			System.out.println(e.getMessage());
 		}
 		return categories;
 	}
