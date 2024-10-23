@@ -31,28 +31,12 @@ searchButton.htmlContent = `<div class="search-header">
 
 <div class="search-form">
 	<div class="category-wrapper">
-	    <button id="choose-category-btn-left">
+	    <button id="choose-category-btn-left" onclick="selectSearchCategoryButton.openButton()">
 	      <span>CHỌN THỂ LOẠI</span>
 	      <i class="fa-regular fa-greater-than"></i>
 	    </button>
 	    
-	    <div class="category-selector">
-	      <div class="header">
-	        <span>Select category</span>
-	      </div>
-	
-	      <div class="tabs">
-	        <button class="tab active">DEBT/LOAN</button>
-	        <button class="tab">EXPENSE</button>
-	        <button class="tab">INCOME</button>
-	      </div>
-	
-	      <ul class="category-list">
-		  <!-- danh sách thể loại sẽ được render động-->
-	      </ul>
-	
-	    </div>    
-	</div>
+
 	
 	<div class="category-wrapper-right">
 	    <button id="btn-choose-date">
@@ -108,6 +92,31 @@ addTransaction.idName = "transactionForm";
 
 
 
+const selectSearchCategoryButton = new Button();
+selectSearchCategoryButton.htmlContent = `<div class="select-category-container">
+        <div class="modal-header">
+            <span>Select category</span>
+            <button class="close-btn" onclick="selectSearchCategoryButton.closeButton()">X</button>
+        </div>
+        <div class="tabs">
+            <button class="tab active expense-tab">EXPENSE</button>
+            <button class="tab income-tab">INCOME</button>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+        </div>
+
+        <!-- Expense Category List -->
+        <div class="category-list expense-list">
+   			<!-- danh sách được render tự động -->
+        </div>
+
+        <!-- Income Category List -->
+        <div class="category-list income-list hidden">
+			<!-- danh sách được render tự động -->
+        </div>
+   </div> `;
+selectSearchCategoryButton.idName = "form-select-category"
 import { fetchCategories } from "./api/CategoryApi.js";
 import { pushData } from "./api/SearchApi.js";
 
@@ -115,7 +124,7 @@ import { pushData } from "./api/SearchApi.js";
 async function getCategories() {
 	try {
 		const categories = await fetchCategories();
-		
+		console.log(categories);
 		return categories;
 	} catch (error) {
 		console.error("Failed to fetch categories:", error);
@@ -123,25 +132,37 @@ async function getCategories() {
 }
 // Hàm format số tiền
 function formatCurrency(amount) {
-    return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VND';
+	return amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VND';
 }
 // hàm tạo ra dánh sách thể loại
 // async và await là để chờ hàm có await thực hiện xong thì nó mới bắt đầu thực hiện để đồng bộ dữ liệu
 async function renderCategory() {
-	const categoryListElement = document.querySelector(".category-list");
-	if (categoryListElement) {
+
+	
 		const categories = await getCategories();
-		let li = "";
+		const expenseList = document.querySelector('.expense-list');
+		const incomeList = document.querySelector('.income-list');
+		console.log(expenseList);
+		console.log(incomeList);
+		let expenseContent = '';
+		let incomeContent = '';
 		if (Array.isArray(categories)) {
 			categories.forEach((category) => {
-				li += `<li class="category-item">
-				  <img src="image/${category.urlimage}" alt="${category.categoryName}"> ${category.categoryName}
-				</li>`;
+				if (category.type === 'Expense') {
+					expenseContent += `<div class="category" id="${category.categoryID}"}>
+						<img src="image/${category.urlimage}" alt="${category.categoryName}" loading="lazy">
+					    <span>${category.categoryName}</span>
+					</div>`
+				} else {
+					incomeContent += `<div class="category" id="${category.categoryID}"}>
+											<img src="image/${category.urlimage}" alt="${category.categoryName}" loading="lazy">
+										    <span>${category.categoryName}</span>
+										</div>`
+				}
 			});
-		} else {
-			console.error("Expected categories to be an array, but got:", categories);
-		}
-		categoryListElement.innerHTML = li;
+			expenseList.innerHTML += expenseContent;
+			incomeList.innerHTML += incomeContent;
+			handleCategoryClick();
 	}
 }
 
@@ -157,17 +178,17 @@ function getDataForSearch() {
 		inputDate.addEventListener("change", (event) => {
 			selectedDate = event.target.value; // Lấy giá trị ngày đã chọn
 			console.log(selectedDate);
-			pushData(selectedCategoryID,selectedDate,selectedAmount);
+			pushData(selectedCategoryID, selectedDate, selectedAmount);
 		});
 	}
-	if(amount){
-		amount.addEventListener("change", (event)=>{
+	if (amount) {
+		amount.addEventListener("change", (event) => {
 			selectedAmount = event.target.value;
 			console.log(selectedAmount);
-			pushData(selectedCategoryID,selectedDate,selectedAmount);
+			pushData(selectedCategoryID, selectedDate, selectedAmount);
 		})
 	}
-	
+
 }
 
 
@@ -178,11 +199,81 @@ searchButton.openButton = function() {
 	modal.setAttribute("id", this.idName);
 	modal.innerHTML = this.htmlContent;
 	document.querySelector('nav').appendChild(modal);
-	renderCategory();
+
 	getDataForSearch();
 };
+
+
+
+
+
+function clickExpenseTab() {
+	const expenseTab = document.querySelector('.expense-tab');
+	const incomeTab = document.querySelector('.income-tab');
+	const expenseList = document.querySelector('.expense-list');
+	const incomeList = document.querySelector('.income-list');
+	expenseTab.addEventListener('click', function() {
+		expenseTab.classList.add('active');
+		incomeTab.classList.remove('active');
+		expenseList.classList.remove('hidden');
+		incomeList.classList.add('hidden');
+	});
+}
+function clickIncomeTab() {
+	const expenseTab = document.querySelector('.expense-tab');
+	const incomeTab = document.querySelector('.income-tab');
+	const expenseList = document.querySelector('.expense-list');
+	const incomeList = document.querySelector('.income-list');
+	incomeTab.addEventListener('click', function() {
+		incomeTab.classList.add('active');
+		expenseTab.classList.remove('active');
+		incomeList.classList.remove('hidden');
+		expenseList.classList.add('hidden');
+	});
+}
+function handleCategoryClick() {
+	const categories = document.querySelectorAll(".category");
+
+	categories.forEach((category) => {
+		category.addEventListener("click", function() {
+			// Remove the selected class and checkmark from all categories
+			categories.forEach((cat) => {
+				cat.classList.remove("selected");
+				const checkmark = cat.querySelector(".checkmark");
+				if (checkmark) {
+					cat.removeChild(checkmark);
+				}
+			});
+
+			// Add the selected class to the clicked category
+			this.classList.add("selected");
+			const span = document.createElement("span");
+			span.className = "checkmark";
+			span.textContent = "✔";
+			this.appendChild(span);
+
+			// Print the selected category's name to the console
+			const selectedCategoryName = this.querySelector("span").innerText;
+			console.log("Selected Category:", selectedCategoryName);
+		});
+	});
+}
+selectSearchCategoryButton.openButton = function() {
+	this.isOpen = true;
+	const modal = document.createElement("div");
+	modal.setAttribute("id", this.idName);
+	modal.innerHTML = this.htmlContent;
+	document.body.appendChild(modal);
+	renderCategory();
+	clickExpenseTab();
+	clickIncomeTab();
+};
+
+
+
 
 
 // đưa 2 object này thành global vì sử dụng type = module
 window.addTransaction = addTransaction;
 window.searchButton = searchButton;
+window.selectSearchCategoryButton = selectSearchCategoryButton;
