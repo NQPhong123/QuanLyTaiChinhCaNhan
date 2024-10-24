@@ -1,4 +1,9 @@
 // lớp Button tạo nút
+import { fetchCategories } from "./api/CategoryApi.js";
+import { pushData } from "./api/SearchApi.js";
+
+
+
 class Button {
 	constructor(htmlContent, idName) {
 		this.htmlContent = htmlContent;
@@ -65,13 +70,18 @@ addTransaction.htmlContent = `
 
             <label for="TypeOfTransaction">Ví</label>
             <select id="TypeOfTransaction" >
-                <option value="expense">Chi tiêu</option>
+				<option  selected>Loại</option>
+                <option value="expense" >Chi tiêu</option>
 				<option value="income">Thu nhập</option>
             </select>
+			
+			
 
             <label for="Category">Nhóm</label>
             <select id="Category">
-                <option>Chọn nhóm</option>
+                <option selected>Chọn nhóm</option>
+				
+				
             </select>
 
             <label for="amount">Số tiền</label>
@@ -91,6 +101,46 @@ addTransaction.htmlContent = `
 addTransaction.idName = "transactionForm";
 
 
+document.addEventListener('DOMContentLoaded', function () {
+	const categories = {
+	            expense: ["Ăn uống", "Di chuyển", "Giải trí", "Hóa đơn"],
+	            income: ["Lương", "Tiền thưởng", "Đầu tư", "Khác"]
+	        };
+
+	    // Lắng nghe sự thay đổi của dropdown TypeOfTransaction
+		addTransaction.openButton = function() {
+		    this.isOpen = true;
+		    const modal = document.createElement("div");
+		    modal.setAttribute("id", this.idName);
+		    modal.innerHTML = this.htmlContent;
+		    document.body.appendChild(modal);
+	
+		    // Gắn sự kiện sau khi phần tử đã được tạo
+		    const typeOfTransaction = document.getElementById("TypeOfTransaction");
+		    if (typeOfTransaction) {
+		        typeOfTransaction.addEventListener("change", function() {
+		            const selectedType = this.value;
+		            const categorySelect = document.getElementById("Category");
+
+		            // Xóa tất cả các tùy chọn hiện tại trong danh sách nhóm
+		            categorySelect.innerHTML = '<option selected>Chọn nhóm</option>';
+
+		            // Nếu người dùng chọn một loại giao dịch hợp lệ (expense hoặc income)
+		            if (categories[selectedType]) {
+		                categories[selectedType].forEach(function(category) {
+		                    const option = document.createElement("option");
+		                    option.value = category;
+		                    option.textContent = category;
+		                    categorySelect.appendChild(option);
+		                });
+		            }
+		        });
+		    } else {
+		        console.error("Element with ID 'TypeOfTransaction' not found!");
+		    }
+		};
+	
+		});
 
 const selectSearchCategoryButton = new Button();
 selectSearchCategoryButton.htmlContent = `<div class="select-category-container">
@@ -117,8 +167,8 @@ selectSearchCategoryButton.htmlContent = `<div class="select-category-container"
         </div>
    </div> `;
 selectSearchCategoryButton.idName = "form-select-category"
-import { fetchCategories } from "./api/CategoryApi.js";
-import { pushData } from "./api/SearchApi.js";
+
+
 
 // hàm xử lý thể loại được lấy từ database tạo ra các thẻ li tương ứng
 async function getCategories() {
@@ -203,10 +253,6 @@ searchButton.openButton = function() {
 	getDataForSearch();
 };
 
-
-
-
-
 function clickExpenseTab() {
 	const expenseTab = document.querySelector('.expense-tab');
 	const incomeTab = document.querySelector('.income-tab');
@@ -231,6 +277,9 @@ function clickIncomeTab() {
 		expenseList.classList.add('hidden');
 	});
 }
+
+
+
 function handleCategoryClick() {
 	const categories = document.querySelectorAll(".category");
 
