@@ -10,6 +10,7 @@
 <script type="module" src="assets/js/api/CategoryApi.js"></script>  
 <script type="module" src="assets/js/api/SearchApi.js"></script>
 <script type="module" src="assets/js/button.js "></script>
+<script type="module" src="assets/js/SearchButton.js "></script>
 
 </head>
 <body>
