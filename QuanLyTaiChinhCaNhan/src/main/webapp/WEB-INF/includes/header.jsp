@@ -11,7 +11,7 @@
 <script type="module" src="assets/js/api/SearchApi.js"></script>
 <script type="module" src="assets/js/button.js "></script>
 <script type="module" src="assets/js/SearchButton.js "></script>
-
+<script type="module" src="assets/js/AddTransactionButton.js "></script>
 </head>
 <body>
 	<nav>
