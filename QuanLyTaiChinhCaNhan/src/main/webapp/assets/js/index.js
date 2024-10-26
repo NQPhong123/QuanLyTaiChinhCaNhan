@@ -51,3 +51,9 @@ transactions.forEach(transaction => {
 		});
 	});
 });
+
+
+window.addEventListener("load", () => {
+      document.querySelector(".loading-screen").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    });

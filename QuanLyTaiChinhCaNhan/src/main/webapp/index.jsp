@@ -22,6 +22,10 @@ if (emailUser == null) {
 
 </head>
 <body>
+	<div class="loading-screen">
+		<div class="spinner"></div>
+	</div>
+
 	<%@ include file="/WEB-INF/includes/header.jsp"%>
 	<div class="content">
 		<div class="transaction-content">
@@ -143,7 +147,7 @@ if (emailUser == null) {
 
 
 	<script type="text/javascript" src="assets/js/index.js"></script>
-	
+
 
 </body>
 
