@@ -190,10 +190,11 @@ h3 {
     text-align: center;
 }
 
-label {
+.label {
     display: block;
     margin-bottom: 5px;
 }
+
 
 input, select {
     width: 100%;
@@ -202,6 +203,7 @@ input, select {
     border-radius: 5px;
     margin-bottom: 10px;
 }
+	
 
 /* Button styling */
 button {

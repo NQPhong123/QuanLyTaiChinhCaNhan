@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 // Đối tượng kết nối cơ sở dữ liệu
 public class ConnectDB {
-	private static final String URL = "jdbc:mysql://localhost:3307/quanlychitieu";
+	private static final String URL = "jdbc:mysql://localhost:3306/quanlychitieu";
 	private static final String USER = "root";
 	private static final String PASSWORD = "";
 
