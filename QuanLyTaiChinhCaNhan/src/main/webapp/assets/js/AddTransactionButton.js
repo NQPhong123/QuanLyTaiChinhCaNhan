@@ -35,18 +35,9 @@ addTransaction.htmlContent = `
     </div>`;
 addTransaction.idName = "transactionForm";
 
-async function getCategories() {
-    try {
-        const categories = await fetchCategories();
-        console.log(categories);
-        return categories;
-    } catch (error) {
-        console.error("Failed to fetch categories:", error);
-    }
-}
 
 async function renderCategory() {
-    const categories = await getCategories();
+    const categories = await fetchCategories();;
     const expenseList = document.querySelector('.expense-list');
     const incomeList = document.querySelector('.income-list');
     let expenseContent = '<option selected>Chọn nhóm</option>';
