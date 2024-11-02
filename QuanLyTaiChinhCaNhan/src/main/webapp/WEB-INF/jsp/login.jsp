@@ -30,11 +30,11 @@
     }
 %>
             <div class="social-login">
-                <button class="google">Connect with Google</button>
+             <!--    <button class="google">Connect with Google</button>
                 <button class="facebook">Connect with Facebook</button>
-                <button class="apple">Sign in with Apple</button>
+                <button class="apple">Sign in with Apple</button> -->
             </div>
-            <div class="divider">or</div>
+          <!--   <div class="divider">or</div> -->
             <form class="login-form" action="LoginServlet" method="post">
                 <!-- Email Input -->
                 <input type="email" name="email" placeholder="Email" value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>" required>
@@ -58,7 +58,7 @@
                     }
                 %>
 
-                <a href="#" class="forgot-password">Forgot Password?</a>
+              <!--   <a href="#" class="forgot-password">Forgot Password?</a> -->
                 <button type="submit" class="login-button">LOGIN</button>
             </form>
             <%
