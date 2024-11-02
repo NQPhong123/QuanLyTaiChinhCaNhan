@@ -40,6 +40,7 @@ div.transaction-content{
 	gap: 20px;
 }
 
+
 .header-contain {
 	flex-direction: row;
 	justify-content: space-around;
@@ -60,7 +61,10 @@ div.transaction-content{
 	color: #666;
 	display: flex;
 	justify-content: space-between;
+	
 }
+
+
 
 .balance {
 	font-size: 24px;
@@ -90,15 +94,14 @@ div.transaction-content{
 .transaction-day {
 	margin-bottom: 5px;
 	background-color: #fff;
-	
-	
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
 }
 
 .date {
 	font-size: 20px;
-	color: #333;
+	color: #ff8040;
 	margin-bottom: 10px;
+	font-weight: bold;
 }
 
 .day, .month {
@@ -112,6 +115,10 @@ div.transaction-content{
 	padding:10px;
 }
 
+div.transaction-day-head {
+	margin-top: 15px;
+	border-top: 2px solid #ccc;
+}
 .transaction {
 	display: flex;
 	align-items: center;
@@ -140,7 +147,8 @@ div.transaction-content{
 
 .category {
 	font-size: 16px;
-	color: #333;
+	color: #000000;
+    font-weight: bold;
 }
 
 .note {
