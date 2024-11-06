@@ -24,74 +24,73 @@ import com.handle.dao.IncomeDAO;
 import com.handle.model.Expense;
 import com.handle.model.Income;
 
-
 /**
  * Servlet implementation class SearchServlet
  */
-@WebServlet("/SearchServlet")
+@WebServlet("/SearchServlet") // Định nghĩa đường dẫn URL cho servlet này
 public class SearchServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; // ID phiên bản cho quá trình tuần tự hóa (serialization)
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			// Read the request body
-			StringBuilder sb = new StringBuilder();
-			BufferedReader reader = request.getReader();
+			// Đọc nội dung yêu cầu (request body)
+			StringBuilder sb = new StringBuilder(); // Tạo đối tượng StringBuilder để lưu trữ dữ liệu
+			BufferedReader reader = request.getReader(); // Lấy BufferedReader từ request để đọc dữ liệu
 			String line;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
+			while ((line = reader.readLine()) != null) { 
+				sb.append(line); 
 			}
-			String jsonString = sb.toString();
+			String jsonString = sb.toString(); // Chuyển dữ liệu thành chuỗi JSON
 
-			// Parse JSON input
-			ObjectMapper objectMapper = new ObjectMapper();
-			objectMapper.registerModule(new JavaTimeModule()); // hiểu được serialize của LocalDate
+			// Phân tích chuỗi JSON đầu vào
+			ObjectMapper objectMapper = new ObjectMapper(); // Tạo đối tượng ObjectMapper để xử lý JSON
+			objectMapper.registerModule(new JavaTimeModule()); // Đăng ký module JavaTime để hỗ trợ LocalDate
 
-			JsonNode jsonNode = objectMapper.readTree(jsonString);
-			Integer categoryID = jsonNode.get("categoryID").isNull() ? null : jsonNode.get("categoryID").asInt();
-			String dateString = jsonNode.get("date").isNull() ? null : jsonNode.get("date").asText();
-			Double amount = jsonNode.get("amount").isNull() ? null : jsonNode.get("amount").asDouble();
-			LocalDate date = null;
-			if (dateString != null) {
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // chuyển dateString sang
-																							// LocalDate
-				date = LocalDate.parse(dateString, formatter);
+			JsonNode jsonNode = objectMapper.readTree(jsonString); // Phân tích chuỗi JSON thành cây đối tượng
+			Integer categoryID = jsonNode.get("categoryID").isNull() ? null : jsonNode.get("categoryID").asInt(); // Lấy categoryID từ JSON, kiểm tra nếu nó null
+			String dateString = jsonNode.get("date").isNull() ? null : jsonNode.get("date").asText(); // Lấy chuỗi ngày (date) từ JSON
+			Double amount = jsonNode.get("amount").isNull() ? null : jsonNode.get("amount").asDouble(); // Lấy amount từ JSON
+			LocalDate date = null; // Khởi tạo biến date
+			if (dateString != null) { // Nếu dateString không null
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Định dạng chuỗi ngày thành kiểu LocalDate
+				date = LocalDate.parse(dateString, formatter); // Chuyển dateString thành LocalDate
 			}
-			Integer userID = null;
-			HttpSession session = request.getSession(false);
+			Integer userID = null; 
+			HttpSession session = request.getSession(false); // Lấy session hiện tại, nếu tồn tại
 			if (session != null) {
-				userID = (int) session.getAttribute("userID");
+				userID = (int) session.getAttribute("userID"); 
 			}
-			System.out.println(userID);
-			// Prepare response data
-			Map<String, Object> responseData = new HashMap<>();
-			responseData.put("status", "success");
-			responseData.put("message", "Dữ liệu đã được nhận");
-			responseData.put("categoryID", categoryID);
-			responseData.put("date", dateString);
-			responseData.put("amount", amount);
+			System.out.println(userID); // In ra userID để kiểm tra
 
-			// Lấy dữ liệu income và expense theo categoryID, date, amount
-			IncomeDAO incomes = new IncomeDAO();
+			// Chuẩn bị dữ liệu phản hồi
+			Map<String, Object> responseData = new HashMap<>(); // Tạo một Map để lưu trữ dữ liệu phản hồi
+			responseData.put("status", "success"); // Thêm trạng thái phản hồi
+			responseData.put("message", "Dữ liệu đã được nhận"); // Thêm tin nhắn xác nhận
+			responseData.put("categoryID", categoryID); // Thêm categoryID vào phản hồi
+			responseData.put("date", dateString); // Thêm ngày vào phản hồi
+			responseData.put("amount", amount); // Thêm số tiền vào phản hồi
+
+			// Lấy dữ liệu thu nhập (income) và chi tiêu (expense) theo categoryID, date, amount
+			IncomeDAO incomes = new IncomeDAO(); 
 			ExpenseDAO expenses = new ExpenseDAO();
-			List<Income> listIncome = incomes.searchTransactions(userID, categoryID, date, amount);
-			List<Expense> listExpense = expenses.searchTransactions(userID, categoryID, date, amount);
+			List<Income> listIncome = incomes.searchTransactions(userID, categoryID, date, amount); // Tìm kiếm giao dịch thu nhập
+			List<Expense> listExpense = expenses.searchTransactions(userID, categoryID, date, amount); // Tìm kiếm giao dịch chi tiêu
 
 			// Gộp tất cả vào một đối tượng phản hồi
-			responseData.put("incomeList", listIncome);
-			responseData.put("expenseList", listExpense);
+			responseData.put("incomeList", listIncome); // Thêm danh sách thu nhập vào phản hồi
+			responseData.put("expenseList", listExpense); // Thêm danh sách chi tiêu vào phản hồi
 
 			// Ghi dữ liệu phản hồi
-			PrintWriter out = response.getWriter();
-			out.print(objectMapper.writeValueAsString(responseData)); // Gửi tất cả trong một JSON
-			out.flush();
+			PrintWriter out = response.getWriter(); // Lấy đối tượng PrintWriter để ghi phản hồi
+			out.print(objectMapper.writeValueAsString(responseData)); // Ghi toàn bộ phản hồi dưới dạng JSON
+			out.flush(); // Đảm bảo tất cả dữ liệu được gửi đi
 		} catch (Exception e) {
-			response.setContentType("text");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter out = response.getWriter();
-			out.print(e.getMessage());
-			out.flush();
+			response.setContentType("text"); // Thiết lập kiểu nội dung là văn bản
+			response.setCharacterEncoding("UTF-8"); // Thiết lập mã hóa UTF-8 cho phản hồi
+			PrintWriter out = response.getWriter(); // Lấy đối tượng PrintWriter để ghi lỗi phản hồi
+			out.print(e.getMessage()); // Ghi thông báo lỗi
+			out.flush(); // Đảm bảo tất cả dữ liệu lỗi được gửi đi
 		}
 	}
 }

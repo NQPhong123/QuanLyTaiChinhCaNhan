@@ -26,10 +26,9 @@ public abstract class TransactionDAO<T> {
 		return excuteQuerySearch(query.toString());
 	}
 	
-	
-	
 	public abstract List<T> excuteQuerySearch(String query); // hàm thực thi các lệnh query đã được khai báo ở searchTransactions cho từng lớp con 
 	
+	public abstract Boolean InsertTransaction(int userID,int categoryID, LocalDate date, Double amount);
 	// Hàm lấy tên kiểu genneric vì khi <T> runtime sẽ không tồn tại thông tin về kiểu sẽ được khai báo ở các lớp con
 	@SuppressWarnings("unchecked")
 	private String getGenericTypeName() {

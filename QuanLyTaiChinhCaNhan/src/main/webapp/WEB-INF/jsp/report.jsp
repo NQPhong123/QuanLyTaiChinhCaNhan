@@ -1,5 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%
+String emailUser = (String) session.getAttribute("email");
+if (emailUser == null) {
+	response.sendRedirect("login");
+	return;
+}
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,8 +64,6 @@
 	font-weight: bold;
 	margin-top: 10px;
 }
-
-
 
 .chart-container {
 	display: flex;

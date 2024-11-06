@@ -92,7 +92,7 @@ if (emailUser == null) {
         String date = rs.getString("TransactionDate"); 
         String categoryName = rs.getString("CategoryName"); 
         double amount = rs.getDouble("Amount"); 
-        String imageUrl = rs.getString("URL_Image"); 
+        String imageUrl = "image/" + rs.getString("URL_Image"); 
         
         // Kiểm tra nếu ngày giao dịch đã thay đổi
         if (!date.equals(previousDate)) {
@@ -129,7 +129,7 @@ if (emailUser == null) {
 %>
         <div class="transaction">
             <div class="icon">
-                <img src="<%= imageUrl %>" />
+                <img src="<%=imageUrl %>" />
             </div>
             <div class="details">
                 <div class="category"><%= categoryName %></div>

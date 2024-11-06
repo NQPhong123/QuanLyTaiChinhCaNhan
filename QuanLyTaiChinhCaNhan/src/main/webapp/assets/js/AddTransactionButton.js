@@ -38,7 +38,6 @@ addTransaction.idName = "transactionForm";
 async function getCategories() {
     try {
         const categories = await fetchCategories();
-        console.log(categories);
         return categories;
     } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -86,36 +85,16 @@ function handleTransactionTypeChange() {
         }
     });
 }
-
-async function saveTransaction() {
+import {pushDataForSaveTran} from "./api/AddTransactionApi.js"; // lấy hàm pushDataForSaveTran từ file AddTransactionApi.js ra xài
+function saveTransaction() {
     const transactionType = document.getElementById("TypeOfTransaction").value;
-    const category = transactionType === "expense" ? 
+    const categoryID = transactionType === "expense" ? 
         document.getElementById("expenseCategory").value : 
         document.getElementById("incomeCategory").value;
     const amount = document.getElementById("amount").value;
     const date = document.getElementById("date").value;
-    const note = document.getElementById("ghi-chu").value;
-
-    const response = await fetch("saveTransaction", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: new URLSearchParams({
-            type: transactionType,
-            category: category,
-            amount: amount,
-            date: date,
-            note: note
-        })
-    });
-
-    if (response.ok) {
-        alert("Giao dịch đã được lưu thành công!");
-        addTransaction.closeButton();
-    } else {
-        const errorText = await response.text();
-        console.error("Error: " + errorText);
-        alert("Lỗi khi lưu giao dịch! Chi tiết: " + errorText);
-    }
+    const decription = document.getElementById("ghi-chu").value;
+	pushDataForSaveTran(transactionType, categoryID, amount, date, decription);
 }
 
 addTransaction.openButton = function() {
