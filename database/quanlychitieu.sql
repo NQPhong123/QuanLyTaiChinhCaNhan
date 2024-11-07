@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Oct 22, 2024 at 09:56 AM
+-- Host: 127.0.0.1
+-- Generation Time: Nov 07, 2024 at 03:04 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,8 +64,8 @@ INSERT INTO `category` (`CategoryID`, `CategoryName`, `Type`, `URL_Image`) VALUE
 
 CREATE TABLE `expense` (
   `ExpenseID` int(11) NOT NULL,
-  `UserID` int(11) DEFAULT NULL,
-  `CategoryID` int(11) DEFAULT NULL,
+  `UserID` int(11) NOT NULL,
+  `CategoryID` int(11) NOT NULL,
   `Amount` decimal(10,2) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
   `Date` date NOT NULL
@@ -96,7 +96,11 @@ INSERT INTO `expense` (`ExpenseID`, `UserID`, `CategoryID`, `Amount`, `Descripti
 (18, 3, 10, 38.53, 'Dọn dẹp nhà cửa', '2024-10-18'),
 (19, 1, 11, 171.38, 'Đầu tư vào cổ phiếu', '2024-10-19'),
 (20, 2, 12, 207.49, 'Thành viên phòng gym', '2024-10-20'),
-(21, 3, 13, 258.56, 'Chi phí khác', '2024-10-21');
+(21, 3, 13, 258.56, 'Chi phí khác', '2024-10-21'),
+(22, 1, 5, 600.00, 'test', '2024-11-01'),
+(23, 1, 5, 1000.00, 'ok', '2024-11-05'),
+(27, 1, 6, 12345.00, '1254', '2024-11-10'),
+(32, 1, 6, 1000.00, '43', '2024-11-08');
 
 -- --------------------------------------------------------
 
@@ -106,11 +110,11 @@ INSERT INTO `expense` (`ExpenseID`, `UserID`, `CategoryID`, `Amount`, `Descripti
 
 CREATE TABLE `income` (
   `incomeID` int(11) NOT NULL,
-  `UserID` int(11) DEFAULT NULL,
-  `CategoryID` int(11) DEFAULT NULL,
+  `UserID` int(11) NOT NULL,
+  `CategoryID` int(11) NOT NULL,
   `Amount` decimal(10,2) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
-  `Date` date DEFAULT NULL
+  `Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -137,8 +141,28 @@ INSERT INTO `income` (`incomeID`, `UserID`, `CategoryID`, `Amount`, `Description
 (17, 2, 1, 3076.65, 'Phí tư vấn', '2024-10-17'),
 (18, 3, 2, 4545.62, 'Hoa hồng', '2024-10-18'),
 (19, 1, 3, 2184.47, 'Thu nhập từ kinh doanh phụ', '2024-10-19'),
-(20, 2, 4, 1805.54, 'Thưởng hàng tháng', '2024-10-20'),
-(21, 3, 1, 3890.40, 'Công việc bán thời gian', '2024-10-21');
+(22, 1, 5, 600.00, 'test', '2024-11-01'),
+(26, 1, 1, 200.00, 'test', '2024-11-19'),
+(27, 1, 1, 200.00, '100', '2024-11-09'),
+(28, 1, 1, 100.00, '123', '2024-11-20'),
+(29, 1, 1, 100.00, '123', '2024-11-20'),
+(30, 1, 1, 100.00, '123', '2024-11-20'),
+(31, 1, 1, 100.00, '123', '2024-11-20'),
+(32, 1, 1, 100.00, '123', '2024-11-20'),
+(33, 1, 1, 100.00, '123', '2024-11-20'),
+(34, 1, 1, 1000.00, '123', '2024-11-14'),
+(35, 1, 4, 0.00, '', '2024-11-14'),
+(36, 1, 4, 0.00, '', '2024-11-14'),
+(37, 1, 4, 0.00, 'test123', '2024-11-20'),
+(38, 1, 4, 0.00, 'test123', '2024-11-20'),
+(40, 1, 1, 1000.00, '43', '2024-11-08'),
+(41, 1, 2, 1000.00, '43', '2024-11-08'),
+(43, 1, 2, 100.00, '', '2024-11-01'),
+(44, 1, 2, 100.00, 'test nhe', '2024-11-01'),
+(45, 1, 2, 100.00, 'test nhe', '2024-09-01'),
+(46, 1, 2, 100.00, 'test nhe', '2024-09-01'),
+(47, 1, 2, 1000.00, '1000', '2024-11-13'),
+(48, 1, 2, 1000.00, '1000', '2024-11-14');
 
 -- --------------------------------------------------------
 
@@ -211,7 +235,13 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `expense`
 --
 ALTER TABLE `expense`
-  MODIFY `ExpenseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `ExpenseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT for table `income`
+--
+ALTER TABLE `income`
+  MODIFY `incomeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `user`
