@@ -189,6 +189,16 @@ div.transaction-day-head {
     padding: 20px;
     border-radius: 10px;
 }
+
+#transactionForm .error-message{
+	width: 100%;
+	margin:0;
+	padding:0;
+}
+
+#transactionForm .save-btn, .cancel-btn{
+	width:100%;
+}
 .transaction-btn-container {
     display: flex;
 }
@@ -225,19 +235,6 @@ button[disabled] {
     cursor: not-allowed;
 }
 
-button.save-btn {
-    background-color: #ccc;
-    cursor: not-allowed;
-    flex-basis: 48%; /* Ensures the buttons take equal width */
-}
-
-button.cancel-btn {
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    flex-basis: 48%; /* Ensures the buttons take equal width */
-}
-
 
  /* Toàn bộ màn hình */
     .loading-screen {
@@ -268,4 +265,41 @@ button.cancel-btn {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+
+/* Định dạng cho các thông báo lỗi */
+.error-message {
+    display: none;
+    color: red;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+/* Căn chỉnh các label và input */
+
+input, select {
+    width: 100%; /* Để các trường input và select chiếm toàn bộ chiều rộng của khung chứa */
+    padding: 8px; /* Khoảng đệm bên trong input */
+    box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước của input */
+}
+
+/* Định dạng nút Lưu và Hủy */
+
+.save-btn, .cancel-btn {
+    font-size: 1em;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.save-btn {
+    background-color: #4CAF50; /* Màu nền xanh cho nút Lưu */
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #f44336; /* Màu nền đỏ cho nút Hủy */
+    color: white;
+}
 
