@@ -40,12 +40,8 @@ searchButton.htmlContent = `<div class="search-header">
 
 
   <div class="field amount">
-    <label for="amount">Số tiền</label>
-    <input type="range" id="amountSearch" min="10" max="7000" value="10" />
-    <div class="range-values">
-      <span>10</span>
-      <span>7000</span>
-    </div>
+  <div id="slider"></div>
+  <p>Selected Range: <span id="selectedRange"></span></p>
   </div>
 </div>`;
 searchButton.idName = "search-container";
@@ -83,6 +79,7 @@ import { pushData } from "./api/SearchApi.js";
 
 // hàm tạo ra dánh sách thể loại
 // async và await là để chờ hàm có await thực hiện xong thì nó mới bắt đầu thực hiện để đồng bộ dữ liệu
+
 async function renderCategory() {
 	const categories = await fetchCategories();
 	const expenseList = document.querySelector('.expense-list');
@@ -168,27 +165,26 @@ function getDataForSearch() {
 		const yearSelect = document.getElementById("year");
 		const monthSelect = document.getElementById("month");
 		const daySelect = document.getElementById("day");
-		const amountSelect = document.getElementById("amountSearch");
 		const year = yearSelect.value || null;
 		const month = monthSelect.value || null;
 		const day = daySelect.value || null;
-		const amount = amountSelect.value || null;
+		const amountRangeArr = slider.noUiSlider.get(); // lấy khoảng giá trị của amount range trả về một mảng[min,max]
+		
 		const date = {
-			year: year,
-			month: month,
-			day: day
+			year:year,
+			month:month,
+			day:day
 		}
-
-		
-
+		const amountRange = {
+			min:parseInt(amountRangeArr[0]),
+			max:parseInt(amountRangeArr[1])
+		}
 		const categoryID = document.querySelector("#choose-category-btn-left span").getAttribute('id');
-		
-		pushData(categoryID, date, amount);
-		console.log("year" + year);
-		console.log("month" + month);
-		console.log("day" + day);
-		console.log("amount" + amount);
-		console.log("categoryID" + categoryID);
+
+		pushData(categoryID, date, amountRange);
+		console.log("categoryID " + categoryID);
+		console.log("DATE " + date);
+		console.log("Current slider value:", amountRange);
 	})
 
 
@@ -215,6 +211,24 @@ function handleClickOnYearMonth() {
 		}
 	});
 }
+
+function nouiSliders(){
+	const slider = document.getElementById('slider');
+	noUiSlider.create(slider, {
+	  start: [20, 80],        // Giá trị bắt đầu cho hai tay cầm
+	  connect: true,          // Đoạn giữa hai tay cầm sẽ được tô màu
+	  range: {
+	    'min': 0,
+	    'max': 100
+	  }
+	});
+
+	// Cập nhật giá trị hiển thị khi người dùng kéo thanh trượt
+	const selectedRange = document.getElementById('selectedRange');
+	slider.noUiSlider.on('update', function (values) {
+	  selectedRange.textContent = `${parseInt(values[0])} - ${parseInt(values[1])}`;
+	});
+}
 // overide lại phương thức để thực thi 2 hàm riêng của searchButton
 searchButton.openButton = function() {
 	this.isOpen = true;
@@ -225,6 +239,7 @@ searchButton.openButton = function() {
 	getDataForSearch();
 	renderDateTime();
 	handleClickOnYearMonth();
+	nouiSliders();
 
 };
 

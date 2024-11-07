@@ -7,6 +7,9 @@
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 <link rel="stylesheet" href="assets/css/header.css">
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css" rel="stylesheet"> <!-- thư viện tạo thanh range tìm kiếm -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script><!-- thư viện tạo thanh range tìm kiếm -->
+
 <script type="module" src="assets/js/api/CategoryApi.js"></script>  
 <script type="module" src="assets/js/api/SearchApi.js"></script>
 <script type="module" src="assets/js/button.js "></script>

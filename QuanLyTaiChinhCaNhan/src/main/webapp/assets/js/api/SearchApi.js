@@ -1,11 +1,11 @@
 
 const URL_SEARCH = "SearchServlet"; 
 // hàm đẩy dữ liệu lên để tìm kiếm
-export function pushData(categoryID, date, amount) {
+export function pushData(categoryID, date, amountRange) {
 	const searchData = {
 		categoryID: categoryID,
 		date: date,
-		amount: amount
+		amountRange: amountRange
 	};
 
 	fetch(URL_SEARCH, {
@@ -22,7 +22,11 @@ export function pushData(categoryID, date, amount) {
 			return response.json();
 		})
 		.then((data) => {
-			console.log("Success:", data);
+			if(data.status==="success"){
+				console.log("Success:", data);
+			}else{
+				console.error("loi",data.message);
+			}
 		})
 		.catch((error) => {
 			console.error("Error:", error);

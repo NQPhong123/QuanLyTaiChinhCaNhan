@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.handle.model.AmountRange;
 import com.handle.model.FlexibleDate;
 
 // <T> dùng generic để tạo template cho nhiều đối tượng sử dụng
@@ -15,21 +16,21 @@ public abstract class TransactionDAO<T> {
 	public abstract List<T> getAllByAmount(double amount);// hàm lấy tất cả Transaction theo amount
 
 	// hàm tìm kiếm giao dịch theo từng điều kiện
-	public List<T> searchTransactions(Integer userID, Integer categoryID, FlexibleDate date, Double amount) {
+	public List<T> searchTransactions(Integer userID, Integer categoryID, FlexibleDate date, AmountRange amountRange) {
 		StringBuilder query = new StringBuilder("SELECT *  FROM " + getGenericTypeName() + " WHERE UserID = " + userID);
 		if (categoryID != null) {
 			query.append(" AND CategoryID=").append(categoryID);
 		}
 		if (date.isExactDate()) {
-			query.append(" AND Date='").append(date + "'");
+			query.append(" AND Date='").append(date.toLocalDate() + "'");
 		} else if (date.isYearMonth()) {
 			query.append(" AND YEAR(date)='").append(date.getYear() + "'").append("AND MONTH(date)='")
 					.append(date.getMonth() + "'");
 		} else if (date.isYearOnly()) {
 			query.append(" AND YEAR(date)='").append(date.getYear() + "'");
 		}
-		if (amount != null) {
-			query.append(" AND amount BETWEEN 0.0 AND ").append(amount);
+		if (amountRange != null) {
+			query.append(" AND amount BETWEEN ").append(amountRange.getMin()).append(" AND " + amountRange.getMax());
 		}
 		return excuteQuerySearch(query.toString());
 	}
