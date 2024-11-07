@@ -11,26 +11,31 @@ import java.util.List;
 import com.handle.model.Expense;
 
 public class ExpenseDAO extends TransactionDAO<Expense> {
+
 	@Override
-	public  List<Expense> getAllByUserID(int userID) {
+	public List<Expense> getAllByUserID(int userID) {
 		List<Expense> expenses = new ArrayList<>();
 		String query = "SELECT * FROM expense WHERE UserID = ?";
-		try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
-			ptst.setInt(1,userID);
-			ResultSet rs = ptst.executeQuery();
-			while(rs.next()) {
-				int exID = rs.getInt("ExpenseID");
-				int uID = rs.getInt("UserID");
-				int ceID = rs.getInt("categoryID");
-				double amt = rs.getDouble("amount");
-				String deciption = rs.getString("description");
-				LocalDate date = rs.getDate("Date").toLocalDate();
-				Expense expense = new Expense(exID,uID,ceID,amt,deciption,date);
-				expenses.add(expense);
+
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ptst.setInt(1, userID);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int exID = rs.getInt("ExpenseID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("Date").toLocalDate();
+
+					Expense expense = new Expense(exID, uID, ceID, amt, description, date);
+					expenses.add(expense);
+				}
 			}
 		} catch (SQLException e) {
-			
-			System.out.println(e.getMessage());
+			System.out.println("Error retrieving expenses by UserID: " + e.getMessage());
 		}
 		return expenses;
 	}
@@ -39,22 +44,26 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 	public List<Expense> getAllByCategoryID(int categoryID) {
 		List<Expense> expenses = new ArrayList<>();
 		String query = "SELECT * FROM expense WHERE CategoryID = ?";
-		try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
-			ptst.setInt(1,categoryID);
-			ResultSet rs = ptst.executeQuery();
-			while(rs.next()) {
-				int exID = rs.getInt("ExpenseID");
-				int uID = rs.getInt("UserID");
-				int ceID = rs.getInt("categoryID");
-				double amt = rs.getDouble("amount");
-				String deciption = rs.getString("description");
-				LocalDate date = rs.getDate("Date").toLocalDate();
-				Expense expense = new Expense(exID,uID,ceID,amt,deciption,date);
-				expenses.add(expense);
+
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ptst.setInt(1, categoryID);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int exID = rs.getInt("ExpenseID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("Date").toLocalDate();
+
+					Expense expense = new Expense(exID, uID, ceID, amt, description, date);
+					expenses.add(expense);
+				}
 			}
 		} catch (SQLException e) {
-			
-			System.out.println(e.getMessage());
+			System.out.println("Error retrieving expenses by CategoryID: " + e.getMessage());
 		}
 		return expenses;
 	}
@@ -63,59 +72,81 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 	public List<Expense> getAllByAmount(double amount) {
 		List<Expense> expenses = new ArrayList<>();
 		String query = "SELECT * FROM expense WHERE Amount = ?";
-		try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
-			ptst.setDouble(1,amount);
-			ResultSet rs = ptst.executeQuery();
-			while(rs.next()) {
-				int exID = rs.getInt("ExpenseID");
-				int uID = rs.getInt("UserID");
-				int ceID = rs.getInt("categoryID");
-				double amt = rs.getDouble("amount");
-				String deciption = rs.getString("description");
-				LocalDate date = rs.getDate("Date").toLocalDate();
-				Expense expense = new Expense(exID,uID,ceID,amt,deciption,date);
-				expenses.add(expense);
+
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ptst.setDouble(1, amount);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int exID = rs.getInt("ExpenseID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("Date").toLocalDate();
+
+					Expense expense = new Expense(exID, uID, ceID, amt, description, date);
+					expenses.add(expense);
+				}
 			}
 		} catch (SQLException e) {
-			
-			System.out.println(e.getMessage());
+			System.out.println("Error retrieving expenses by Amount: " + e.getMessage());
 		}
 		return expenses;
 	}
 
 	@Override
-	public List<Expense> excuteQuerySearch(String query){
-		 System.out.println("Executing query: " + query);
-		 List<Expense> expenses = new ArrayList<>();
-		 try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
-				ResultSet rs = ptst.executeQuery();
-				while(rs.next()) {
-					int exID = rs.getInt("ExpenseID");
-					int uID = rs.getInt("UserID");
-					int ceID = rs.getInt("categoryID");
-					double amt = rs.getDouble("amount");
-					String deciption = rs.getString("description");
-					LocalDate date = rs.getDate("Date").toLocalDate();
-					Expense expense = new Expense(exID,uID,ceID,amt,deciption,date);
-					expenses.add(expense);
-				}
-			} catch (SQLException e) {
-				
-				System.out.println(e.getMessage());
-			}
-		 return expenses;
-	}
-	
-	
-	public static void main(String[] args) {
-    	ExpenseDAO expenseDAO = new ExpenseDAO();
-        // Tìm kiếm expense với categoryID = 1 và ngày giao dịch cụ thể
-        List<Expense> expensesWithDate = expenseDAO.searchTransactions(null,null, LocalDate.of(2024, 10, 1), null);
+	public List<Expense> excuteQuerySearch(String query) {
+		System.out.println("Executing query: " + query);
+		List<Expense> expenses = new ArrayList<>();
 
-        for (Expense expense : expensesWithDate) {
-            System.out.println(expense.toString());
-        }
-        System.out.println(expensesWithDate);
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ResultSet rs = ptst.executeQuery();
+
+			while (rs.next()) {
+				int exID = rs.getInt("ExpenseID");
+				int uID = rs.getInt("UserID");
+				int ceID = rs.getInt("categoryID");
+				double amt = rs.getDouble("amount");
+				String description = rs.getString("description");
+				LocalDate date = rs.getDate("Date").toLocalDate();
+
+				Expense expense = new Expense(exID, uID, ceID, amt, description, date);
+				expenses.add(expense);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error executing query search: " + e.getMessage());
+		}
+		return expenses;
+	}
+
+	@Override
+	public void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount, String description) throws SQLException {
+
+	    String query = "INSERT INTO EXPENSE(userID,categoryID,date,amount,description) VALUES(?,?,?,?,?)";
+	    try {
+	        Connection conn = ConnectDB.getInstance().getConnection();
+	        PreparedStatement ptst = conn.prepareStatement(query);
+	        ptst.setInt(1, userID);
+	        ptst.setInt(2, categoryID);
+	        ptst.setObject(3, date);
+	        ptst.setDouble(4, amount);
+	        ptst.setString(5, description);
+
+	        int rowInserted = ptst.executeUpdate();
+	        if (rowInserted > 0) {
+	            System.out.println("Dữ liệu đã được chèn thành công!");
+	        }
+	    } catch (SQLException e) {
+	        throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
+	    }
+	}
+
+
+	public static void main(String[] args) {
 
 	}
 }

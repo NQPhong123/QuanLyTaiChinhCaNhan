@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -20,7 +20,9 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.handle.dao.ConnectDB;
+import com.handle.dao.ExpenseDAO;
+import com.handle.dao.IncomeDAO;
+
 // file này dùng để xử lý dữ liệu từ user và lưu Transaction
 @WebServlet("/SaveTransaction")
 public class SaveTransactionServlet extends HttpServlet {
@@ -45,7 +47,7 @@ public class SaveTransactionServlet extends HttpServlet {
             int categoryID = jsonNode.get("categoryID").asInt();
             double amount = jsonNode.get("amount").asDouble();
             String dateString = jsonNode.get("date").asText();
-            String decription = jsonNode.get("decription").asText();
+            String description = jsonNode.get("decription").asText();
 			LocalDate date = null; // Khởi tạo biến date
 			if (dateString != null) { // Nếu dateString không null
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Định dạng chuỗi ngày thành kiểu LocalDate
@@ -56,28 +58,26 @@ public class SaveTransactionServlet extends HttpServlet {
 			if (session != null) {
 				userID = (int) session.getAttribute("userID"); 
 			}
-			System.out.println(userID); // In ra userID để kiểm tra
-			// Chuẩn bị dữ liệu phản hồi
-			Map<String, Object> responseData = new HashMap<>(); // Tạo một Map để lưu trữ dữ liệu phản hồi
-			responseData.put("status", "success"); // Thêm trạng thái phản hồi
-			responseData.put("message", "Dữ liệu đã được nhận"); // Thêm tin nhắn xác nhận
-			responseData.put("transactionType", transactionType);
-			responseData.put("categoryID", categoryID); // Thêm categoryID vào phản hồi
-			responseData.put("date", dateString); // Thêm ngày vào phản hồi
-			responseData.put("amount", amount); // Thêm số tiền vào phản hồi
-			responseData.put("decription", decription);
-			
-			// Ghi dữ liệu phản hồi
-			PrintWriter out = response.getWriter(); // Lấy đối tượng PrintWriter để ghi phản hồi
-			out.print(objectMapper.writeValueAsString(responseData)); // Ghi toàn bộ phản hồi dưới dạng JSON
-			out.flush(); // Đảm bảo tất cả dữ liệu được gửi đi
-        } catch (Exception e) {
-        	response.setContentType("text"); // Thiết lập kiểu nội dung là văn bản
-			response.setCharacterEncoding("UTF-8"); // Thiết lập mã hóa UTF-8 cho phản hồi
-			PrintWriter out = response.getWriter(); // Lấy đối tượng PrintWriter để ghi lỗi phản hồi
-			out.print(e.getMessage()); // Ghi thông báo lỗi
-			out.flush(); // Đảm bảo tất cả dữ liệu lỗi được gửi đi
+			if(transactionType.equals("expense")) {
+				ExpenseDAO expense = new ExpenseDAO();
+				expense.InsertTransaction(userID, categoryID, date, amount, description);
+			}else {
+				IncomeDAO income = new IncomeDAO();
+				income.InsertTransaction(userID, categoryID, date, amount, description);
+			}
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			out.write("{\"status\": \"success\"}");
+			out.flush();
 
+
+        } catch (Exception e) {
+        	System.out.println("SaveTransactionServlet" + e.getMessage());
+        	response.setContentType("application/json");
+        	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        	PrintWriter out = response.getWriter();
+        	out.write("{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}");
+        	out.flush();
         } 
     }
 }

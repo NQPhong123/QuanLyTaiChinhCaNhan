@@ -17,12 +17,16 @@ export function pushDataForSaveTran(transactionType, categoryID, amount, date, d
 	})
 	.then((response) =>{
 		if(!response.ok){
-			throw new Error("Addtransaction faile");
+			throw new Error("Addtransaction failed");
 		}
 		return response.json();
 	})
 	.then(data =>{
-		console.log("Add Tran Success", data);
+		if(data.status === "success"){
+			alert("lưu giao dịch thành công");
+		}else{
+			alert("lưu giao dịch thất bại" + data.message);
+		}
 	})
 	.catch((error) => {
 		console.error("Add Tran Error:", error);

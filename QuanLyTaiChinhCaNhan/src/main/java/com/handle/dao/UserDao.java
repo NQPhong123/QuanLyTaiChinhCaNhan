@@ -13,7 +13,7 @@ public class UserDao {
 
 	public boolean saveUser(User user) {
 		boolean status = false;
-		Connection conn = ConnectDB.getConection();
+		Connection conn = ConnectDB.getInstance().getConnection();
 		String encodePass = BCrypt.hashpw(user.getPassWord(), BCrypt.gensalt());
 		if (conn != null) {
 			try {
@@ -22,7 +22,7 @@ public class UserDao {
 				ptst.setString(1, user.getEmail());
 				ptst.setString(2, encodePass);
 				status = ptst.executeUpdate() > 0;
-				ConnectDB.closeConnection(conn);
+				
 			} catch (SQLException e) {
 				e.getStackTrace();
 				System.out.println(e.getMessage());
@@ -33,7 +33,7 @@ public class UserDao {
 
 	// Kiểm tra người dùng có tồn tại
 	public boolean checkUser(User user) {
-		Connection conn = ConnectDB.getConection();
+		Connection conn = ConnectDB.getInstance().getConnection();
 		boolean status = false;
 		if (conn != null) {
 			try {
@@ -58,10 +58,11 @@ public class UserDao {
         User user = new User();
         user.setEmail(email);
         user.setPassWord(passWord);
+        Connection conn = ConnectDB.getInstance().getConnection();
        if(checkUser(user)) {
-           try (Connection connection = ConnectDB.getConection()) {
+           try  {
                String query = "SELECT * FROM User WHERE email = ?";
-               PreparedStatement ptst = connection.prepareStatement(query);
+               PreparedStatement ptst = conn.prepareStatement(query);
                ptst.setString(1, email);
                ResultSet resultSet = ptst.executeQuery();
 

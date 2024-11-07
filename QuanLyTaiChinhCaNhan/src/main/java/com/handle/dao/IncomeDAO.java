@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.handle.model.Income;
 
 public class IncomeDAO extends TransactionDAO<Income> {
@@ -17,18 +16,21 @@ public class IncomeDAO extends TransactionDAO<Income> {
 	public List<Income> getAllByUserID(int userID) {
 		List<Income> incomes = new ArrayList<>();
 		String query = "SELECT * FROM income WHERE UserID = ?";
-		try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query)) {
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
 			ptst.setInt(1, userID);
-			ResultSet rs = ptst.executeQuery();
-			while (rs.next()) {
-				int incID = rs.getInt("IncomeID");
-				int uID = rs.getInt("UserID");
-				int ceID = rs.getInt("categoryID");
-				double amt = rs.getDouble("amount");
-				String description = rs.getString("description");
-				LocalDate date = rs.getDate("IncomeDate").toLocalDate();
-				Income income = new Income(incID, uID, ceID, amt, description, date);
-				incomes.add(income);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int incID = rs.getInt("IncomeID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("IncomeDate").toLocalDate();
+					Income income = new Income(incID, uID, ceID, amt, description, date);
+					incomes.add(income);
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -41,18 +43,21 @@ public class IncomeDAO extends TransactionDAO<Income> {
 	public List<Income> getAllByCategoryID(int categoryID) {
 		List<Income> incomes = new ArrayList<>();
 		String query = "SELECT * FROM income WHERE CategoryID = ?";
-		try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query)) {
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
 			ptst.setInt(1, categoryID);
-			ResultSet rs = ptst.executeQuery();
-			while (rs.next()) {
-				int incID = rs.getInt("IncomeID");
-				int uID = rs.getInt("UserID");
-				int ceID = rs.getInt("categoryID");
-				double amt = rs.getDouble("amount");
-				String description = rs.getString("description");
-				LocalDate date = rs.getDate("IncomeDate").toLocalDate();
-				Income income = new Income(incID, uID, ceID, amt, description, date);
-				incomes.add(income);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int incID = rs.getInt("IncomeID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("IncomeDate").toLocalDate();
+					Income income = new Income(incID, uID, ceID, amt, description, date);
+					incomes.add(income);
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -65,18 +70,21 @@ public class IncomeDAO extends TransactionDAO<Income> {
 	public List<Income> getAllByAmount(double amount) {
 		List<Income> incomes = new ArrayList<>();
 		String query = "SELECT * FROM income WHERE amount = ?";
-		try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query)) {
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
 			ptst.setDouble(1, amount);
-			ResultSet rs = ptst.executeQuery();
-			while (rs.next()) {
-				int incID = rs.getInt("IncomeID");
-				int uID = rs.getInt("UserID");
-				int ceID = rs.getInt("categoryID");
-				double amt = rs.getDouble("amount");
-				String description = rs.getString("description");
-				LocalDate date = rs.getDate("IncomeDate").toLocalDate();
-				Income income = new Income(incID, uID, ceID, amt, description, date);
-				incomes.add(income);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int incID = rs.getInt("IncomeID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("IncomeDate").toLocalDate();
+					Income income = new Income(incID, uID, ceID, amt, description, date);
+					incomes.add(income);
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -84,39 +92,67 @@ public class IncomeDAO extends TransactionDAO<Income> {
 		}
 		return incomes;
 	}
+
 	@Override
-	public List<Income> excuteQuerySearch(String query){
-		 System.out.println("Executing query: " + query);
-		 List<Income> incomes = new ArrayList<>();
-		 try (Connection conn = ConnectDB.getConection(); PreparedStatement ptst = conn.prepareStatement(query);) {
-				ResultSet rs = ptst.executeQuery();
-				while(rs.next()) {
+	public List<Income> excuteQuerySearch(String query) {
+		System.out.println("Executing query: " + query);
+		List<Income> incomes = new ArrayList<>();
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
 					int exID = rs.getInt("IncomeID");
 					int uID = rs.getInt("UserID");
 					int ceID = rs.getInt("categoryID");
 					double amt = rs.getDouble("amount");
-					String deciption = rs.getString("description");
+					String description = rs.getString("description");
 					LocalDate date = rs.getDate("Date").toLocalDate();
-					Income income = new Income(exID,uID,ceID,amt,deciption,date);
+					Income income = new Income(exID, uID, ceID, amt, description, date);
 					incomes.add(income);
 				}
-			} catch (SQLException e) {
-				e.getStackTrace();
-				System.out.println(e.getMessage());
 			}
-		 return incomes;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return incomes;
 	}
 	
+	@Override
+	public void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount, String description) throws SQLException {
+
+	    String query = "INSERT INTO income(userID,categoryID,date,amount,description) VALUES(?,?,?,?,?)";
+	    try {
+	        Connection conn = ConnectDB.getInstance().getConnection();
+	        PreparedStatement ptst = conn.prepareStatement(query);
+	        ptst.setInt(1, userID);
+	        ptst.setInt(2, categoryID);
+	        ptst.setObject(3, date);
+	        ptst.setDouble(4, amount);
+	        ptst.setString(5, description);
+
+	        int rowInserted = ptst.executeUpdate();
+	        if (rowInserted > 0) {
+	            System.out.println("Dữ liệu đã được chèn thành công!");
+	        }
+	    } catch (SQLException e) {
+	        throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
+	    }
+	}
+
 	public static void main(String[] args) {
-    	IncomeDAO incomeDAO = new IncomeDAO();
-        // Tìm kiếm expense với categoryID = 1 và ngày giao dịch cụ thể
-        List<Income> incomesWithDate = incomeDAO.searchTransactions(null,null, LocalDate.of(2024, 10, 1), null);
-
-        for (Income income : incomesWithDate) {
-            System.out.println(income.toString());
-        }
-        System.out.println(incomesWithDate);
-
+		IncomeDAO incomeDAO = new IncomeDAO();
+		int userID = 1;
+		int categoryID = 2;
+		String dateString = "2024-09-01";
+		LocalDate date = LocalDate.parse(dateString);
+		double amount = 100;
+		String description = "test nhe";
+		try {
+			incomeDAO.InsertTransaction(userID, categoryID, date, amount, description);
+		}catch(SQLException e) {
+			System.out.println(e);
+		}
 	}
-	
 }

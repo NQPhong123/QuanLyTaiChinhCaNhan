@@ -94,6 +94,7 @@ function saveTransaction() {
     const amount = document.getElementById("amount").value;
     const date = document.getElementById("date").value;
     const decription = document.getElementById("ghi-chu").value;
+	console.log(categoryID);
 	pushDataForSaveTran(transactionType, categoryID, amount, date, decription);
 }
 
