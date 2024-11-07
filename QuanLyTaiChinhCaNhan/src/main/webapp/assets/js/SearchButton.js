@@ -4,7 +4,7 @@ const searchButton = new Button();
 searchButton.htmlContent = `<div class="search-header">
   <button id="btn-close-form" onclick="searchButton.closeButton();"><i class="fa-solid fa-arrow-left-long"></i> </button>
   <h2>Tìm kiếm giao dịch</h2>
-  <button class="reset-button">Reset</button>
+  <button id="excuteSearch-button">Tìm kiếm</button>
 </div>
 
 <div class="search-form">
@@ -18,11 +18,25 @@ searchButton.htmlContent = `<div class="search-header">
 
 
 	
-	<div class="category-wrapper-right select-date">
-	    <button id="btn-choose-date">
-	        <input type="date" id="inputDateSearch" placeholder="CHỌN NGÀY">
-	    </button>
-	</div>
+		<div class="category-wrapper-right select-date">
+			<span>Chọn ngày</span>
+		    <div id="date-picker">
+		        <select id="year" class="date-select">
+		            <option value="" selected>Năm</option>
+		            <!-- JavaScript sẽ tự động tạo các tùy chọn năm -->
+		        </select>
+
+		        <select id="month" class="date-select">
+		            <option value="" selected>Tháng</option>
+		            <!-- JavaScript sẽ tự động tạo các tùy chọn tháng -->
+		        </select>
+
+		        <select id="day" class="date-select">
+		            <option value="" selected>Ngày</option>
+		            <!-- JavaScript sẽ tự động tạo các tùy chọn ngày dựa trên tháng và năm đã chọn -->
+		        </select>
+		    </div>
+		</div>
 
 
   <div class="field amount">
@@ -35,6 +49,8 @@ searchButton.htmlContent = `<div class="search-header">
   </div>
 </div>`;
 searchButton.idName = "search-container";
+
+
 
 const selectSearchCategoryButton = new Button();
 selectSearchCategoryButton.htmlContent = `<div class="select-category-container">
@@ -94,38 +110,110 @@ async function renderCategory() {
 	}
 }
 
+function renderDateTime() {
+	const yearSelect = document.getElementById("year");
+	const monthSelect = document.getElementById("month");
+	const daySelect = document.getElementById("day");
 
-let selectedDate = null;
-let selectedCategoryID = null;
-let selectedAmount = null;
+	// Tạo các tùy chọn năm từ 2000 đến 2030
+	for (let year = 2000; year <= 2030; year++) {
+		const option = document.createElement("option");
+		option.value = year;
+		option.textContent = year;
+		yearSelect.appendChild(option);
+	}
+
+	// Tạo các tùy chọn tháng từ 1 đến 12
+	for (let month = 1; month <= 12; month++) {
+		const option = document.createElement("option");
+		option.value = month;
+		option.textContent = month;
+		monthSelect.appendChild(option);
+	}
+
+	// Tạo ngày
+	for (let day = 1; day <= 31; day++) {
+		const option = document.createElement("option");
+		option.value = day;
+		option.textContent = day;
+		daySelect.appendChild(option);
+	}
+}
+
+function updateDays() {
+	const daySelect = document.getElementById("day");
+	const yearSelect = document.getElementById("year");
+	const monthSelect = document.getElementById("month");
+	daySelect.innerHTML = '<option value="" selected>Ngày</option>'; // Reset ngày
+	const month = parseInt(monthSelect.value);
+	const year = parseInt(yearSelect.value);
+
+	// Xác định số ngày trong tháng và năm đã chọn
+	if (month && year) {
+		const daysInMonth = new Date(year, month, 0).getDate();
+		for (let day = 1; day <= daysInMonth; day++) {
+			const option = document.createElement("option");
+			option.value = day;
+			option.textContent = day;
+			daySelect.appendChild(option);
+		}
+	}
+}
+
+
+
 // hàm lấy dữ liệu(ngày, số tiền) để tìm kiếm giao dịch người dùng chọn và đẩy dữ liệu lên server xử lý
 function getDataForSearch() {
-	const inputDate = document.getElementById("inputDateSearch");
+	document.getElementById('excuteSearch-button').addEventListener('click', function() {
+		const yearSelect = document.getElementById("year");
+		const monthSelect = document.getElementById("month");
+		const daySelect = document.getElementById("day");
+		const amountSelect = document.getElementById("amountSearch");
+		const year = yearSelect.value || null;
+		const month = monthSelect.value || null;
+		const day = daySelect.value || null;
+		const amount = amountSelect.value || null;
+		const date = {
+			year: year,
+			month: month,
+			day: day
+		}
 
-	const amount = document.getElementById("amountSearch");
+		
 
+		const categoryID = document.querySelector("#choose-category-btn-left span").getAttribute('id');
+		
+		pushData(categoryID, date, amount);
+		console.log("year" + year);
+		console.log("month" + month);
+		console.log("day" + day);
+		console.log("amount" + amount);
+		console.log("categoryID" + categoryID);
+	})
 
-	if (inputDate) {
-		inputDate.removeEventListener("change", handleDateChange);
-		inputDate.addEventListener("change", handleDateChange);
-	}
-	if (amount) {
-		amount.removeEventListener("change", handleAmountChange);
-		amount.addEventListener("change", handleAmountChange);
-	}
 
 }
-// Hàm xử lý khi thay đổi ngày
-function handleDateChange(event) {
-	selectedDate = event.target.value;
-	console.log(selectedDate);
-	pushData(selectedCategoryID, selectedDate, selectedAmount);
-}
-// hàm xử lý khi thay đổi số tiền
-function handleAmountChange(event) {
-	selectedAmount = event.target.value;
-	console.log(selectedAmount);
-	pushData(selectedCategoryID, selectedDate, selectedAmount);
+
+
+
+// hàm này xử lý sự kiện cho việc chọn ngày tháng năm
+function handleClickOnYearMonth() {
+	const yearSelect = document.getElementById("year");
+	const monthSelect = document.getElementById("month");
+	// Sự kiện khi thay đổi năm
+	yearSelect.addEventListener("change", function() {
+		updateDays();
+	});
+
+	// Sự kiện khi thay đổi tháng
+	monthSelect.addEventListener("change", function() {
+		if (!yearSelect.value) {
+			alert("Vui lòng chọn năm trước khi chọn tháng.");
+			monthSelect.value = ""; // Đặt lại tháng về trống nếu chưa chọn năm
+		} else {
+			updateDays();
+		}
+	});
 }
 // overide lại phương thức để thực thi 2 hàm riêng của searchButton
 searchButton.openButton = function() {
@@ -135,6 +223,9 @@ searchButton.openButton = function() {
 	modal.innerHTML = this.htmlContent;
 	document.querySelector('nav').appendChild(modal);
 	getDataForSearch();
+	renderDateTime();
+	handleClickOnYearMonth();
+
 };
 
 
@@ -190,15 +281,11 @@ function handleCategoryClick() {
 			const btnCategory = document.querySelector('#choose-category-btn-left span');
 			const getCategoryName = document.querySelector(".category.selected span").innerHTML;
 			btnCategory.textContent = getCategoryName;
-
-			// lấy categoryID và đẩy dữ liệu lên server để search
-			const categoryID = document.querySelector(".category.selected");
-			selectedCategoryID = categoryID.getAttribute('id');
-			console.log(selectedCategoryID);
-			pushData(selectedCategoryID, selectedDate, selectedAmount);
+			btnCategory.setAttribute('id',this.getAttribute('id'));
 		});
 	});
 }
+// nút chọn thể loại
 selectSearchCategoryButton.openButton = function() {
 	this.isOpen = true;
 	const modal = document.createElement("div");

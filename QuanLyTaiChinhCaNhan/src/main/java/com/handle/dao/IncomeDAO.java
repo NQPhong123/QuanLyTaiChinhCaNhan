@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.handle.model.FlexibleDate;
 import com.handle.model.Income;
 
 public class IncomeDAO extends TransactionDAO<Income> {
@@ -141,18 +142,25 @@ public class IncomeDAO extends TransactionDAO<Income> {
 	    }
 	}
 
-	public static void main(String[] args) {
-		IncomeDAO incomeDAO = new IncomeDAO();
-		int userID = 1;
-		int categoryID = 2;
-		String dateString = "2024-09-01";
-		LocalDate date = LocalDate.parse(dateString);
-		double amount = 100;
-		String description = "test nhe";
-		try {
-			incomeDAO.InsertTransaction(userID, categoryID, date, amount, description);
-		}catch(SQLException e) {
-			System.out.println(e);
-		}
-	}
+    public static void main(String[] args) {
+		/*
+		 * IncomeDAO incomeDAO = new IncomeDAO(); // Khởi tạo các tham số cho phương
+		 * thức searchTransactions Integer userID = 1; Integer categoryID = 1; Double
+		 * amount = null;
+		 * 
+		 * // Trường hợp 1: Ngày đầy đủ 2024-10-01 FlexibleDate exactDate = new
+		 * FlexibleDate(1, 10, 2024);
+		 * 
+		 * // Trường hợp 2: Tháng và năm, không có ngày (10-2024) FlexibleDate
+		 * yearMonthDate = new FlexibleDate(null, 10, 2024);
+		 * 
+		 * // Trường hợp 3: Chỉ có năm (2024) FlexibleDate yearOnlyDate = new
+		 * FlexibleDate(null, null, 2024);
+		 * 
+		 * List<Income> list = incomeDAO.searchTransactions(userID, categoryID,
+		 * yearOnlyDate, amount);
+		 * 
+		 * for(Income i : list) { System.out.println(i.toString()); }
+		 */
+    }
 }

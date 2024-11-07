@@ -131,7 +131,7 @@
 	background-color: white;
 }
 
-.reset-button {
+#excuteSearch-button {
 	background: none;
 	border: none;
 	color: #333;
@@ -210,9 +210,26 @@ input[type="range"] {
 	cursor: pointer;
 }
 
-.category-wrapper-right.select-date button {
-	background-color: white;
+.category-wrapper-right.select-date{
+	display:flex;
+	flex-direction: column;
 }
+.date-select {
+	width:100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+#date-picker {
+    display: flex;
+    align-items: center;
+}
+
 
 .category-wrapper-right {
 	position: relative; /* Đặt vị trí tương đối cho wrapper */

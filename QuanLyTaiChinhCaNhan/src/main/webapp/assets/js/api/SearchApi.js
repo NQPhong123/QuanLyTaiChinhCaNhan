@@ -17,7 +17,7 @@ export function pushData(categoryID, date, amount) {
 	})
 		.then((response) => {
 			if (!response.ok) {
-				throw new Error("Network response was not ok");
+				throw new Error("đẩy dữ liệu để search không thành công");
 			}
 			return response.json();
 		})

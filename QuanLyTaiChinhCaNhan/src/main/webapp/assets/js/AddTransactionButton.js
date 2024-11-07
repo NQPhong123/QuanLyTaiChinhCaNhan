@@ -86,6 +86,7 @@ function handleTransactionTypeChange() {
     });
 }
 import {pushDataForSaveTran} from "./api/AddTransactionApi.js"; // lấy hàm pushDataForSaveTran từ file AddTransactionApi.js ra xài
+
 function saveTransaction() {
     const transactionType = document.getElementById("TypeOfTransaction").value;
     const categoryID = transactionType === "expense" ? 
