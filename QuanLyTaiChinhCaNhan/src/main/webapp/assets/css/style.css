@@ -56,7 +56,7 @@ div.transaction-content{
 	background-color: #C0C0C0;
 	cursor: pointer;
 }
-.inflow, .outflow {
+.income, .outcome {
 	font-size: 18px;
 	color: #666;
 	display: flex;
