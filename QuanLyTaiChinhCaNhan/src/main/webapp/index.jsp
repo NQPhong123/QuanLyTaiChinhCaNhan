@@ -60,26 +60,46 @@ if (emailUser == null) {
     </div>
 
     <%@ include file="/WEB-INF/includes/header.jsp" %>
+    
+    <%
+	java.time.LocalDate currentDate = java.time.LocalDate.now();
+
+	// Lấy tháng hiện tại
+	int currentMonth = currentDate.getMonthValue();
+
+	// Lấy tháng trước
+	int lastMonth = currentDate.minusMonths(1).getMonthValue();
+
+	// Lấy tháng sau
+	int nextMonth = currentDate.plusMonths(1).getMonthValue();
+
+	// Đặt các giá trị vào request để sử dụng trong JSP
+	request.setAttribute("currentMonth", currentMonth);
+	request.setAttribute("lastMonth", lastMonth);
+	request.setAttribute("nextMonth", nextMonth);
+	%>
+    
+    
     <div class="content">
         <div class="transaction-content">
             <div class="header-contain">
-                <div class="tab active" onclick="showTab('last')">Tháng trước</div>
-                <div class="tab" onclick="showTab('current')">Hiện tại</div>
-                <div class="tab" onclick="showTab('future')">Tương lai</div>
+                <div class="tab active" onclick="showTab('last')">Tháng trước (<%=request.getAttribute("lastMonth")%>)</div>
+                <div class="tab" onclick="showTab('current')">Hiện tại (<%=request.getAttribute("currentMonth")%>)</div>
+                <div class="tab" onclick="showTab('future')">Tương lai (<%=request.getAttribute("nextMonth")%>)</div>
             </div>
 
             <div class="main-content" id="content">
                 <div class="transaction-content">
                     <div class="inflow-outflow">
-                        <div class="inflow">
-                            <div>Tiền Vào</div>
-                            <span class="amount positive">+698,626,843.72 đ</span>
+                        <div class="income">
+                            <div class="title">Tiền Vào</div>
+                            <span class="amount positive" id="incomeAmount">+698,626,843.72 đ</span>
                         </div>
-                        <div class="outflow">
-                            <div>Tiền Ra</div>
-                            <span class="amount negative">-562,687,198.62 đ</span>
+                        <div class="outcome">
+                            <div class="title">Tiền Ra</div>
+                            <span class="amount negative" id="outcomeAmount">-562,687,198.62 đ</span>
                         </div>
-                        <div class="balance">+135,939,645.10 đ</div>
+                        <div class="balance" >+135,939,645.10 đ</div>
                     </div>
 					<button id="addTransactionBtn">THÊM GIAO DỊCH(thay thế bằng nút Lưu)</button>
 					<tbody>
@@ -276,29 +296,62 @@ if (emailUser == null) {
     </div>
 
     <script>
-        function showTab(tab) {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(t => {
-                t.classList.remove('active');
-            });
+  
+    // Gán giá trị tháng từ JSP vào JavaScript
+    const lastMonth = <%=request.getAttribute("lastMonth")%>;
+    const currentMonth = <%=request.getAttribute("currentMonth")%>;
+    const nextMonth = <%=request.getAttribute("nextMonth")%>;
 
-            if (tab === 'last') {
-                tabs[0].classList.add('active');
-                updateInflowOutflow("+698,626,843.72 đ", "-562,687,198.62 đ", "+135,939,645.10 đ");
-            } else if (tab === 'current') {
-                tabs[1].classList.add('active');
-                updateInflowOutflow("+800,000,000.00 đ", "-500,000,000.00 đ", "+300,000,000.00 đ");
-            } else {
-                tabs[2].classList.add('active');
-                updateInflowOutflow("+1,000,000,000.00 đ", "-400,000,000.00 đ", "+600,000,000.00 đ");
-            }
+    // Hàm gửi tháng lên server
+    function sendMonthToServer(selectedMonth) {
+        const data = { month: selectedMonth };
+
+        fetch('ChartServlet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Server Response:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    
+ // Hàm hiển thị dữ liệu cho các tab tương ứng
+    function showTab(tab) {
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(t => t.classList.remove('active'));
+
+        let selectedMonth;
+        if (tab === 'last') {
+            tabs[0].classList.add('active');
+            selectedMonth = lastMonth;
+            updateChart("+500,000,000 đ", "-300,000,000 đ", [4000000, 800000], [100000, 50000]);
+        } else if (tab === 'current') {
+            tabs[1].classList.add('active');
+            selectedMonth = currentMonth;
+            updateChart("+698,626,843.72 đ", "-562,687,198.62 đ", [6000000, 1200000], [100000, 200000]);
+        } else if (tab === 'future') {
+            tabs[2].classList.add('active');
+            selectedMonth = nextMonth;
+            updateChart("+1,000,000,000 đ", "-400,000,000 đ", [8000000, 1600000], [200000, 100000]);
         }
 
-        function updateInflowOutflow(inflow, outflow, balance) {
-            document.querySelector('.inflow .amount').textContent = inflow;
-            document.querySelector('.outflow .amount').textContent = outflow;
-            document.querySelector('.balance').textContent = balance;
-        }
+        // Gửi tháng đã chọn lên server
+        sendMonthToServer(selectedMonth);
+    }
+ // Hàm cập nhật biểu đồ và số liệu
+    function updateChart(income, outcome, revenueData, expenseData) {
+        document.getElementById('incomeAmount').textContent = income;
+        document.getElementById('outcomeAmount').textContent = outcome;
+
+        
+    }
     </script>
 </body>
 
