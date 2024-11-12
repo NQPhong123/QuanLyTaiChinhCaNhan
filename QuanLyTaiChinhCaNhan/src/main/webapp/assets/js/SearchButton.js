@@ -62,22 +62,41 @@ selectSearchCategoryButton.htmlContent = `<div class="select-category-container"
    </div> `;
 selectSearchCategoryButton.idName = "form-select-category"
 
+
+
 const timeRangeButton = new Button();
 timeRangeButton.htmlContent = `
 <!-- Form chọn thời gian -->
     <div class="modal-content">
-	<button class="close-btn onclick="timeRangeButton.closeButton()">&times;</button>
+	<button class="close-btn" onclick="timeRangeButton.closeButton()">&times;</button>
         <h2>Select Time Range</h2>
-        <ul class="time-range-list">
-            <li class="time-range-item" onclick="selectTimeRange('This month', '01/11/2024 - 30/11/2024')">This month<br><small>01/11/2024 - 30/11/2024</small></li>
-            <li class="time-range-item" onclick="selectTimeRange('Last month', '01/10/2024 - 31/10/2024')">Last month<br><small>01/10/2024 - 31/10/2024</small></li>
-            <li class="time-range-item" onclick="selectTimeRange('Last 3 months', '01/09/2024 - 30/11/2024')">Last 3 months<br><small>01/09/2024 - 30/11/2024</small></li>
-            <li class="time-range-item" onclick="selectTimeRange('This year', '01/01/2024 - 31/12/2024')">This year<br><small>01/01/2024 - 31/12/2024</small></li>
-            <li class="time-range-item" onclick="showCustomDate()">Custom</li>
+        <ul class="time-range-list" id="timeRangeList">
+			<!-- render tự động các time-range-list -->
         </ul>
     </div>
 `;
 timeRangeButton.idName = "modal-time-range";
+timeRangeButton.className = "modal";
+
+
+const customDateButton = new Button();
+customDateButton.htmlContent = `
+	<div class="modal-content">
+	    <h2>Custom</h2>
+	    <label>Starting date</label>
+	    <input type="date" id="input-start-date" class="date-input">
+	    <label>End date</label>
+	    <input type="date" id="input-end-date" class="date-input">
+	    <div class="modal-buttons">
+	        <button class="btn-done">Hoàn tất</button>
+	        <button class="btn-cancel" onclick="customDateButton.closeButton()">Hủy</button>
+	    </div>
+	</div>
+`;
+customDateButton.idName = "modal-custom-date";
+customDateButton.className = "modal";
+
+
 import { fetchCategories } from "./api/CategoryApi.js";
 import { pushData } from "./api/SearchApi.js";
 
@@ -125,15 +144,15 @@ function getDataForSearch() {
 		const month = monthSelect.value || null;
 		const day = daySelect.value || null;
 		const amountRangeArr = slider.noUiSlider.get(); // lấy khoảng giá trị của amount range trả về một mảng[min,max]
-		
+
 		const date = {
-			year:year,
-			month:month,
-			day:day
+			year: year,
+			month: month,
+			day: day
 		}
 		const amountRange = {
-			min:parseInt(amountRangeArr[0]),
-			max:parseInt(amountRangeArr[1])
+			min: parseInt(amountRangeArr[0]),
+			max: parseInt(amountRangeArr[1])
 		}
 		const categoryID = document.querySelector("#choose-category-btn-left span").getAttribute('id');
 
@@ -154,50 +173,39 @@ function handleClickOnYearMonth() {
 	const monthSelect = document.getElementById("month");
 	const daySelect = document.getElementById("day");
 	/*const searchbtn = document.getElementById("excuteSearch-button");*/
-	
 
-		monthSelect.addEventListener("change",function(){
-			if(!yearSelect.value){
-				alert("Cần chọn năm trước khi chọn tháng");
-			}
-		})
-		daySelect.addEventListener("change",function(){
-			if(!yearSelect.value && !monthSelect.value){
-				alert("Cần chọn năm và tháng trước");
-			}
-		
+
+	monthSelect.addEventListener("change", function() {
+		if (!yearSelect.value) {
+			alert("Cần chọn năm trước khi chọn tháng");
+		}
+	})
+	daySelect.addEventListener("change", function() {
+		if (!yearSelect.value && !monthSelect.value) {
+			alert("Cần chọn năm và tháng trước");
+		}
+
 	});
 }
 
-function nouiSliders(){
+function nouiSliders() {
 	const slider = document.getElementById('slider');
 	noUiSlider.create(slider, {
-	  start: [20, 80],        // Giá trị bắt đầu cho hai tay cầm
-	  connect: true,          // Đoạn giữa hai tay cầm sẽ được tô màu
-	  range: {
-	    'min': 0,
-	    'max': 100
-	  }
+		start: [20, 80],        // Giá trị bắt đầu cho hai tay cầm
+		connect: true,          // Đoạn giữa hai tay cầm sẽ được tô màu
+		range: {
+			'min': 0,
+			'max': 100
+		}
 	});
 
 	// Cập nhật giá trị hiển thị khi người dùng kéo thanh trượt
 	const selectedRange = document.getElementById('selectedRange');
-	slider.noUiSlider.on('update', function (values) {
-	  selectedRange.textContent = `${parseInt(values[0])} - ${parseInt(values[1])}`;
+	slider.noUiSlider.on('update', function(values) {
+		selectedRange.textContent = `${parseInt(values[0])} - ${parseInt(values[1])}`;
 	});
 }
-// overide lại phương thức để thực thi 2 hàm riêng của searchButton
-searchButton.openButton = function() {
-	this.isOpen = true;
-	const modal = document.createElement("div");
-	modal.setAttribute("id", this.idName);
-	modal.innerHTML = this.htmlContent;
-	document.querySelector('nav').appendChild(modal);
-	getDataForSearch();
 
-	nouiSliders();
-
-};
 
 
 // xử lý sự kiện click của tab expense
@@ -252,10 +260,115 @@ function handleCategoryClick() {
 			const btnCategory = document.querySelector('#choose-category-btn-left span');
 			const getCategoryName = document.querySelector(".category.selected span").innerHTML;
 			btnCategory.textContent = getCategoryName;
-			btnCategory.setAttribute('id',this.getAttribute('id'));
+			btnCategory.setAttribute('id', this.getAttribute('id'));
 		});
 	});
 }
+
+// xử lý sự kiện click của nút chọn của button customeDate
+function handleCustomDateSubmit(){
+	const submitButton = document.querySelector(".btn-done");
+	    submitButton.addEventListener("click", function() {
+	        const customModal = document.getElementById("modal-custom-date");
+	        const openModalBtn = document.getElementById("btn-open-time-range");
+	        const startDate = document.getElementById("input-start-date").value;
+	        const endDate = document.getElementById("input-end-date").value;
+	        if (startDate && endDate) {
+				timeRangeButton.closeButton();
+	            const rangeText = `${startDate} - ${endDate}`;
+	            openModalBtn.querySelector("span").textContent = rangeText;
+	            customModal.style.display = "none";
+	        } else {
+	            alert("Hãy chọn khoảng thời gian trước khi nhấn hoàn tất");
+	        }
+	    });
+}
+
+function renderTimeRanges() {
+    const currentDate = new Date();
+    const timeRangeList = document.getElementById("timeRangeList");
+
+    if (!timeRangeList) return; // Kiểm tra nếu phần tử không tồn tại
+
+    // Hàm định dạng ngày thành chuỗi dd/mm/yyyy
+    function formatDate(date) {
+        return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+    }
+
+    // Hàm lấy khoảng thời gian dựa trên loại
+    function getTimeRange(type) {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        let startDate, endDate;
+
+        switch (type) {
+            case "thisMonth":
+                startDate = new Date(year, month, 1);
+                endDate = new Date(year, month + 1, 0);
+                break;
+            case "lastMonth":
+                startDate = new Date(year, month - 1, 1);
+                endDate = new Date(year, month, 0);
+                break;
+            case "last3Months":
+                startDate = new Date(year, month - 2, 1);
+                endDate = new Date(year, month + 1, 0);
+                break;
+            case "thisYear":
+                startDate = new Date(year, 0, 1);
+                endDate = new Date(year, 11, 31);
+                break;
+            case "lastYear":
+                startDate = new Date(year - 1, 0, 1);
+                endDate = new Date(year - 1, 11, 31);
+                break;
+            default:
+                return null;
+        }
+        return { startDate: formatDate(startDate), endDate: formatDate(endDate) };
+    }
+
+    // Danh sách các loại thời gian cần render
+    const timeRanges = [
+        { type: "thisMonth", label: "This month" },
+        { type: "lastMonth", label: "Last month" },
+        { type: "last3Months", label: "Last 3 months" },
+        { type: "thisYear", label: "This year" },
+        { type: "lastYear", label: "Last year" }
+    ];
+
+    // Tạo nội dung HTML từ danh sách khoảng thời gian
+    let htmlContent = "";
+    for (const range of timeRanges) {
+        const { startDate, endDate } = getTimeRange(range.type);
+        htmlContent += `<li class="time-range-item" id="${startDate} - ${endDate}">
+            ${range.label}<br><small>${startDate} - ${endDate}</small></li>`;
+    }
+
+    // Gắn nội dung vào danh sách và giữ mục "Custom" ở cuối
+    timeRangeList.innerHTML = htmlContent + `<li class="time-range-item" onclick="customDateButton.openButton()">Custom</li>`;
+}
+
+timeRangeButton.openButton = function(){
+	this.isOpen = true;
+	const modal = document.createElement("div");
+	modal.setAttribute("id", this.idName);
+	modal.setAttribute("class", this.className);
+	modal.innerHTML = this.htmlContent;
+	document.querySelector('nav').appendChild(modal);
+	renderTimeRanges();
+}
+
+customDateButton.openButton = function(){
+	this.isOpen = true;
+	const modal = document.createElement("div");
+	modal.setAttribute("id", this.idName);
+	modal.setAttribute("class", this.className);
+	modal.innerHTML = this.htmlContent;
+	document.querySelector('nav').appendChild(modal);
+	handleCustomDateSubmit();
+}
+
 // nút chọn thể loại
 selectSearchCategoryButton.openButton = function() {
 	this.isOpen = true;
@@ -268,6 +381,16 @@ selectSearchCategoryButton.openButton = function() {
 	clickIncomeTab();
 };
 
+// overide lại phương thức để thực thi 2 hàm riêng của searchButton
+searchButton.openButton = function() {
+	this.isOpen = true;
+	const modal = document.createElement("div");
+	modal.setAttribute("id", this.idName);
+	modal.innerHTML = this.htmlContent;
+	document.querySelector('nav').appendChild(modal);
+	getDataForSearch();
+	nouiSliders();
+};
 
 
 
@@ -275,3 +398,5 @@ selectSearchCategoryButton.openButton = function() {
 // đưa 2 object này thành global vì sử dụng type = module
 window.searchButton = searchButton;
 window.selectSearchCategoryButton = selectSearchCategoryButton;
+window.timeRangeButton = timeRangeButton;
+window.customDateButton = customDateButton;

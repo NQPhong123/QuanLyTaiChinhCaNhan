@@ -8,8 +8,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.handle.model.FlexibleDate;
 import com.handle.model.Income;
+import com.handle.model.RangeDate;
 
 public class IncomeDAO extends TransactionDAO<Income> {
 
@@ -119,48 +119,39 @@ public class IncomeDAO extends TransactionDAO<Income> {
 		}
 		return incomes;
 	}
-	
+
 	@Override
-	public void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount, String description) throws SQLException {
+	public void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount, String description)
+			throws SQLException {
 
-	    String query = "INSERT INTO income(userID,categoryID,date,amount,description) VALUES(?,?,?,?,?)";
-	    try {
-	        Connection conn = ConnectDB.getInstance().getConnection();
-	        PreparedStatement ptst = conn.prepareStatement(query);
-	        ptst.setInt(1, userID);
-	        ptst.setInt(2, categoryID);
-	        ptst.setObject(3, date);
-	        ptst.setDouble(4, amount);
-	        ptst.setString(5, description);
+		String query = "INSERT INTO income(userID,categoryID,date,amount,description) VALUES(?,?,?,?,?)";
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ptst.setInt(1, userID);
+			ptst.setInt(2, categoryID);
+			ptst.setObject(3, date);
+			ptst.setDouble(4, amount);
+			ptst.setString(5, description);
 
-	        int rowInserted = ptst.executeUpdate();
-	        if (rowInserted > 0) {
-	            System.out.println("Dữ liệu đã được chèn thành công!");
-	        }
-	    } catch (SQLException e) {
-	        throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
-	    }
+			int rowInserted = ptst.executeUpdate();
+			if (rowInserted > 0) {
+				System.out.println("Dữ liệu đã được chèn thành công!");
+			}
+		} catch (SQLException e) {
+			throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
+		}
 	}
 
-    public static void main(String[] args) {
-		/*
-		 * IncomeDAO incomeDAO = new IncomeDAO(); // Khởi tạo các tham số cho phương
-		 * thức searchTransactions Integer userID = 1; Integer categoryID = 1; Double
-		 * amount = null;
-		 * 
-		 * // Trường hợp 1: Ngày đầy đủ 2024-10-01 FlexibleDate exactDate = new
-		 * FlexibleDate(1, 10, 2024);
-		 * 
-		 * // Trường hợp 2: Tháng và năm, không có ngày (10-2024) FlexibleDate
-		 * yearMonthDate = new FlexibleDate(null, 10, 2024);
-		 * 
-		 * // Trường hợp 3: Chỉ có năm (2024) FlexibleDate yearOnlyDate = new
-		 * FlexibleDate(null, null, 2024);
-		 * 
-		 * List<Income> list = incomeDAO.searchTransactions(userID, categoryID,
-		 * yearOnlyDate, amount);
-		 * 
-		 * for(Income i : list) { System.out.println(i.toString()); }
-		 */
-    }
+	public static void main(String[] args) {
+		
+		  IncomeDAO incomeDAO = new IncomeDAO(); 
+	        LocalDate startDate = LocalDate.of(2024, 10, 1);
+	        LocalDate endDate = LocalDate.of(2024, 11, 20);
+	        RangeDate rangeDate = new RangeDate(startDate, endDate);
+	        List<Income> transactions = incomeDAO.searchTransactions(1, null, rangeDate, null);
+	        for (Income transaction : transactions) {
+	            System.out.println(transaction);
+	        }
+	}
 }

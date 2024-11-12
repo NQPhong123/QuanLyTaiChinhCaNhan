@@ -1,13 +1,15 @@
 // lớp Button tạo nút
 export default class Button {
-	constructor(htmlContent, idName) {
+	constructor(htmlContent, idName,className) {
 		this.htmlContent = htmlContent;
 		this.idName = idName;
+		this.className = className;
 	}
 	openButton() {
 		this.isOpen = true;
 		const modal = document.createElement("div");
 		modal.setAttribute("id", this.idName);
+		modal.setAttribute("class",this.className);
 		modal.innerHTML = this.htmlContent;
 		document.querySelector('nav').appendChild(modal);
 	}
