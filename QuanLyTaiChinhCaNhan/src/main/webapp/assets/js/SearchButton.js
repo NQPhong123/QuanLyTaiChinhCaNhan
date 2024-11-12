@@ -19,30 +19,18 @@ searchButton.htmlContent = `<div class="search-header">
 
 	
 		<div class="category-wrapper-right select-date">
-			<span>Chọn ngày</span>
-		    <div id="date-picker">
-		        <select id="year" class="date-select">
-		            <option value="" selected>Năm</option>
-		            <!-- JavaScript sẽ tự động tạo các tùy chọn năm -->
-		        </select>
-
-		        <select id="month" class="date-select">
-		            <option value="" selected>Tháng</option>
-		            <!-- JavaScript sẽ tự động tạo các tùy chọn tháng -->
-		        </select>
-
-		        <select id="day" class="date-select">
-		            <option value="" selected>Ngày</option>
-		            <!-- JavaScript sẽ tự động tạo các tùy chọn ngày dựa trên tháng và năm đã chọn -->
-		        </select>
-		    </div>
+		<!-- Nút mở form chọn khoảng thời gian -->
+		<button id="btn-open-time-range" onclick="timeRangeButton.openButton()">
+		    <span>Select time range</span>
+		</button>
+		
 		</div>
 
 
-  <div class="field amount">
-  <div id="slider"></div>
-  <p>Selected Range: <span id="selectedRange"></span></p>
-  </div>
+	  <div class="field amount">
+	  <div id="slider"></div>
+	  <p>Selected Range: <span id="selectedRange"></span></p>
+	  </div>
 </div>`;
 searchButton.idName = "search-container";
 
@@ -74,6 +62,22 @@ selectSearchCategoryButton.htmlContent = `<div class="select-category-container"
    </div> `;
 selectSearchCategoryButton.idName = "form-select-category"
 
+const timeRangeButton = new Button();
+timeRangeButton.htmlContent = `
+<!-- Form chọn thời gian -->
+    <div class="modal-content">
+	<button class="close-btn onclick="timeRangeButton.closeButton()">&times;</button>
+        <h2>Select Time Range</h2>
+        <ul class="time-range-list">
+            <li class="time-range-item" onclick="selectTimeRange('This month', '01/11/2024 - 30/11/2024')">This month<br><small>01/11/2024 - 30/11/2024</small></li>
+            <li class="time-range-item" onclick="selectTimeRange('Last month', '01/10/2024 - 31/10/2024')">Last month<br><small>01/10/2024 - 31/10/2024</small></li>
+            <li class="time-range-item" onclick="selectTimeRange('Last 3 months', '01/09/2024 - 30/11/2024')">Last 3 months<br><small>01/09/2024 - 30/11/2024</small></li>
+            <li class="time-range-item" onclick="selectTimeRange('This year', '01/01/2024 - 31/12/2024')">This year<br><small>01/01/2024 - 31/12/2024</small></li>
+            <li class="time-range-item" onclick="showCustomDate()">Custom</li>
+        </ul>
+    </div>
+`;
+timeRangeButton.idName = "modal-time-range";
 import { fetchCategories } from "./api/CategoryApi.js";
 import { pushData } from "./api/SearchApi.js";
 
@@ -107,55 +111,7 @@ async function renderCategory() {
 	}
 }
 
-function renderDateTime() {
-	const yearSelect = document.getElementById("year");
-	const monthSelect = document.getElementById("month");
-	const daySelect = document.getElementById("day");
 
-	// Tạo các tùy chọn năm từ 2000 đến 2030
-	for (let year = 2000; year <= 2030; year++) {
-		const option = document.createElement("option");
-		option.value = year;
-		option.textContent = year;
-		yearSelect.appendChild(option);
-	}
-
-	// Tạo các tùy chọn tháng từ 1 đến 12
-	for (let month = 1; month <= 12; month++) {
-		const option = document.createElement("option");
-		option.value = month;
-		option.textContent = month;
-		monthSelect.appendChild(option);
-	}
-
-	// Tạo ngày
-	for (let day = 1; day <= 31; day++) {
-		const option = document.createElement("option");
-		option.value = day;
-		option.textContent = day;
-		daySelect.appendChild(option);
-	}
-}
-
-function updateDays() {
-	const daySelect = document.getElementById("day");
-	const yearSelect = document.getElementById("year");
-	const monthSelect = document.getElementById("month");
-	daySelect.innerHTML = '<option value="" selected>Ngày</option>'; // Reset ngày
-	const month = parseInt(monthSelect.value);
-	const year = parseInt(yearSelect.value);
-
-	// Xác định số ngày trong tháng và năm đã chọn
-	if (month && year) {
-		const daysInMonth = new Date(year, month, 0).getDate();
-		for (let day = 1; day <= daysInMonth; day++) {
-			const option = document.createElement("option");
-			option.value = day;
-			option.textContent = day;
-			daySelect.appendChild(option);
-		}
-	}
-}
 
 
 
@@ -196,19 +152,20 @@ function getDataForSearch() {
 function handleClickOnYearMonth() {
 	const yearSelect = document.getElementById("year");
 	const monthSelect = document.getElementById("month");
-	// Sự kiện khi thay đổi năm
-	yearSelect.addEventListener("change", function() {
-		updateDays();
-	});
+	const daySelect = document.getElementById("day");
+	/*const searchbtn = document.getElementById("excuteSearch-button");*/
+	
 
-	// Sự kiện khi thay đổi tháng
-	monthSelect.addEventListener("change", function() {
-		if (!yearSelect.value) {
-			alert("Vui lòng chọn năm trước khi chọn tháng.");
-			monthSelect.value = ""; // Đặt lại tháng về trống nếu chưa chọn năm
-		} else {
-			updateDays();
-		}
+		monthSelect.addEventListener("change",function(){
+			if(!yearSelect.value){
+				alert("Cần chọn năm trước khi chọn tháng");
+			}
+		})
+		daySelect.addEventListener("change",function(){
+			if(!yearSelect.value && !monthSelect.value){
+				alert("Cần chọn năm và tháng trước");
+			}
+		
 	});
 }
 
@@ -237,8 +194,7 @@ searchButton.openButton = function() {
 	modal.innerHTML = this.htmlContent;
 	document.querySelector('nav').appendChild(modal);
 	getDataForSearch();
-	renderDateTime();
-	handleClickOnYearMonth();
+
 	nouiSliders();
 
 };
@@ -317,6 +273,5 @@ selectSearchCategoryButton.openButton = function() {
 
 
 // đưa 2 object này thành global vì sử dụng type = module
-
 window.searchButton = searchButton;
 window.selectSearchCategoryButton = selectSearchCategoryButton;

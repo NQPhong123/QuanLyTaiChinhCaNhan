@@ -5,7 +5,7 @@ public class SearchData {
     private FlexibleDate date;
     private AmountRange amountRange;
 
-    // Getters và Setters
+    // Getters và Setters.
     public Integer getCategoryID() { return categoryID; }
     public void setCategoryID(Integer categoryID) { this.categoryID = categoryID; }
 

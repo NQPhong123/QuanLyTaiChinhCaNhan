@@ -22,7 +22,7 @@ public class FlexibleDate {
 		if (day != null && month != null && year != null) {
 			return LocalDate.of(year, month, day);
 		}
-		return null; // Trả về null nếu không đủ thông tin
+		return null; // Trả về null nếu không đủ thông tin.
 	}
 
 	// Trả về đối tượng YearMonth nếu chỉ có tháng và năm

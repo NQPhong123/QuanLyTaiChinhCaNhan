@@ -210,26 +210,121 @@ input[type="range"] {
 	cursor: pointer;
 }
 
-.category-wrapper-right.select-date{
-	display:flex;
+.category-wrapper-right.select-date {
+	display: flex;
 	flex-direction: column;
 }
-.date-select {
-	width:100px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-    cursor: pointer;
-    font-size: 16px;
-    margin-right: 5px;
+
+/* Nút mở form chọn khoảng thời gian */
+#btn-open-time-range {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 280px;
+	padding: 15px;
+	font-size: 16px;
+	color: #a0a0a0;
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: border-color 0.3s ease;
 }
 
-#date-picker {
-    display: flex;
-    align-items: center;
+#btn-open-time-range:hover {
+	border-color: #007bff;
 }
 
+#btn-open-time-range span {
+	font-weight: bold;
+	color: #333;
+}
+
+#btn-open-time-range::after {
+	content: '▶';
+	font-size: 14px;
+	transform: rotate(90deg);
+}
+/* Form hiện thời gian */
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+	background-color: #ffffff;
+	margin: 10% auto;
+	padding: 20px;
+	width: 80%;
+	max-width: 400px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+	float: right;
+	font-size: 24px;
+	cursor: pointer;
+}
+
+.time-range-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.time-range-item {
+	padding: 10px;
+	cursor: pointer;
+	border-bottom: 1px solid #ddd;
+}
+
+.time-range-item:hover {
+	background-color: #f5f5f5;
+}
+
+label {
+	display: block;
+	margin-top: 10px;
+}
+
+.date-input {
+	width: 100%;
+	padding: 8px;
+	margin-top: 5px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.modal-buttons {
+	margin-top: 15px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.btn-done, .btn-cancel {
+	padding: 10px 15px;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.btn-done {
+	background-color: green;
+	color: white;
+}
+
+.btn-cancel {
+	background-color: gray;
+	color: white;
+}
 
 .category-wrapper-right {
 	position: relative; /* Đặt vị trí tương đối cho wrapper */
