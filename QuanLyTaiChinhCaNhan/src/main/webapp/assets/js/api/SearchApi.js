@@ -1,10 +1,10 @@
 
 const URL_SEARCH = "SearchServlet"; 
 // hàm đẩy dữ liệu lên để tìm kiếm
-export function pushData(categoryID, date, amountRange) {
+export function pushData(categoryID, rangeDate, amountRange) {
 	const searchData = {
 		categoryID: categoryID,
-		date: date,
+		rangeDate: rangeDate,
 		amountRange: amountRange
 	};
 
