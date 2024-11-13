@@ -1,5 +1,6 @@
 package com.handle.model;
-
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.LocalDate;
 
 public class RangeDate {
@@ -29,5 +30,13 @@ public class RangeDate {
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
+	 public static LocalDate getStartOfMonth(int year, int month) {
+	        return LocalDate.of(year, month, 1);
+	    }
+
+	    public static LocalDate getEndOfMonth(int year, int month) {
+	        YearMonth yearMonth = YearMonth.of(year, month);
+	        return yearMonth.atEndOfMonth();
+	    }
 
 }

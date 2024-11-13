@@ -15,12 +15,20 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+
+import com.handle.dao.IncomeDAO;
+
+import java.time.LocalDate;
+import java.util.List;
+import com.handle.model.Income;
+
+
 @WebServlet("/ChartServlet")
 public class ChartServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Đọc dữ liệu từ body request
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = request.getReader();
         String line;
@@ -29,18 +37,22 @@ public class ChartServlet extends HttpServlet {
         }
         String jsonString = sb.toString();
 
-        // Phân tích dữ liệu JSON
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonString);
-        String selectedMonth = jsonNode.get("month").asText();
+        int selectedMonth = jsonNode.get("month").asInt();
+        int year = LocalDate.now().getYear();
+        int userID = Integer.parseInt(request.getSession().getAttribute("userID").toString());
+
+        // Lấy dữ liệu thu nhập từ IncomeDAO
+        IncomeDAO incomeDAO = new IncomeDAO();
+        List<Income> incomes = incomeDAO.getIncomesByMonth(userID, year, selectedMonth);
 
         // Chuẩn bị dữ liệu phản hồi
-        Map<String, String> responseData = new HashMap<>();
+        Map<String, Object> responseData = new HashMap<>();
         responseData.put("status", "success");
         responseData.put("message", "Tháng đã được lưu: " + selectedMonth);
-        responseData.put("month", selectedMonth);
+        responseData.put("incomes", incomes);
 
-        // Gửi phản hồi JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
