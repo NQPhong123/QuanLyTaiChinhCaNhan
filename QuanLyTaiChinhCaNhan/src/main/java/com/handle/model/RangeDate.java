@@ -38,5 +38,10 @@ public class RangeDate {
 	        YearMonth yearMonth = YearMonth.of(year, month);
 	        return yearMonth.atEndOfMonth();
 	    }
-
+	    
+	    @Override
+	    public String toString() {
+	        return startDate.toString() + " - " + endDate.toString();
+	    }
+	   
 }
