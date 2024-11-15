@@ -26,7 +26,7 @@ export function pushData(categoryID, rangeDate, amountRange) {
     .then((data) => {
         if (data.status === "success") {
             console.log("Success:", data);
-            /*pullTransaction();*/
+            pullTransaction();
         } else {
             console.error("Lỗi:", data.message);
         }
