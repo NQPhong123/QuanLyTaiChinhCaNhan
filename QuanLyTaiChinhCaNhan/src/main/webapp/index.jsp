@@ -60,6 +60,8 @@ if (emailUser == null) {
     </div>
 
     <%@ include file="/WEB-INF/includes/header.jsp" %>
+ <script type="text/javascript" src="assets/js/api/SearchApi.js"></script>
+     <script type="text/javascript" src="assets/js/api/SearchButton.js"></script>
     
     <%
 	java.time.LocalDate currentDate = java.time.LocalDate.now();
@@ -102,6 +104,17 @@ if (emailUser == null) {
                         <div class="balance" >+135,939,645.10 đ</div>
                     </div>
 					<button id="addTransactionBtn">THÊM GIAO DỊCH(thay thế bằng nút Lưu)</button>
+					
+					<body>
+    <h1>Danh sách giao dịch</h1>
+    <div id="transaction-list">
+        <!-- Dữ liệu giao dịch sẽ được hiển thị tại đây -->
+    </div>
+
+    <script src="SearchApi.js"></script>
+</body>
+					
+					
 					<tbody>
 <%
 
@@ -178,7 +191,7 @@ if (emailUser == null) {
 </tbody>
 					
 					
-					
+	
 					
 					
 		
