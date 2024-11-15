@@ -144,6 +144,7 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 	        throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
 	    }
 	}
+	
 
 
 	public static void main(String[] args) {
