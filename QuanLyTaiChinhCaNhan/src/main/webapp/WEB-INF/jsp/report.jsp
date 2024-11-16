@@ -130,6 +130,7 @@ if (emailUser == null) {
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/chart.js"></script>
+    <script src="assets/js/fetchChartData.js"></script>
 
   <script>
     const lastMonth = <%=request.getAttribute("lastMonth")%>;
