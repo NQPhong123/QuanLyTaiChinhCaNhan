@@ -14,36 +14,32 @@ function updateExpenseChart(chart, data) {
 
 // Hàm xử lý dữ liệu từ server và cập nhật biểu đồ
 function processChartData(responseData) {
+	let labelsIncome = new Array;
     // Phân tích dữ liệu thu nhập
     const incomeData = {
-        labels: responseData.incomes.map(income => income.category),
-        values: responseData.incomes.map(income => income.amount),
-        descriptions: responseData.incomes.map(income => income.description || "Không có mô tả") // Sử dụng description, nếu không có thì giá trị mặc định
+        labels: responseData.incomes.map(income => `${income.categoryID}`), // Tạo nhãn từ category và description
+        values: responseData.incomes.map(income => income.amount), // Lấy giá trị amount
     };
 
     // Phân tích dữ liệu chi tiêu
     const expenseData = {
-        labels: responseData.expenses.map(expense => expense.category),
-        values: responseData.expenses.map(expense => expense.amount),
-        descriptions: responseData.expenses.map(expense => expense.description || "Không có mô tả") // Sử dụng description, nếu không có thì giá trị mặc định
+        labels: responseData.expenses.map(expense => `${expense.categoryID} `), // Tạo nhãn từ category và description
+        values: responseData.expenses.map(expense => expense.amount), // Lấy giá trị amount
     };
-
+	
     // Cập nhật các biểu đồ
     updateRevenueChart(revenueChart, incomeData);
     updateExpenseChart(expenseChart, expenseData);
-
+	console.log(expenseData);
     // Cập nhật số liệu trên giao diện
-    document.getElementById('incomeAmount').textContent = `+${incomeData.values.reduce((a, b) => a + b, 0).toLocaleString()} đ`;
-    document.getElementById('outcomeAmount').textContent = `-${expenseData.values.reduce((a, b) => a + b, 0).toLocaleString()} đ`;
+    const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
+    const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
 
-    // Cập nhật danh sách mô tả
-    document.getElementById('incomeDescriptions').innerHTML = incomeData.descriptions
-        .map((desc, idx) => `<p>${incomeData.labels[idx]}: ${desc}</p>`)
-        .join('');
+    document.getElementById('incomeAmount').textContent = `+${totalIncome.toLocaleString()} đ`;
+    document.getElementById('outcomeAmount').textContent = `-${totalExpense.toLocaleString()} đ`;
 
-    document.getElementById('expenseDescriptions').innerHTML = expenseData.descriptions
-        .map((desc, idx) => `<p>${expenseData.labels[idx]}: ${desc}</p>`)
-        .join('');
+    // Cập nhật danh sách mô tả (nếu cần)
+    updateDescriptionList(incomeData.labels, expenseData.labels);
 }
 
 // Hàm lấy dữ liệu từ server

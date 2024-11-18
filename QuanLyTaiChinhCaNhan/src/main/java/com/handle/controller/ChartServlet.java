@@ -66,6 +66,7 @@ public class ChartServlet extends HttpServlet {
             responseData.put("rangeDate", rangeDate.toString());  // Sử dụng toString() để gửi theo định dạng yyyy-MM-dd - yyyy-MM-dd
             responseData.put("incomes", listIncome);
             responseData.put("expenses", listExpense);
+            
 
             // Gửi dữ liệu phản hồi
             response.setContentType("application/json");
