@@ -159,6 +159,7 @@ function saveTransaction() {
     const decription = document.getElementById("ghi-chu").value;
     
     pushDataForSaveTran(transactionType, categoryID, amount, date, decription);
+	addTransaction.closeButton();
 }
 
 addTransaction.openButton = function() {

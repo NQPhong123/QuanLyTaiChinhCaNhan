@@ -28,7 +28,6 @@ public abstract class TransactionDAO<T> {
 		if (amountRange != null) {
 			query.append(" AND amount BETWEEN ").append(amountRange.getMin()).append(" AND " + amountRange.getMax());
 		}
-		query.append("JOIN ")
 		return excuteQuerySearch(query.toString());
 	}
 
