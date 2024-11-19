@@ -54,17 +54,36 @@ function pullTransaction(searchData) {
     .then((data) => {
         if (data.status === "success") {
             console.log("Dữ liệu trả về từ server:", data);
-            
-            // Tạo mảng transactions chỉ với 3 trường cần thiết
-            const transactions = [
-                {
-                    categoryID: data.categoryID,
-                    rangeDate: data.rangeDate,
-                    amountRange: data.amountRange
-                }
-            ];
 
-            renderTransactionList(transactions);
+            // Xử lý dữ liệu từ expenseList
+            const expenseTransactions = data.expenseList.map((item) => ({
+                date: item.date,
+                amount: item.amount,
+                categoryID: item.categoryID,
+            }));
+
+            // Xử lý dữ liệu từ incomeList
+            const incomeTransactions = data.incomeList.map((item) => ({
+                date: item.date,
+                amount: item.amount,
+                categoryID: item.categoryID,
+            }));
+
+            // Gộp cả hai danh sách
+            const allTransactions = [...expenseTransactions, ...incomeTransactions];
+
+            // Thay thế dữ liệu vào template string
+            allTransactions.forEach(transaction => {
+                const output = `
+                    Dữ liệu ngày: ${transaction.date}
+                    Dữ liệu danh mục: ${transaction.categoryID}
+                    Dữ liệu số tiền: ${transaction.amount}
+                `;
+                console.log(output);
+            });
+
+            // Hoặc gọi hàm render nếu cần hiển thị
+            renderTransactionList(allTransactions);
         } else {
             console.error("Lỗi:", data.message);
         }
@@ -74,56 +93,80 @@ function pullTransaction(searchData) {
     });
 }
 
-const dummyData = [
-    { categoryID: 1, rangeDate: { startDate: [2024, 1, 1], endDate: [2024, 1, 31] }, amountRange: { min: 100, max: 500 } },
-    { categoryID: 2, rangeDate: { startDate: [2024, 2, 1], endDate: [2024, 2, 28] }, amountRange: { min: 200, max: 800 } }
-];
-renderTransactionList(dummyData);//tét thử renderTransactionListr có chạy ko 
-
-
-// Hàm hiển thị danh sách giao dịch
 function renderTransactionList(transactions) {
-    const transactionList = document.getElementById('transaction-list');
-    
-    // Kiểm tra nếu transactions không hợp lệ hoặc rỗng
-    if (!Array.isArray(transactions) || transactions.length === 0) {
-        console.error("Dữ liệu transactions không hợp lệ hoặc rỗng:", transactions);
-        transactionList.innerHTML = "<p>Không có giao dịch nào để hiển thị.</p>";
-        return;
-    }
+    const transactionContainer = document.getElementById("transaction-container");
+    transactionContainer.innerHTML = ""; // Xóa nội dung cũ
 
-    // Xóa nội dung cũ trước khi thêm mới
-    transactionList.innerHTML = '';
+    let previousDate = null;
+    let dailyTotal = 0;
 
-    const ul = document.createElement('ul');
+    transactions.forEach(transaction => {
+        const { date, categoryID, amount } = transaction;
 
-    transactions.forEach((transaction) => {
-        const li = document.createElement('li');
+        // Kiểm tra nếu ngày giao dịch đã thay đổi
+        if (date !== previousDate) {
+            // Nếu ngày giao dịch khác ngày trước đó, hiển thị tổng tiền của ngày trước đó
+            if (previousDate !== null) {
+                transactionContainer.innerHTML += `
+                    <div class="transaction-day-total">
+                        <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}">
+                            Tổng: ${dailyTotal.toLocaleString()} đ
+                        </span>
+                    </div>
+                `;
+            }
 
-        // Xử lý rangeDate
-        let formattedRangeDate = '';
-        if (transaction.rangeDate && typeof transaction.rangeDate === 'object') {
-            const endDate = transaction.rangeDate.endDate ? new Date(transaction.rangeDate.endDate.join('-')).toLocaleDateString() : 'Không xác định';
-            const startDate = transaction.rangeDate.startDate ? new Date(transaction.rangeDate.startDate.join('-')).toLocaleDateString() : 'Không xác định';
-            formattedRangeDate = `Từ ${startDate} đến ${endDate}`;
+            // Hiển thị ngày giao dịch mới
+            const formattedDate = new Date(date);
+            const formattedDateString = formattedDate.toLocaleDateString("vi-VN", { weekday: "long" });
+
+            transactionContainer.innerHTML += `
+                <div class="transaction-day">
+                    <div class="transaction-day-head">
+                        <div class="date">
+                            ${formattedDate.toLocaleDateString("vi-VN")}
+                            <span>${formattedDateString}</span>
+                        </div>
+                        <span class="amount total ${amount < 0 ? "negative" : "positive"}">
+                            ${amount.toLocaleString()} đ
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            // Đặt lại tổng tiền hàng ngày
+            dailyTotal = amount;
         } else {
-            formattedRangeDate = 'Không xác định';
+            // Nếu ngày giao dịch không thay đổi, cộng dồn vào tổng tiền
+            dailyTotal += amount;
         }
 
-        // Xử lý amountRange
-        let formattedAmountRange = '';
-        if (transaction.amountRange && typeof transaction.amountRange === 'object') {
-            const max = transaction.amountRange.max !== undefined ? transaction.amountRange.max : 'Không xác định';
-            const min = transaction.amountRange.min !== undefined ? transaction.amountRange.min : 'Không xác định';
-            formattedAmountRange = `Từ ${min} đến ${max}`;
-        } else {
-            formattedAmountRange = 'Không xác định';
-        }
+        // Hiển thị giao dịch
+        transactionContainer.innerHTML += `
+            <div class="transaction">
+                <div class="details">
+                    <div class="category">${categoryID}</div>
+                    <div class="amount ${amount < 0 ? "negative" : "positive"}">
+                        ${amount.toLocaleString()} đ
+                    </div>
+                </div>
+            </div>
+        `;
 
-        li.textContent = `Ngày: ${formattedRangeDate}, Khoảng tiền: ${formattedAmountRange}, Mã loại: ${transaction.categoryID}`;
-        ul.appendChild(li);
+        // Cập nhật ngày giao dịch trước đó
+        previousDate = date;
     });
 
-    transactionList.appendChild(ul);
+    // Hiển thị tổng tiền của ngày cuối cùng nếu có giao dịch
+    if (previousDate !== null) {
+        transactionContainer.innerHTML += `
+            <div class="transaction-day-total">
+                <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}">
+                    Tổng: ${dailyTotal.toLocaleString()} đ
+                </span>
+            </div>
+        `;
+    }
 }
+
 
