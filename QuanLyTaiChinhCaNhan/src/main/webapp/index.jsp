@@ -112,7 +112,7 @@ try {
 
 					<body>
 						<h1>Danh sách giao dịch</h1>
-						<div id="transaction-list">
+						<div id="transaction-container">
 							<!-- Dữ liệu giao dịch sẽ được hiển thị tại đây -->
 						</div>
 
