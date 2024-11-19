@@ -92,13 +92,13 @@ if (emailUser == null) {
 
     <div class="content">
         <div class="tabs">
-            <div class="tab active" onclick="showTab('last')">
+             <div class="tab active" onclick="showTabAndFetchData('last')">
                 Tháng trước (<%=request.getAttribute("lastMonth")%>)
             </div>
-            <div class="tab" onclick="showTab('current')">
+            <div class="tab" onclick="showTabAndFetchData('current')">
                 Hiện tại (<%=request.getAttribute("currentMonth")%>)
             </div>
-            <div class="tab" onclick="showTab('future')">
+            <div class="tab" onclick="showTabAndFetchData('future')">
                 Tương lai (<%=request.getAttribute("nextMonth")%>)
             </div>
         </div>
@@ -133,6 +133,7 @@ if (emailUser == null) {
     <script type="module" src="assets/js/fetchChartData.js"></script>
 
 
+     
     
 
   <script>
@@ -176,7 +177,7 @@ if (emailUser == null) {
         });
     }
 
-    function showTab(tab) {
+    function showTabAndFetchData(tab) {
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(t => t.classList.remove('active'));
 
@@ -193,12 +194,17 @@ if (emailUser == null) {
         }
 
         sendMonthToServer(selectedMonth);
-        
+        fetchChartData(selectedMonth); // Gọi hàm lấy dữ liệu và cập nhật biểu đồ
     }
 
     window.addEventListener('load', () => {
-        showTab('current');
+    	showTabAndFetchData('current');
     });
+    
+    
+    
+    
+    
 </script>
 </body>
 </html>

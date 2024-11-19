@@ -13,7 +13,12 @@ function updateExpenseChart(chart, data) {
     chart.data.datasets[0].backgroundColor = data.backgroundColor;
     chart.update();
 }
-
+// Hàm xóa dữ liệu biểu đồ cũ
+function clearChart(chart) {
+    chart.data.labels = [];
+    chart.data.datasets[0].data = [];
+    chart.update();
+}
 // Hàm để ánh xạ categoryID thành categoryName
 function mapCategoryIDToCategoryName(transactions, categories) {
     // Tạo Map để ánh xạ nhanh hơn
@@ -68,7 +73,9 @@ async function processChartData(responseData) {
         values: Array.from(groupedExpenseData.values()), // Lấy giá trị amount
         backgroundColor: Array.from(groupedExpenseData.keys()).map(categoryID => mapCategoryIDToColor(categoryID, categoryMap)), // Áp dụng màu sắc cho mỗi loại category
     };
-
+	// Xóa dữ liệu cũ trước khi cập nhật biểu đồ
+	   clearChart(revenueChart);
+	   clearChart(expenseChart);
     // Cập nhật các biểu đồ với màu sắc tương ứng
     updateRevenueChart(revenueChart, incomeData);
     updateExpenseChart(expenseChart, expenseData);
@@ -83,7 +90,7 @@ async function processChartData(responseData) {
     // Cập nhật danh sách mô tả (nếu cần)
 
 }
-
+window.processChartData = processChartData;
 // Hàm gộp các giao dịch cùng loại
 function groupTransactionsByCategory(transactions, categoryMap) {
     const groupedData = new Map();
@@ -96,7 +103,7 @@ function groupTransactionsByCategory(transactions, categoryMap) {
 }
 
 // Hàm lấy dữ liệu từ server
- function fetchChartData(selectedMonth) {
+   function fetchChartData(selectedMonth) {
     fetch('ChartServlet', {
         method: 'POST',
         headers: {
@@ -117,27 +124,10 @@ function groupTransactionsByCategory(transactions, categoryMap) {
             console.error("Error:", error);
         });
 }
+window.fetchChartData = fetchChartData;
 
 // Sử dụng khi người dùng chọn tab khác
- function showTabAndFetchData(tab) {
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t => t.classList.remove('active'));
 
-    let selectedMonth;
-    if (tab === 'last') {
-        tabs[0].classList.add('active');
-        selectedMonth = lastMonth;
-    } else if (tab === 'current') {
-        tabs[1].classList.add('active');
-        selectedMonth = currentMonth;
-    } else {
-        tabs[2].classList.add('active');
-        selectedMonth = nextMonth;
-    }
-	
-	console.log("Selected Month:", selectedMonth);
-    fetchChartData(selectedMonth);
-}
 
 // Tự động tải dữ liệu tháng hiện tại khi trang được tải
 window.addEventListener('load', () => {
