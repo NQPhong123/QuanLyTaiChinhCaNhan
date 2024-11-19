@@ -1,113 +1,146 @@
 // Hàm cập nhật biểu đồ thu nhập
 function updateRevenueChart(chart, data) {
-	chart.data.labels = data.labels;
-	chart.data.datasets[0].data = data.values;
-	chart.update();
+    chart.data.labels = data.labels;
+    chart.data.datasets[0].data = data.values;
+    chart.data.datasets[0].backgroundColor = data.backgroundColor;
+    chart.update();
 }
 
 // Hàm cập nhật biểu đồ chi tiêu
 function updateExpenseChart(chart, data) {
-	chart.data.labels = data.labels;
-	chart.data.datasets[0].data = data.values;
-	chart.update();
+    chart.data.labels = data.labels;
+    chart.data.datasets[0].data = data.values;
+    chart.data.datasets[0].backgroundColor = data.backgroundColor;
+    chart.update();
 }
 
 // Hàm để ánh xạ categoryID thành categoryName
 function mapCategoryIDToCategoryName(transactions, categories) {
-	// Tạo Map để ánh xạ nhanh hơn
-	const categoryMap = new Map(categories.map(cat => [String(cat.categoryID), cat.categoryName]));
+    // Tạo Map để ánh xạ nhanh hơn
+    const categoryMap = new Map(categories.map(cat => [String(cat.categoryID), cat.categoryName]));
 
-	// Ánh xạ categoryID của mỗi giao dịch thành categoryName
-	return transactions.map(tx => categoryMap.get(String(tx.categoryID)) || "Unknown");
+    // Ánh xạ categoryID của mỗi giao dịch thành categoryName
+    return transactions.map(tx => categoryMap.get(String(tx.categoryID)) || "Unknown");
 }
+
+// Hàm ánh xạ categoryID đến màu sắc
+function mapCategoryIDToColor(categoryID, categoryMap) {
+    // Tạo màu cho từng category ID bằng cách sử dụng vị trí của nó trong mảng
+    const categoryIndex = Array.from(categoryMap.keys()).indexOf(String(categoryID));
+    return colorArray[categoryIndex % colorArray.length]; // Sử dụng modulo để tránh lỗi tràn mảng
+}
+
+// Mảng màu sắc dùng để ánh xạ categoryID thành màu
+const colorArray = ['#36a2eb', '#ff6384', '#4bc0c0', '#9966ff', '#ff9f40', '#ffcd56', '#ff7564'];
 
 import { fetchCategories } from "./api/CategoryApi.js";
 
 // Hàm xử lý dữ liệu từ server và cập nhật biểu đồ
 async function processChartData(responseData) {
-	// Lấy danh sách categories từ API
-	const categories = await fetchCategories();
-	console.log("Categories:", categories); // Debug: Kiểm tra dữ liệu
+    // Lấy danh sách categories từ API
+    const categories = await fetchCategories();
+    console.log("Categories:", categories); // Debug: Kiểm tra dữ liệu
 
-	// Lấy labels của các giao dịch thu nhập và chi tiêu
-	const labelsIncomeArr = mapCategoryIDToCategoryName(responseData.incomes, categories);
-	const labelsExpenseArr = mapCategoryIDToCategoryName(responseData.expenses, categories);
+    // Tạo một bản đồ để ánh xạ categoryID -> categoryName
+    const categoryMap = new Map(categories.map(cat => [String(cat.categoryID), cat.categoryName]));
 
-	console.log("Labels Income:", labelsIncomeArr); // Debug: Kiểm tra dữ liệu
-	console.log("Labels Expense:", labelsExpenseArr); // Debug: Kiểm tra dữ liệu
+    // Ánh xạ categoryID của các giao dịch thu nhập và chi tiêu sang tên category
+    const labelsIncomeArr = mapCategoryIDToCategoryName(responseData.incomes, categories);
+    const labelsExpenseArr = mapCategoryIDToCategoryName(responseData.expenses, categories);
 
-	// Phân tích dữ liệu thu nhập
-	const incomeData = {
-		labels: labelsIncomeArr, // Tạo nhãn từ category
-		values: responseData.incomes.map(income => income.amount), // Lấy giá trị amount
-	};
+    console.log("Labels Income:", labelsIncomeArr); // Debug: Kiểm tra dữ liệu
+    console.log("Labels Expense:", labelsExpenseArr); // Debug: Kiểm tra dữ liệu
 
-	// Phân tích dữ liệu chi tiêu
-	const expenseData = {
-		labels: labelsExpenseArr, // Tạo nhãn từ category
-		values: responseData.expenses.map(expense => expense.amount), // Lấy giá trị amount
-	};
+    // Gộp các giá trị cùng loại
+    const groupedIncomeData = groupTransactionsByCategory(responseData.incomes, categoryMap);
+    const groupedExpenseData = groupTransactionsByCategory(responseData.expenses, categoryMap);
 
-	// Cập nhật các biểu đồ
-	updateRevenueChart(revenueChart, incomeData);
-	updateExpenseChart(expenseChart, expenseData);
+    // Phân tích dữ liệu thu nhập
+    const incomeData = {
+        labels: Array.from(groupedIncomeData.keys()).map(categoryID => categoryMap.get(categoryID)), // Tạo nhãn từ categoryName
+        values: Array.from(groupedIncomeData.values()), // Lấy giá trị amount
+        backgroundColor: Array.from(groupedIncomeData.keys()).map(categoryID => mapCategoryIDToColor(categoryID, categoryMap)), // Áp dụng màu sắc cho mỗi loại category
+    };
 
-	// Cập nhật tổng thu nhập và chi tiêu
-	const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
-	const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
+    // Phân tích dữ liệu chi tiêu
+    const expenseData = {
+        labels: Array.from(groupedExpenseData.keys()).map(categoryID => categoryMap.get(categoryID)), // Tạo nhãn từ categoryName
+        values: Array.from(groupedExpenseData.values()), // Lấy giá trị amount
+        backgroundColor: Array.from(groupedExpenseData.keys()).map(categoryID => mapCategoryIDToColor(categoryID, categoryMap)), // Áp dụng màu sắc cho mỗi loại category
+    };
 
-	document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
-	document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
+    // Cập nhật các biểu đồ với màu sắc tương ứng
+    updateRevenueChart(revenueChart, incomeData);
+    updateExpenseChart(expenseChart, expenseData);
 
-	// Cập nhật danh sách mô tả (nếu cần)
-	updateDescriptionList(incomeData.labels, expenseData.labels);
+    // Cập nhật tổng thu nhập và chi tiêu
+    const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
+    const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
+
+    document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
+    document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
+
+    // Cập nhật danh sách mô tả (nếu cần)
+
 }
 
+// Hàm gộp các giao dịch cùng loại
+function groupTransactionsByCategory(transactions, categoryMap) {
+    const groupedData = new Map();
+    transactions.forEach(tx => {
+        const categoryID = String(tx.categoryID);
+        const currentAmount = groupedData.get(categoryID) || 0;
+        groupedData.set(categoryID, currentAmount + tx.amount);
+    });
+    return groupedData;
+}
 
 // Hàm lấy dữ liệu từ server
-function fetchChartData(selectedMonth) {
-	fetch('ChartServlet', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ month: selectedMonth })
-	})
-		.then(response => response.json())
-		.then(data => {
-			console.log("Dữ liệu nhận từ server:", data); // In dữ liệu ra console để kiểm tra
-			if (data.status === "success") {
-				processChartData(data);
-			} else {
-				console.error("Error fetching chart data:", data.message);
-			}
-		})
-		.catch(error => {
-			console.error("Error:", error);
-		});
+ function fetchChartData(selectedMonth) {
+    fetch('ChartServlet', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ month: selectedMonth })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Dữ liệu nhận từ server:", data); // In dữ liệu ra console để kiểm tra
+            if (data.status === "success") {
+                processChartData(data);
+            } else {
+                console.error("Error fetching chart data:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
 }
 
 // Sử dụng khi người dùng chọn tab khác
-function showTabAndFetchData(tab) {
-	const tabs = document.querySelectorAll('.tab');
-	tabs.forEach(t => t.classList.remove('active'));
+ function showTabAndFetchData(tab) {
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(t => t.classList.remove('active'));
 
-	let selectedMonth;
-	if (tab === 'last') {
-		tabs[0].classList.add('active');
-		selectedMonth = lastMonth;
-	} else if (tab === 'current') {
-		tabs[1].classList.add('active');
-		selectedMonth = currentMonth;
-	} else {
-		tabs[2].classList.add('active');
-		selectedMonth = nextMonth;
-	}
-
-	fetchChartData(selectedMonth);
+    let selectedMonth;
+    if (tab === 'last') {
+        tabs[0].classList.add('active');
+        selectedMonth = lastMonth;
+    } else if (tab === 'current') {
+        tabs[1].classList.add('active');
+        selectedMonth = currentMonth;
+    } else {
+        tabs[2].classList.add('active');
+        selectedMonth = nextMonth;
+    }
+	
+	console.log("Selected Month:", selectedMonth);
+    fetchChartData(selectedMonth);
 }
 
 // Tự động tải dữ liệu tháng hiện tại khi trang được tải
 window.addEventListener('load', () => {
-	fetchChartData(currentMonth);
+    fetchChartData(currentMonth);
+
 });

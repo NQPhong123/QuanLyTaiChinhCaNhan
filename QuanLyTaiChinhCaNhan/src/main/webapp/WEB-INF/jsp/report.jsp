@@ -106,11 +106,11 @@ if (emailUser == null) {
         <div class="header-content">
             <div class="income">
                 <div class="title">Thu Nhập</div>
-                <span class="amount positive" id="incomeAmount">+698,626,843.72 đ</span>
+                <span class="amount positive" id="incomeAmount">+0 đ</span>
             </div>
             <div class="outcome">
                 <div class="title">Chi Tiêu</div>
-                <span class="amount negative" id="outcomeAmount">-562,687,198.62 đ</span>
+                <span class="amount negative" id="outcomeAmount">-0 đ</span>
             </div>
         </div>
 
@@ -131,6 +131,9 @@ if (emailUser == null) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/chart.js"></script>
     <script type="module" src="assets/js/fetchChartData.js"></script>
+
+
+    
 
   <script>
     const lastMonth = <%=request.getAttribute("lastMonth")%>;
@@ -190,6 +193,7 @@ if (emailUser == null) {
         }
 
         sendMonthToServer(selectedMonth);
+        
     }
 
     window.addEventListener('load', () => {
