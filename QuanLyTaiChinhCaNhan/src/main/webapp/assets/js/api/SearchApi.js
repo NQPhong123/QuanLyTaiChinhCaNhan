@@ -1,13 +1,14 @@
 const URL_SEARCH = "SearchServlet";
 
 // Hàm đẩy dữ liệu lên để tìm kiếm
-export function pushData(categoryID, rangeDate, amountRange) {
-    const searchData = {
-        categoryID: categoryID,
-        rangeDate: rangeDate,
-        amountRange: amountRange
-    };
-
+export function pushData(categoryID, rangeDate, amountRange, categoryName, URL_Image ) {
+	const searchData = {
+	    categoryID: categoryID,
+	    rangeDate: rangeDate,
+	    amountRange: amountRange,
+		URL_Image: URL_Image,
+	    categoryName: categoryName, 
+	};
     console.log("Dữ liệu gửi lên:", JSON.stringify(searchData));
 
     fetch(URL_SEARCH, {
@@ -38,135 +39,149 @@ export function pushData(categoryID, rangeDate, amountRange) {
 }
 
 function pullTransaction(searchData) {
+    // Ẩn bảng giao dịch JSP khi dữ liệu từ API JavaScript đang được tải
+    document.getElementById("jsp-transaction-container").style.display = "none"; 
+
     fetch(URL_SEARCH, {
-        method: 'POST',
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(searchData)
+        body: JSON.stringify(searchData),
     })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error("Không thể lấy dữ liệu từ server");
-        }
-        return response.json();
-    })
-    .then((data) => {
-        if (data.status === "success") {
-            console.log("Dữ liệu trả về từ server:", data);
-
-            // Xử lý dữ liệu từ expenseList
-            const expenseTransactions = data.expenseList.map((item) => ({
-                date: item.date,
-                amount: item.amount,
-                categoryID: item.categoryID,
-            }));
-
-            // Xử lý dữ liệu từ incomeList
-            const incomeTransactions = data.incomeList.map((item) => ({
-                date: item.date,
-                amount: item.amount,
-                categoryID: item.categoryID,
-            }));
-
-            // Gộp cả hai danh sách
-            const allTransactions = [...expenseTransactions, ...incomeTransactions];
-
-            // Thay thế dữ liệu vào template string
-            allTransactions.forEach(transaction => {
-                const output = `
-                    Dữ liệu ngày: ${transaction.date}
-                    Dữ liệu danh mục: ${transaction.categoryID}
-                    Dữ liệu số tiền: ${transaction.amount}
-                `;
-                console.log(output);
-            });
-
-            // Hoặc gọi hàm render nếu cần hiển thị
-            renderTransactionList(allTransactions);
-        } else {
-            console.error("Lỗi:", data.message);
-        }
-    })
-    .catch((error) => {
-        console.error("Lỗi:", error);
-    });
-}
-
-function renderTransactionList(transactions) {
-    const transactionContainer = document.getElementById("transaction-container");
-    transactionContainer.innerHTML = ""; // Xóa nội dung cũ
-
-    let previousDate = null;
-    let dailyTotal = 0;
-
-    transactions.forEach(transaction => {
-        const { date, categoryID, amount } = transaction;
-
-        // Kiểm tra nếu ngày giao dịch đã thay đổi
-        if (date !== previousDate) {
-            // Nếu ngày giao dịch khác ngày trước đó, hiển thị tổng tiền của ngày trước đó
-            if (previousDate !== null) {
-                transactionContainer.innerHTML += `
-                    <div class="transaction-day-total">
-                        <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}">
-                            Tổng: ${dailyTotal.toLocaleString()} đ
-                        </span>
-                    </div>
-                `;
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Không thể lấy dữ liệu từ server");
             }
+            return response.json();
+        })
+        .then((data) => {
+            if (data.status === "success") {
+                console.log("Dữ liệu trả về từ server:", data);
 
-            // Hiển thị ngày giao dịch mới
-            const formattedDate = new Date(date);
-            const formattedDateString = formattedDate.toLocaleDateString("vi-VN", { weekday: "long" });
+                // Hàm chuyển đổi định dạng ngày
+                const formatDate = (rawDate) => {
+                    if (Array.isArray(rawDate)) {
+                        const [year, month, day] = rawDate;
+                        return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                    } else if (typeof rawDate === "string") {
+                        const [year, month, day] = rawDate.split(",");
+                        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                    } else {
+                        console.error("Dữ liệu rawDate không hợp lệ:", rawDate);
+                        return null;
+                    }
+                };
 
-            transactionContainer.innerHTML += `
-                <div class="transaction-day">
-                    <div class="transaction-day-head">
-                        <div class="date">
-                            ${formattedDate.toLocaleDateString("vi-VN")}
-                            <span>${formattedDateString}</span>
-                        </div>
-                        <span class="amount total ${amount < 0 ? "negative" : "positive"}">
-                            ${amount.toLocaleString()} đ
-                        </span>
-                    </div>
-                </div>
-            `;
+                const expenseTransactions = data.expenseList.map((item) => ({
+                    date: formatDate(item.date),
+                    amount: item.amount > 0 ? -item.amount : item.amount,
+                    categoryID: item.categoryID,
+                    categoryName: data.categoryName,
+					URL_Image: data.URL_Image,
+                }));
 
-            // Đặt lại tổng tiền hàng ngày
-            dailyTotal = amount;
-        } else {
-            // Nếu ngày giao dịch không thay đổi, cộng dồn vào tổng tiền
-            dailyTotal += amount;
-        }
+                const incomeTransactions = data.incomeList.map((item) => ({
+                    date: formatDate(item.date),
+                    amount: item.amount,
+                    categoryID: item.categoryID,
+                    categoryName: data.categoryName,
+					URL_Image: data.URL_Image,
+                }));
 
-        // Hiển thị giao dịch
-        transactionContainer.innerHTML += `
-            <div class="transaction">
-                <div class="details">
-                    <div class="category">${categoryID}</div>
-                    <div class="amount ${amount < 0 ? "negative" : "positive"}">
-                        ${amount.toLocaleString()} đ
-                    </div>
-                </div>
-            </div>
-        `;
+                const allTransactions = [...expenseTransactions, ...incomeTransactions];
+                allTransactions.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        // Cập nhật ngày giao dịch trước đó
-        previousDate = date;
-    });
+                let previousDate = null;
+                let dailyTotal = 0;
+                let dailyTransactionsHTML = "";
+                const transactionContainer = document.getElementById("transaction-container");
+                transactionContainer.innerHTML = ""; // Xóa nội dung cũ
 
-    // Hiển thị tổng tiền của ngày cuối cùng nếu có giao dịch
-    if (previousDate !== null) {
-        transactionContainer.innerHTML += `
-            <div class="transaction-day-total">
-                <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}">
-                    Tổng: ${dailyTotal.toLocaleString()} đ
-                </span>
-            </div>
-        `;
-    }
+				allTransactions.forEach((transaction) => {
+				    const { date, categoryName, amount, URL_Image } = transaction;
+
+				    // Debugging to check if the URL_Image exists
+				    console.log("Category Image URL:", URL_Image);
+
+				    // Fallback image if URL_Image is not available
+				    const imageUrl = URL_Image || 'path_to_fallback_image.png';  // Use a fallback image if URL is missing
+
+				    if (date !== previousDate) {
+				        if (previousDate !== null) {
+				            transactionContainer.innerHTML += 
+				                `<div class="transaction-day">
+				                    <div class="transaction-day-head">
+				                        <div class="date">
+				                            ${new Date(previousDate).toLocaleDateString("vi-VN")}
+				                            <span>${new Date(previousDate).toLocaleDateString("vi-VN", { weekday: "long" })}</span>
+				                        </div>
+				                        <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}">
+				                            Tổng: ${dailyTotal.toLocaleString()} đ
+				                        </span>
+				                    </div>
+				                    <div class="transactions">
+				                        ${dailyTransactionsHTML}
+				                    </div>
+				                </div>`;
+				        }
+
+				        previousDate = date;
+				        dailyTotal = amount;
+				        dailyTransactionsHTML = 
+				            `<div class="transaction">
+				                <div class="icon">
+				                    <img src="image/${imageUrl}" alt="Category Image" />
+				                </div>
+				                <div class="details">
+				                    <div class="category">${categoryName}</div>
+				                    <div class="amount ${amount < 0 ? "negative" : "positive"}">
+				                        ${amount.toLocaleString()} đ
+				                    </div>
+				                </div>
+				            </div>`;
+				    } else {
+				        dailyTotal += amount;
+				        dailyTransactionsHTML += 
+				            `<div class="transaction">
+				                <div class="icon">
+				                    <img src="image/${imageUrl}" alt="Category Image" />
+				                </div>
+				                <div class="details">
+				                    <div class="category">${categoryName}</div>
+				                    <div class="amount ${amount < 0 ? "negative" : "positive"}">
+				                        ${amount.toLocaleString()} đ
+				                    </div>
+				                </div>
+				            </div>`;
+				    }
+				});
+
+				if (previousDate !== null) {
+				    transactionContainer.innerHTML += 
+				        `<div class="transaction-day">
+				            <div class="transaction-day-head">
+				                <div class="date">
+				                    ${new Date(previousDate).toLocaleDateString("vi-VN")}
+				                    <span>${new Date(previousDate).toLocaleDateString("vi-VN", { weekday: "long" })}</span>
+				                </div>
+				                <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}">
+				                    Tổng: ${dailyTotal.toLocaleString()} đ
+				                </span>
+				            </div>
+				            <div class="transactions">
+				                ${dailyTransactionsHTML}
+				            </div>
+				        </div>`;
+				}
+                // Hiển thị container chứa giao dịch từ JavaScript sau khi dữ liệu đã được xử lý
+                transactionContainer.style.display = "block"; // Hiển thị container
+            } else {
+                console.error("Lỗi:", data.message);
+            }
+        })
+        .catch((error) => {
+            console.error("Lỗi:", error);
+        });
 }
-
 
