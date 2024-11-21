@@ -74,29 +74,28 @@ async function processChartData(responseData) {
         backgroundColor: Array.from(groupedExpenseData.keys()).map(categoryID => mapCategoryIDToColor(categoryID, categoryMap)), // Áp dụng màu sắc cho mỗi loại category
     };
 	
-	// Cập nhật tổng thu nhập và chi tiêu
-	    const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
-	    const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
-
-	    document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
-	    document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
-		// Tính tổng của totalIncome và totalExpense
-		const totalAmount = totalIncome - totalExpense;
-
-		// Cập nhật tổng vào một phần tử HTML mới (ví dụ là totalAmountDisplay)
-		document.getElementById("totalAmountDisplay").textContent = `${totalAmount.toLocaleString()} đ`;
-
 	
+
+	// Cập nhật tổng thu nhập và chi tiêu
+	const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
+	const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
+
+	document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
+	document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
+	const totalAmount = totalIncome - totalExpense;
+
+	// Update the totalAmountDisplay element with the calculated total
+	document.getElementById("totalAmountDisplay").textContent = `${totalAmount.toLocaleString()} đ`;
+
 	// Xóa dữ liệu cũ trước khi cập nhật biểu đồ
-	   clearChart(revenueChart);
-	   clearChart(expenseChart);
-    // Cập nhật các biểu đồ với màu sắc tương ứng
-    updateRevenueChart(revenueChart, incomeData);
-    updateExpenseChart(expenseChart, expenseData);
+	clearChart(revenueChart);
+	clearChart(expenseChart);
+	// Cập nhật các biểu đồ với màu sắc tương ứng
+	updateRevenueChart(revenueChart, incomeData);
+	updateExpenseChart(expenseChart, expenseData);
+	// Cập nhật danh sách mô tả (nếu cần)
 
-    // Cập nhật danh sách mô tả (nếu cần)
-
-}
+	}
 window.processChartData = processChartData;
 // Hàm gộp các giao dịch cùng loại
 function groupTransactionsByCategory(transactions, categoryMap) {
@@ -141,4 +140,3 @@ window.addEventListener('load', () => {
     fetchChartData(currentMonth);
 
 });
-/*...*/
