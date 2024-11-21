@@ -58,36 +58,35 @@ try {
 	<%@ include file="/WEB-INF/includes/header.jsp"%>
 	<script type="module" src="assets/js/api/SearchApi.js"></script>
 	<script type="module" src="assets/js/SearchButton.js"></script>
-
 	<%
-	java.time.LocalDate currentDate = java.time.LocalDate.now();
+    java.time.LocalDate currentDate = java.time.LocalDate.now();
 
-	// Lấy tháng hiện tại
-	int currentMonth = currentDate.getMonthValue();
+    // Lấy tháng hiện tại
+    int currentMonth = currentDate.getMonthValue();
 
-	// Lấy tháng trước
-	int lastMonth = currentDate.minusMonths(1).getMonthValue();
+    // Lấy tháng trước
+    int lastMonth = currentDate.minusMonths(1).getMonthValue();
 
-	// Lấy tháng sau
-	int nextMonth = currentDate.plusMonths(1).getMonthValue();
+    // Lấy tháng sau
+    int nextMonth = currentDate.plusMonths(1).getMonthValue();
 
-	// Đặt các giá trị vào request để sử dụng trong JSP
-	request.setAttribute("currentMonth", currentMonth);
-	request.setAttribute("lastMonth", lastMonth);
-	request.setAttribute("nextMonth", nextMonth);
-	%>
+    // Đặt các giá trị vào request để sử dụng trong JSP
+    request.setAttribute("currentMonth", currentMonth);
+    request.setAttribute("lastMonth", lastMonth);
+    request.setAttribute("nextMonth", nextMonth);
+    %>
 
 
 	<div class="content">
 		<div class="transaction-content">
 			<div class="header-contain">
-				<div class="tab active" onclick="showTab('last')">
+				<div class="tab active" onclick="showTabAndFetchData('last')">
 					Tháng trước (<%=request.getAttribute("lastMonth")%>)
 				</div>
-				<div class="tab" onclick="showTab('current')">
+				<div class="tab" onclick="showTabAndFetchData('current')">
 					Hiện tại (<%=request.getAttribute("currentMonth")%>)
 				</div>
-				<div class="tab" onclick="showTab('future')">
+				<div class="tab" onclick="showTabAndFetchData('future')">
 					Tương lai (<%=request.getAttribute("nextMonth")%>)
 				</div>
 			</div>
@@ -97,19 +96,19 @@ try {
 					<div class="inflow-outflow">
 						<div class="income">
 							<div class="title">Tiền Vào</div>
-							<span class="amount positive" id="incomeAmount">+698,626,843.72
-								đ</span>
+							<span class="amount positive" id="incomeAmount">+0 đ</span>
 						</div>
 						<div class="outcome">
 							<div class="title">Tiền Ra</div>
-							<span class="amount negative" id="outcomeAmount">-562,687,198.62
-								đ</span>
+							<span class="amount negative" id="outcomeAmount">-0 đ</span>
 						</div>
-						<div class="balance">+135,939,645.10 đ</div>
+						<div class="balance" id="totalAmountDisplay">0 đ</div>
+						
 					</div>
-					<button id="addTransactionBtn">THÊM GIAO DỊCH(thay thế
-						bằng nút Lưu)</button>
-
+					
+						<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    					<script src="assets/js/chart.js"></script>
+    					<script type="module" src="assets/js/fetchChartData.js"></script>
 					<body>
 						<h1>Danh sách giao dịch</h1>
 						<div id="transaction-container">
@@ -204,127 +203,37 @@ try {
 
 
 
-					<div class="transactions" id="transactionsContainer">
-						<!-- Nội dung giao dịch sẽ được thêm vào đây -->
-
-					</div>
-
-					<script>
-                        document.getElementById('addTransactionBtn').addEventListener('click', function() {
-                            // Tạo giao dịch mới
-                            const transactionHtml = `
-                                <div class="transaction-day">
-                                    <div class="transaction-day-head">
-                                        <div class="date">
-                                            05 <span class="day">Monday</span> <span class="month">June 2023</span>
-                                        </div>
-                                        <span class="amount total negative">-25.00 đ</span>
-                                    </div>
-                                    <div class="transaction">
-                                        <div class="icon">
-                                            <img src="image/ic_category_foodndrink.png" alt="Food & Beverage" />
-                                        </div>
-                                        <div class="details">
-                                            <div class="category">Food & Beverage</div>
-                                            <div class="amount negative">-25.00 đ</div>
-                                        </div>
-                                    </div>
-                                    <div class="transaction">
-                                        <div class="icon">
-                                            <img src="image/ic_category_salary.png" alt="Salary" />
-                                        </div>
-                                        <div class="details">
-                                            <div class="category">Salary <span class="note">from mother</span></div>
-                                            <div class="amount positive">+750.00 đ</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-
-                            // Thêm giao dịch vào container
-                            document.getElementById('transactionsContainer').insertAdjacentHTML('beforeend', transactionHtml);
-                         
-                            
-                            
-                            
-                            // chỗ bê hết code index.js
-                            const transactions = document.querySelectorAll('.transaction');
-
-                            transactions.forEach(transaction => {
-                                transaction.addEventListener('click', () => {
-                                    const targetDiv = document.querySelector('.transaction-content');
-                                    const existingDetail = document.querySelector('.detail-transaction');
-                                    
-                                    // Remove existing detail-transaction if it exists
-                                    if (existingDetail) {
-                                        existingDetail.remove();
-                                    }
-
-                                    // Update margin for targetDiv (nếu cần)
-                                    targetDiv.style.margin = '0 0 0 250px';
-                                    
-                                    // Define the new HTML for the detail-transaction
-                                    const newHTML = `
-                                    <div class="detail-transaction"
-                                        style="width: 500px; height: 300px; margin: 50px 0 0 0; border: 1px solid #ccc; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                                            <h2 style="font-size: 18px; margin: 0;">Số giao dịch</h2>
-                                            <div>
-                                                <a href="#" id="btn-del" style="color: red; text-decoration: none; margin-right: 10px;">XÓA</a>
-                                                <a href="#" style="color: green; text-decoration: none;">SỬA</a>
-                                            </div>
-                                        </div>
-                                        <div style="display: flex; align-items: center; margin: 15px 0;">
-                                            <img src="https://i.imgur.com/fHXvUeO.png" alt="icon" style="width: 30px; height: 30px; margin-right: 10px;">
-                                            <div>
-                                                <h3 style="font-size: 16px; margin: 0;">Salary</h3>
-                                                <p style="color: gray; font-size: 14px; margin: 0;">Chi tiêu gia đình</p>
-                                                <p style="color: gray; font-size: 12px; margin: 0;">Thứ hai, 10/06/2019</p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p style="color: gray; font-size: 14px; margin: 0;">Tiền lương của vợ</p>
-                                            <h1 style="color: #00b2ff; font-size: 28px; margin: 5px 0;">+11,000,000.00</h1>
-                                        </div>
-                                    </div>`;
-
-                                    // Insert the new detail-transaction after the targetDiv
-                                    targetDiv.insertAdjacentHTML('afterend', newHTML);
-                                    
-                                    // Add event listener to the "XÓA" button to remove the detail-transaction
-                                    const btnDel = document.getElementById('btn-del');
-                                    btnDel.addEventListener('click', () => {
-                                        const detailToRemove = document.querySelector('.detail-transaction');
-                                        if (detailToRemove) {
-                                            detailToRemove.remove();
-                                        }
-                                    });
-                                });
-                            });
-                        
-                            window.addEventListener("load", () => {
-                                document.querySelector(".loading-screen").style.display = "none";
-                                document.getElementById("content").style.display = "block";
-                              });
-
-                        });
-                    </script>
+					
 					<script type="text/javascript" src="assets/js/index.js"></script>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<script>
-  
-    // Gán giá trị tháng từ JSP vào JavaScript
+  <script>
     const lastMonth = <%=request.getAttribute("lastMonth")%>;
     const currentMonth = <%=request.getAttribute("currentMonth")%>;
     const nextMonth = <%=request.getAttribute("nextMonth")%>;
 
-    // Hàm gửi tháng lên server
+    // Hàm lấy phạm vi ngày với định dạng YYYY-MM-DD - YYYY-MM-DD
+    function getRangeDate(year, month) {
+        const startDate = new Date(year, month - 1, 1); // ngày đầu tiên của tháng
+        const endDate = new Date(year, month, 0);       // ngày cuối cùng của tháng
+
+        const formattedStartDate = startDate.toISOString().split('T')[0];
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+
+        return `${formattedStartDate} - ${formattedEndDate}`;
+    }
+
     function sendMonthToServer(selectedMonth) {
-        const data = { month: selectedMonth };
+        const year = new Date().getFullYear();
+        const rangeDate = getRangeDate(year, selectedMonth); // Chuỗi định dạng YYYY-MM-DD - YYYY-MM-DD
+
+        const data = {
+            month: selectedMonth,
+            rangeDate: rangeDate  // Sử dụng định dạng chuẩn YYYY-MM-DD - YYYY-MM-DD
+        };
 
         fetch('ChartServlet', {
             method: 'POST',
@@ -341,9 +250,8 @@ try {
             console.error('Error:', error);
         });
     }
-    
- // Hàm hiển thị dữ liệu cho các tab tương ứng
-    function showTab(tab) {
+
+    function showTabAndFetchData(tab) {
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(t => t.classList.remove('active'));
 
@@ -351,27 +259,21 @@ try {
         if (tab === 'last') {
             tabs[0].classList.add('active');
             selectedMonth = lastMonth;
-            updateChart("+500,000,000 đ", "-300,000,000 đ", [4000000, 800000], [100000, 50000]);
         } else if (tab === 'current') {
             tabs[1].classList.add('active');
             selectedMonth = currentMonth;
-            updateChart("+698,626,843.72 đ", "-562,687,198.62 đ", [6000000, 1200000], [100000, 200000]);
-        } else if (tab === 'future') {
+        } else {
             tabs[2].classList.add('active');
             selectedMonth = nextMonth;
-            updateChart("+1,000,000,000 đ", "-400,000,000 đ", [8000000, 1600000], [200000, 100000]);
         }
 
-        // Gửi tháng đã chọn lên server
         sendMonthToServer(selectedMonth);
+        fetchChartData(selectedMonth); // Gọi hàm lấy dữ liệu và cập nhật biểu đồ
     }
- // Hàm cập nhật biểu đồ và số liệu
-    function updateChart(income, outcome, revenueData, expenseData) {
-        document.getElementById('incomeAmount').textContent = income;
-        document.getElementById('outcomeAmount').textContent = outcome;
 
-        
-    }
+    window.addEventListener('load', () => {
+    	showTabAndFetchData('current');
+    });
     </script>
 </body>
 
