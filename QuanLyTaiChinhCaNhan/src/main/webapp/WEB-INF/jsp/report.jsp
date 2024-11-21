@@ -114,19 +114,30 @@ if (emailUser == null) {
             </div>
         </div>
 
-        <div class="container">
-            <div class="chart-container">
-                <div>
-                    <h1>Khoản Thu</h1>
-                    <canvas id="revenueChart"></canvas>
-                </div>
-                <div>
-                    <h1>Khoản Chi</h1>
-                    <canvas id="expenseChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="container">
+			<div class="chart-container">
+				<div>
+					<h1>Khoản Thu</h1>
+					<canvas id="revenueChart"></canvas>
+				</div>
+				<div>
+					<h1>Khoản Chi</h1>
+					<canvas id="expenseChart"></canvas>
+				</div>
+			</div>
+			<!-- đừng xóa chỗ này, xóa là biểu đồ mất luôn á -->
+			<div class="">
+				<div class="title"></div>
+				<span class="amount positive" id="incomeAmount"></span>
+			</div>
+			<div class="outcome">
+				<div class="title"></div>
+				<span class="amount negative" id="outcomeAmount"></span>
+			</div>
+			<div class="balance" id="totalAmountDisplay" style="color: white;"></div>
+
+		</div>
+	</div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/chart.js"></script>
@@ -208,5 +219,4 @@ if (emailUser == null) {
 </script>
 </body>
 </html>
-<!-- ... -->
 <!-- ... -->
