@@ -4,14 +4,14 @@ public class Category {
 	private int categoryID;
 	private String CategoryName;
 	private String Type;
-	private String URLImage;
+	private String URL_Image;
 
-	public Category(int categoryID, String categoryName, String type, String URLImage) {
+	public Category(int categoryID, String categoryName, String type, String URL_Image) {
 		super();
 		this.categoryID = categoryID;
 		this.CategoryName = categoryName;
 		this.Type = type;
-		this.URLImage = URLImage;
+		this.URL_Image = URL_Image;
 	}
 
 	public int getCategoryID() {
@@ -39,16 +39,16 @@ public class Category {
 	}
 
 	public String getURLImage() {
-		return URLImage;
+		return URL_Image;
 	}
 
 	public void setURLImage(String URLImage) {
-		this.URLImage = URLImage;
+		this.URL_Image = URLImage;
 	}
 
 	@Override
 	public String toString() {
 		return "Category [categoryID=" + categoryID + ", CategoryName=" + CategoryName + ", Type=" + Type
-				+ ", URLImage=" + URLImage + "]";
+				+ ", URL_Image=" + URL_Image + "]";
 	}
 }
