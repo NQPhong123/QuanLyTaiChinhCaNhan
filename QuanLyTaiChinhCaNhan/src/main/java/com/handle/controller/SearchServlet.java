@@ -20,11 +20,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.handle.dao.ExpenseDAO;
 import com.handle.dao.IncomeDAO;
 import com.handle.model.Expense;
+import com.handle.dao.CategoryDAO;
 
 import com.handle.model.Income;
 import com.handle.model.RangeDate;
 import com.handle.model.SearchData;
 import com.handle.model.AmountRange;
+import com.handle.model.Category;
+
 
 @WebServlet("/SearchServlet")
 public class SearchServlet extends HttpServlet {
@@ -52,7 +55,13 @@ public class SearchServlet extends HttpServlet {
 			Integer categoryID = searchData.getCategoryID();
 			RangeDate rangeDate = searchData.getRangeDate();
 			AmountRange amountRange = searchData.getAmountRange();
+			// Lấy categoryName từ CategoryDAO
+			CategoryDAO categoryDAO = new CategoryDAO();
+			String categoryName = categoryDAO.getCategoryNameByID(categoryID); // Truy vấn tên category
+			String URL_Image = categoryDAO.getCategoryImageURLByID(categoryID); // Truy vấn tên category
 
+		
+		
 			Integer userID = null;
 			HttpSession session = request.getSession(false);
 			if (session != null) {
@@ -67,10 +76,13 @@ public class SearchServlet extends HttpServlet {
 			responseData.put("categoryID", categoryID);
 			responseData.put("rangeDate",rangeDate);
 			responseData.put("amountRange", amountRange);
-
+            		responseData.put("categoryName", categoryName); // Thêm categoryName vào response
+            		responseData.put("URL_Image", URL_Image);
+            
 			// Lấy dữ liệu thu nhập và chi tiêu theo categoryID, date, amountRange
 			IncomeDAO incomes = new IncomeDAO();
 			ExpenseDAO expenses = new ExpenseDAO();
+			
 			List<Income> listIncome = incomes.searchTransactions(userID, categoryID, rangeDate, amountRange);
 			List<Expense> listExpense = expenses.searchTransactions(userID, categoryID, rangeDate, amountRange);
 
