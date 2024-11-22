@@ -76,8 +76,8 @@ public class SearchServlet extends HttpServlet {
 			responseData.put("categoryID", categoryID);
 			responseData.put("rangeDate",rangeDate);
 			responseData.put("amountRange", amountRange);
-            		responseData.put("categoryName", categoryName); // Thêm categoryName vào response
-            		responseData.put("URL_Image", URL_Image);
+            responseData.put("categoryName", categoryName); // Thêm categoryName vào response
+            responseData.put("URL_Image", URL_Image);
             
 			// Lấy dữ liệu thu nhập và chi tiêu theo categoryID, date, amountRange
 			IncomeDAO incomes = new IncomeDAO();

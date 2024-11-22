@@ -26,9 +26,7 @@ export function pushData(categoryID, rangeDate, amountRange, categoryName, URL_I
     })
     .then((data) => {
         if (data.status === "success") {
-            console.log("Success:", data);
-            // Sau khi đẩy dữ liệu thành công, gọi hàm lấy dữ liệu
-            pullTransaction(searchData);
+			return data // trả về api search
         } else {
             console.error("Lỗi:", data.message);
         }
@@ -38,7 +36,7 @@ export function pushData(categoryID, rangeDate, amountRange, categoryName, URL_I
     });
 }
 
-function pullTransaction(searchData) {
+/*function pullTransaction(searchData) {
     // Ẩn bảng giao dịch JSP khi dữ liệu từ API JavaScript đang được tải
     document.getElementById("jsp-transaction-container").style.display = "none"; 
 
@@ -185,3 +183,4 @@ function pullTransaction(searchData) {
         });
 }
 
+*/
