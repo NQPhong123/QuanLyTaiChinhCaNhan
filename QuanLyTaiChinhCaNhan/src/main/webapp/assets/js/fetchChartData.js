@@ -40,8 +40,11 @@ const colorArray = ['#36a2eb', '#ff6384', '#4bc0c0', '#9966ff', '#ff9f40', '#ffc
 
 import { fetchCategories } from "./api/CategoryApi.js";
 
+
+
+
 // Hàm xử lý dữ liệu từ server và cập nhật biểu đồ
-async function processChartData(responseData) {
+export async function processChartData(responseData) {
     // Lấy danh sách categories từ API
     const categories = await fetchCategories();
     console.log("Categories:", categories); // Debug: Kiểm tra dữ liệu
@@ -50,15 +53,15 @@ async function processChartData(responseData) {
     const categoryMap = new Map(categories.map(cat => [String(cat.categoryID), cat.categoryName]));
 
     // Ánh xạ categoryID của các giao dịch thu nhập và chi tiêu sang tên category
-    const labelsIncomeArr = mapCategoryIDToCategoryName(responseData.incomes, categories);
-    const labelsExpenseArr = mapCategoryIDToCategoryName(responseData.expenses, categories);
+    const labelsIncomeArr = mapCategoryIDToCategoryName(responseData.incomeList, categories);
+    const labelsExpenseArr = mapCategoryIDToCategoryName(responseData.expenseList, categories);
 
     console.log("Labels Income:", labelsIncomeArr); // Debug: Kiểm tra dữ liệu
     console.log("Labels Expense:", labelsExpenseArr); // Debug: Kiểm tra dữ liệu
 
     // Gộp các giá trị cùng loại
-    const groupedIncomeData = groupTransactionsByCategory(responseData.incomes, categoryMap);
-    const groupedExpenseData = groupTransactionsByCategory(responseData.expenses, categoryMap);
+    const groupedIncomeData = groupTransactionsByCategory(responseData.incomeList, categoryMap);
+    const groupedExpenseData = groupTransactionsByCategory(responseData.expenseList, categoryMap);
 
     // Phân tích dữ liệu thu nhập
     const incomeData = {

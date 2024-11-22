@@ -28,7 +28,6 @@ import com.handle.model.SearchData;
 import com.handle.model.AmountRange;
 import com.handle.model.Category;
 
-
 @WebServlet("/SearchServlet")
 public class SearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,7 +44,6 @@ public class SearchServlet extends HttpServlet {
 			}
 			String jsonString = sb.toString();
 
-			
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new JavaTimeModule());
 			// Ánh xạ JSON vào đối tượng SearchData
@@ -59,9 +57,9 @@ public class SearchServlet extends HttpServlet {
 			CategoryDAO categoryDAO = new CategoryDAO();
 			String categoryName = categoryDAO.getCategoryNameByID(categoryID); // Truy vấn tên category
 			String URL_Image = categoryDAO.getCategoryImageURLByID(categoryID); // Truy vấn tên category
+			
+			 
 
-		
-		
 			Integer userID = null;
 			HttpSession session = request.getSession(false);
 			if (session != null) {
@@ -74,15 +72,17 @@ public class SearchServlet extends HttpServlet {
 			responseData.put("status", "success");
 			responseData.put("message", "Dữ liệu đã được nhận");
 			responseData.put("categoryID", categoryID);
-			responseData.put("rangeDate",rangeDate);
+			responseData.put("rangeDate", rangeDate);
 			responseData.put("amountRange", amountRange);
-            responseData.put("categoryName", categoryName); // Thêm categoryName vào response
-            responseData.put("URL_Image", URL_Image);
-            
+			
+			  responseData.put("categoryName", categoryName); // Thêm categoryName vào response
+			   responseData.put("URL_Image", URL_Image);
+			 
+
 			// Lấy dữ liệu thu nhập và chi tiêu theo categoryID, date, amountRange
 			IncomeDAO incomes = new IncomeDAO();
 			ExpenseDAO expenses = new ExpenseDAO();
-			
+
 			List<Income> listIncome = incomes.searchTransactions(userID, categoryID, rangeDate, amountRange);
 			List<Expense> listExpense = expenses.searchTransactions(userID, categoryID, rangeDate, amountRange);
 

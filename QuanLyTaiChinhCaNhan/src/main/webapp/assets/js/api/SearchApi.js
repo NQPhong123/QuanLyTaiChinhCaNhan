@@ -1,40 +1,41 @@
 const URL_SEARCH = "SearchServlet";
 
-
 // Hàm đẩy dữ liệu lên để tìm kiếm
-export function pushData(categoryID, rangeDate, amountRange, categoryName, URL_Image) {
-	const searchData = {
-		categoryID: categoryID,
-		rangeDate: rangeDate,
-		amountRange: amountRange,
-		URL_Image: URL_Image,
-		categoryName: categoryName,
-	};
-	console.log("Dữ liệu gửi lên:", JSON.stringify(searchData));
+export function pushData(categoryID, rangeDate, amountRange) {
+    const searchData = {
+        categoryID: categoryID,
+        rangeDate: rangeDate,
+        amountRange: amountRange,
+    };
+    console.log("Dữ liệu gửi lên:", JSON.stringify(searchData));
 
-	fetch(URL_SEARCH, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(searchData),
-	})
-		.then((response) => {
-			if (!response.ok) {
-				throw new Error("Đẩy dữ liệu để tìm kiếm không thành công");
-			}
-			return response.json();
-		})
-		.then(data => {
-			if (data.status === "success") {
-				console.log("dữ liệu server trả về");
-				return data;
-			}
-		})
-		.catch((error) => {
-			console.error("Lỗi:", error);
-		});
+    return fetch(URL_SEARCH, { // Thay đổi: trả về Promise từ fetch
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(searchData),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Đẩy dữ liệu để tìm kiếm không thành công");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === "success") {
+                console.log("Dữ liệu nhận được từ server:", data);
+                return data; // Trả về dữ liệu cho các hàm khác sử dụng
+            } else {
+                throw new Error(data.message || "Lỗi không xác định");
+            }
+        })
+        .catch((error) => {
+            console.error("Lỗi:", error);
+            throw error; // Truyền lỗi lên chuỗi gọi
+        });
 }
+
 
 
 function processTransactions(allTransactions, transactionContainer) {

@@ -98,7 +98,6 @@ customDateButton.className = "modal";
 
 
 import { fetchCategories } from "./api/CategoryApi.js";
-import { pushData } from "./api/SearchApi.js";
 
 // hàm tạo ra dánh sách thể loại
 // async và await là để chờ hàm có await thực hiện xong thì nó mới bắt đầu thực hiện để đồng bộ dữ liệu
@@ -138,27 +137,36 @@ function convertDateToISO(dateString) {
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
-// hàm lấy dữ liệu(ngày, số tiền) để tìm kiếm giao dịch người dùng chọn và đẩy dữ liệu lên server xử lý
+import { pushData } from "./api/SearchApi.js";
+import { processChartData } from './fetchChartData.js';
+
 function getDataForSearch() {
-	document.getElementById('excuteSearch-button').addEventListener('click', function() {
-		const amountRangeArr = slider.noUiSlider.get(); // lấy khoảng giá trị của amount range trả về một mảng[min,max]
-		const dateRangeValue = document.querySelector('#btn-open-time-range span').textContent;
-		const [startDate,endDate] = dateRangeValue.split('-');
-		const amountRange = {
-			min: parseInt(amountRangeArr[0]),
-			max: parseInt(amountRangeArr[1])
-		}
-		const categoryID = document.querySelector("#choose-category-btn-left span").getAttribute('id');
-		const rangeDate = {
-			startDate: convertDateToISO(startDate),
-			endDate: convertDateToISO(endDate)
-		}
-		pushData(categoryID, rangeDate, amountRange);
-		console.log("categoryID " + categoryID);
-		console.log("rangeDate " + rangeDate);
-		console.log("Current slider value:", amountRange);
-	})
+    document.getElementById('excuteSearch-button').addEventListener('click', function () {
+        const amountRangeArr = slider.noUiSlider.get(); // Lấy khoảng giá trị
+        const dateRangeValue = document.querySelector('#btn-open-time-range span').textContent;
+        const [startDate, endDate] = dateRangeValue.split('-');
+        const amountRange = {
+            min: parseInt(amountRangeArr[0]),
+            max: parseInt(amountRangeArr[1])
+        };
+        const categoryID = document.querySelector("#choose-category-btn-left span").getAttribute('id');
+        const rangeDate = {
+            startDate: convertDateToISO(startDate),
+            endDate: convertDateToISO(endDate)
+        };
+
+        // Gọi pushData và xử lý dữ liệu nhận được
+        pushData(categoryID, rangeDate, amountRange)
+            .then(responseData => {
+                // Truyền dữ liệu vào processChartData
+                processChartData(responseData);
+            })
+            .catch(error => {
+                console.error("Lỗi trong quá trình tìm kiếm:", error);
+            });
+    });
 }
+
 
 function nouiSliders() {
 	const slider = document.getElementById('slider');
