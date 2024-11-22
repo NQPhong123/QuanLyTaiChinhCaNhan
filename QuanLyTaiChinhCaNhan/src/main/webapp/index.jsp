@@ -59,22 +59,22 @@ try {
 	<script type="module" src="assets/js/api/SearchApi.js"></script>
 	<script type="module" src="assets/js/SearchButton.js"></script>
 	<%
-    java.time.LocalDate currentDate = java.time.LocalDate.now();
+	java.time.LocalDate currentDate = java.time.LocalDate.now();
 
-    // Lấy tháng hiện tại
-    int currentMonth = currentDate.getMonthValue();
+	// Lấy tháng hiện tại
+	int currentMonth = currentDate.getMonthValue();
 
-    // Lấy tháng trước
-    int lastMonth = currentDate.minusMonths(1).getMonthValue();
+	// Lấy tháng trước
+	int lastMonth = currentDate.minusMonths(1).getMonthValue();
 
-    // Lấy tháng sau
-    int nextMonth = currentDate.plusMonths(1).getMonthValue();
+	// Lấy tháng sau
+	int nextMonth = currentDate.plusMonths(1).getMonthValue();
 
-    // Đặt các giá trị vào request để sử dụng trong JSP
-    request.setAttribute("currentMonth", currentMonth);
-    request.setAttribute("lastMonth", lastMonth);
-    request.setAttribute("nextMonth", nextMonth);
-    %>
+	// Đặt các giá trị vào request để sử dụng trong JSP
+	request.setAttribute("currentMonth", currentMonth);
+	request.setAttribute("lastMonth", lastMonth);
+	request.setAttribute("nextMonth", nextMonth);
+	%>
 
 
 	<div class="content">
@@ -103,114 +103,117 @@ try {
 							<span class="amount negative" id="outcomeAmount">-0 đ</span>
 						</div>
 						<div class="balance" id="totalAmountDisplay">0 đ</div>
-						
+
 					</div>
-					
-						<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    					<script src="assets/js/chart.js"></script>
-    					<script type="module" src="assets/js/fetchChartData.js"></script>
+
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					<script src="assets/js/chart.js"></script>
+					<script type="module" src="assets/js/fetchChartData.js"></script>
 					<body>
-						<h1>Danh sách giao dịch</h1>
-						<div id="transaction-container">
-							<!-- Dữ liệu giao dịch sẽ được hiển thị tại đây -->
+
+
+						<div id="transaction-container" style="display: none;">
+							<!-- Dữ liệu giao dịch từ JavaScript sẽ được hiển thị ở đây -->
 						</div>
 
-						<script type="module" src="assets/js/api/SearchApi.js"></script>
+						<div id="jsp-transaction-container">
+							<table>
+								<tbody>
+									<!-- Dữ liệu giao dịch từ JSP sẽ được hiển thị ở đây -->
+									<%
+									String previousDate = null; // Biến để lưu trữ ngày giao dịch trước đó
+									double dailyTotal = 0; // Biến để lưu trữ tổng tiền của giao dịch trong ngày
+
+									while (rs.next()) {
+										String date = rs.getString("TransactionDate");
+										String categoryName = rs.getString("CategoryName");
+										double amount = rs.getDouble("Amount");
+										String imageUrl = "image/" + rs.getString("URL_Image");
+
+										// Kiểm tra nếu ngày giao dịch đã thay đổi
+										if (!date.equals(previousDate)) {
+											// Nếu ngày giao dịch khác ngày trước đó, hiển thị tiêu đề ngày giao dịch
+											if (previousDate != null) { // Nếu không phải là lần đầu tiên, hiển thị tổng tiền của ngày trước đó
+									%>
+									<div class="transaction-day-total">
+										<span
+											class="amount total <%=dailyTotal < 0 ? "negative" : "positive"%>">
+											Tổng: <%=String.format("%,.2f đ", dailyTotal)%>
+										</span>
+									</div>
+									<%
+									}
+									// Hiển thị tiêu đề ngày giao dịch mới
+									%>
+									<div class="transaction-day">
+										<div class="transaction-day-head">
+											<div class="date">
+												<%=date%>
+												<span><%=new java.text.SimpleDateFormat("EEEE").format(rs.getDate("TransactionDate"))%></span>
+											</div>
+											<span
+												class="amount total <%=amount < 0 ? "negative" : "positive"%>"
+												style="color: white;"> <%=String.format("%,.2f đ", amount)%>
+											</span>
+										</div>
+										<%
+										// Đặt lại tổng tiền hàng ngày
+										dailyTotal = amount; // Khởi tạo tổng tiền cho ngày mới
+										} else {
+										// Nếu ngày giao dịch không thay đổi, cộng dồn vào tổng tiền
+										dailyTotal += amount;
+										}
+
+										// Hiển thị giao dịch
+										%>
+										<div class="transaction">
+											<div class="icon">
+												<img src="<%=imageUrl%>" />
+											</div>
+											<div class="details">
+												<div class="category"><%=categoryName%></div>
+												<div
+													class="amount <%=amount < 0 ? "negative" : "positive"%>">
+													<%=String.format("%,.2f đ", amount)%>
+												</div>
+											</div>
+										</div>
+										<%
+										// Cập nhật ngày giao dịch trước đó
+										previousDate = date;
+										} // Kết thúc vòng lặp while
+
+										// Hiển thị tổng tiền cho ngày cuối cùng nếu có giao dịch
+										if (previousDate != null) {
+										%>transaction-day-total
+										<div class="transaction-day-total">
+											<span
+												class="amount total <%=dailyTotal < 0 ? "negative" : "positive"%>">
+												Tổng: <%=String.format("%,.2f đ", dailyTotal)%>
+											</span>
+										</div>
+										<%
+										}
+										%>
+									</div>
+
+									<script type="module" src="assets/js/api/SearchApi.js"></script>
 					</body>
 
 
-					<tbody>
-						<%
-						String previousDate = null; // Biến để lưu trữ ngày giao dịch trước đó
-						double dailyTotal = 0; // Biến để lưu trữ tổng tiền của giao dịch trong ngày
-
-						while (rs.next()) {
-							String date = rs.getString("TransactionDate");
-							String categoryName = rs.getString("CategoryName");
-							double amount = rs.getDouble("Amount");
-							String imageUrl = "image/" + rs.getString("URL_Image");
-
-							// Kiểm tra nếu ngày giao dịch đã thay đổi
-							if (!date.equals(previousDate)) {
-								// Nếu ngày giao dịch khác ngày trước đó, hiển thị tiêu đề ngày giao dịch
-								if (previousDate != null) { // Nếu không phải là lần đầu tiên, hiển thị tổng tiền của ngày trước đó
-						%>
-						<div class="transaction-day-total">
-							<span
-								class="amount total <%=dailyTotal < 0 ? "negative" : "positive"%>">
-								Tổng: <%=String.format("%,.2f đ", dailyTotal)%>
-							</span>
-						</div>
-						<%
-						}
-						// Hiển thị tiêu đề ngày giao dịch mới
-						%>
-						<div class="transaction-day">
-							<div class="transaction-day-head">
-								<div class="date">
-									<%=date%>
-									<span><%=new java.text.SimpleDateFormat("EEEE").format(rs.getDate("TransactionDate"))%></span>
-								</div>
-								<span
-									class="amount total <%=amount < 0 ? "negative" : "positive"%>">
-									<%=String.format("%,.2f đ", amount)%>
-								</span>
-							</div>
-							<%
-							// Đặt lại tổng tiền hàng ngày
-							dailyTotal = amount; // Khởi tạo tổng tiền cho ngày mới
-							} else {
-							// Nếu ngày giao dịch không thay đổi, cộng dồn vào tổng tiền
-							dailyTotal += amount;
-							}
-
-							// Hiển thị giao dịch
-							%>
-							<div class="transaction">
-								<div class="icon">
-									<img src="<%=imageUrl%>" />
-								</div>
-								<div class="details">
-									<div class="category"><%=categoryName%></div>
-									<div class="amount <%=amount < 0 ? "negative" : "positive"%>">
-										<%=String.format("%,.2f đ", amount)%>
-									</div>
-								</div>
-							</div>
-							<%
-							// Cập nhật ngày giao dịch trước đó
-							previousDate = date;
-							} // Kết thúc vòng lặp while
-
-							// Hiển thị tổng tiền cho ngày cuối cùng nếu có giao dịch
-							if (previousDate != null) {
-							%>
-							<div class="transaction-day-total">
-								<span
-									class="amount total <%=dailyTotal < 0 ? "negative" : "positive"%>">
-									Tổng: <%=String.format("%,.2f đ", dailyTotal)%>
-								</span>
-							</div>
-							<%
-							}
-							%>
-						</div>
-						<!-- Kết thúc div.transaction-day -->
-					</tbody>
 
 
 
 
 
 
-					
 					<script type="text/javascript" src="assets/js/index.js"></script>
 				</div>
 			</div>
 		</div>
 	</div>
 
-  <script>
+	<script>
     const lastMonth = <%=request.getAttribute("lastMonth")%>;
     const currentMonth = <%=request.getAttribute("currentMonth")%>;
     const nextMonth = <%=request.getAttribute("nextMonth")%>;
@@ -274,6 +277,8 @@ try {
     window.addEventListener('load', () => {
     	showTabAndFetchData('current');
     });
+
+
     </script>
 </body>
 
