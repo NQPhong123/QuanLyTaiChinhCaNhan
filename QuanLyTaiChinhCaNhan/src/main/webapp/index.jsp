@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*"%>
 <%
 String emailUser = (String) session.getAttribute("email");
 if (emailUser == null) {
@@ -7,37 +8,6 @@ if (emailUser == null) {
 	return;
 }
 %>
-
-
-
-<%@ page import="java.sql.*"%>
-<%
-// Database connection parameters
-String url = "jdbc:mysql://localhost:3306/quanlychitieu";
-String user = "root";
-String password = "";
-
-Connection conn = null;
-Statement stmt = null;
-ResultSet rs = null;
-
-try {
-	// Load JDBC driver (Ensure MySQL Connector/J is added to your project)
-	Class.forName("com.mysql.cj.jdbc.Driver");
-	conn = DriverManager.getConnection(url, user, password);
-
-	// SQL Query to fetch both expenses and income
-	String query = "SELECT e.Date AS TransactionDate, c.CategoryName, e.Amount * -1 AS Amount, c.Type, c.URL_Image "
-	+ "FROM expense e " + "JOIN category c ON e.CategoryID = c.CategoryID " + "UNION ALL "
-	+ "SELECT i.Date AS TransactionDate, c.CategoryName, i.Amount, c.Type, c.URL_Image " + "FROM income i "
-	+ "JOIN category c ON i.CategoryID = c.CategoryID " + "ORDER BY TransactionDate;";
-
-	stmt = conn.createStatement();
-	rs = stmt.executeQuery(query);
-%>
-
-
-
 
 <!DOCTYPE html>
 <html>
@@ -117,95 +87,13 @@ try {
 						</div>
 
 						<div id="jsp-transaction-container">
-							<table>
-								<tbody>
-									<!-- Dữ liệu giao dịch từ JSP sẽ được hiển thị ở đây -->
-									<%
-									String previousDate = null; // Biến để lưu trữ ngày giao dịch trước đó
-									double dailyTotal = 0; // Biến để lưu trữ tổng tiền của giao dịch trong ngày
+							<div id="allDetails"></div>
 
-									while (rs.next()) {
-										String date = rs.getString("TransactionDate");
-										String categoryName = rs.getString("CategoryName");
-										double amount = rs.getDouble("Amount");
-										String imageUrl = "image/" + rs.getString("URL_Image");
 
-										// Kiểm tra nếu ngày giao dịch đã thay đổi
-										if (!date.equals(previousDate)) {
-											// Nếu ngày giao dịch khác ngày trước đó, hiển thị tiêu đề ngày giao dịch
-											if (previousDate != null) { // Nếu không phải là lần đầu tiên, hiển thị tổng tiền của ngày trước đó
-									%>
-									<div class="transaction-day-total">
-										<span
-											class="amount total <%=dailyTotal < 0 ? "negative" : "positive"%>">
-											Tổng: <%=String.format("%,.2f đ", dailyTotal)%>
-										</span>
-									</div>
-									<%
-									}
-									// Hiển thị tiêu đề ngày giao dịch mới
-									%>
-									<div class="transaction-day">
-										<div class="transaction-day-head">
-											<div class="date">
-												<%=date%>
-												<span><%=new java.text.SimpleDateFormat("EEEE").format(rs.getDate("TransactionDate"))%></span>
-											</div>
-											<span
-												class="amount total <%=amount < 0 ? "negative" : "positive"%>"
-												style="color: white;"> <%=String.format("%,.2f đ", amount)%>
-											</span>
-										</div>
-										<%
-										// Đặt lại tổng tiền hàng ngày
-										dailyTotal = amount; // Khởi tạo tổng tiền cho ngày mới
-										} else {
-										// Nếu ngày giao dịch không thay đổi, cộng dồn vào tổng tiền
-										dailyTotal += amount;
-										}
-
-										// Hiển thị giao dịch
-										%>
-										<div class="transaction">
-											<div class="icon">
-												<img src="<%=imageUrl%>" />
-											</div>
-											<div class="details">
-												<div class="category"><%=categoryName%></div>
-												<div
-													class="amount <%=amount < 0 ? "negative" : "positive"%>">
-													<%=String.format("%,.2f đ", amount)%>
-												</div>
-											</div>
-										</div>
-										<%
-										// Cập nhật ngày giao dịch trước đó
-										previousDate = date;
-										} // Kết thúc vòng lặp while
-
-										// Hiển thị tổng tiền cho ngày cuối cùng nếu có giao dịch
-										if (previousDate != null) {
-										%>transaction-day-total
-										<div class="transaction-day-total">
-											<span
-												class="amount total <%=dailyTotal < 0 ? "negative" : "positive"%>">
-												Tổng: <%=String.format("%,.2f đ", dailyTotal)%>
-											</span>
-										</div>
-										<%
-										}
-										%>
-									</div>
-
-									<script type="module" src="assets/js/api/SearchApi.js"></script>
+							<script type="module" src="assets/js/fetchChartData.js"></script>
+							<script type="module" src="assets/js/index.js"></script>
+							<script type="module" src="assets/js/api/SearchApi.js"></script>
 					</body>
-
-
-
-
-
-
-
 
 					<script type="text/javascript" src="assets/js/index.js"></script>
 				</div>
@@ -282,18 +170,6 @@ try {
     </script>
 </body>
 
-<%
-} catch (Exception e) {
-e.printStackTrace();
-} finally {
-// Close resources
-if (rs != null)
-	rs.close();
-if (stmt != null)
-	stmt.close();
-if (conn != null)
-	conn.close();
-}
-%>
+
 
 </html>
