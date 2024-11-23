@@ -130,13 +130,18 @@ if (emailUser == null) {
 				<div class="title"></div>
 				<span class="amount positive" id="incomeAmount"></span>
 			</div>
+			<div  id="allDetails"></div>
+			<style>
+        		#allDetails{
+            display: none;
+        			}
+    		</style>
 			<div class="outcome">
 				<div class="title"></div>
 				<span class="amount negative" id="outcomeAmount"></span>
 			</div>
 			<div class="balance" id="totalAmountDisplay" style="color: white;"></div>
-
-		</div>
+		</div >
 	</div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
