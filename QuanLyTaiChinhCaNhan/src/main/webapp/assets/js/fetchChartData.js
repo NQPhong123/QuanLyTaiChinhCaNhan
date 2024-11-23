@@ -45,12 +45,16 @@ import { fetchCategories } from "./api/CategoryApi.js";
 
 // Hàm xử lý dữ liệu từ server và cập nhật biểu đồ
 export async function processChartData(responseData) {
-    // Lấy danh sách categories từ API
+	try {
+	// Lấy danh sách categories từ API
     const categories = await fetchCategories();
     console.log("Categories:", categories); // Debug: Kiểm tra dữ liệu
 
     // Tạo một bản đồ để ánh xạ categoryID -> categoryName
     const categoryMap = new Map(categories.map(cat => [String(cat.categoryID), cat.categoryName]));
+
+    // Tạo bản đồ ảnh cho các category (nếu chưa có)
+	const categoryImageMap = new Map(categories.map(cat => [String(cat.categoryID), cat.urlimage]));
 
     // Ánh xạ categoryID của các giao dịch thu nhập và chi tiêu sang tên category
     const labelsIncomeArr = mapCategoryIDToCategoryName(responseData.incomeList, categories);
@@ -69,36 +73,260 @@ export async function processChartData(responseData) {
         values: Array.from(groupedIncomeData.values()), // Lấy giá trị amount
         backgroundColor: Array.from(groupedIncomeData.keys()).map(categoryID => mapCategoryIDToColor(categoryID, categoryMap)), // Áp dụng màu sắc cho mỗi loại category
     };
-
+    
     // Phân tích dữ liệu chi tiêu
     const expenseData = {
         labels: Array.from(groupedExpenseData.keys()).map(categoryID => categoryMap.get(categoryID)), // Tạo nhãn từ categoryName
         values: Array.from(groupedExpenseData.values()), // Lấy giá trị amount
         backgroundColor: Array.from(groupedExpenseData.keys()).map(categoryID => mapCategoryIDToColor(categoryID, categoryMap)), // Áp dụng màu sắc cho mỗi loại category
     };
-	
-	
+    
+    // Cập nhật tất cả các giao dịch thu nhập
+    const incomeDetails = responseData.incomeList.map(income => ({
+        categoryName: categoryMap.get(String(income.categoryID)),
+        amount: income.amount,
+		decription: income.decription,
+        categoryID: income.categoryID,
+        urlimage: categoryImageMap.get(String(income.categoryID)), // Lấy urlImage từ categoryImageMap
+        date: income.date, // Giả sử income có thuộc tính `date`
+    }));
 
-	// Cập nhật tổng thu nhập và chi tiêu
-	const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
-	const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
+    // Cập nhật tất cả các giao dịch chi tiêu
+    const expenseDetails = responseData.expenseList.map(expense => ({
+        categoryName: categoryMap.get(String(expense.categoryID)),
+        amount: -Math.abs(expense.amount),
+		decription: expense.decription,
+        categoryID: expense.categoryID,
+        urlimage: categoryImageMap.get(String(expense.categoryID)), // Lấy urlImage từ categoryImageMap
+        date: expense.date, // Giả sử expense có thuộc tính `date`
+    }));
 
-	document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
-	document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
-	const totalAmount = totalIncome - totalExpense;
+	const combinedDetails = [...incomeDetails, ...expenseDetails];
+	updateCategoryDetails('allDetails', combinedDetails);
+    // Cập nhật tổng thu nhập và chi tiêu
+    const totalIncome = incomeData.values.reduce((a, b) => a + b, 0); // Tổng thu nhập
+    const totalExpense = expenseData.values.reduce((a, b) => a + b, 0); // Tổng chi tiêu
+    
+    document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
+    document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
+    const totalAmount = totalIncome - totalExpense;
+    
+    // Cập nhật tổng số tiền
+    document.getElementById("totalAmountDisplay").textContent = `${totalAmount.toLocaleString()} đ`;
 
-	// Update the totalAmountDisplay element with the calculated total
-	document.getElementById("totalAmountDisplay").textContent = `${totalAmount.toLocaleString()} đ`;
+    // Xóa dữ liệu cũ trước khi cập nhật biểu đồ
+    clearChart(revenueChart);
+    clearChart(expenseChart);
 
-	// Xóa dữ liệu cũ trước khi cập nhật biểu đồ
-	clearChart(revenueChart);
-	clearChart(expenseChart);
-	// Cập nhật các biểu đồ với màu sắc tương ứng
-	updateRevenueChart(revenueChart, incomeData);
-	updateExpenseChart(expenseChart, expenseData);
-	// Cập nhật danh sách mô tả (nếu cần)
+    // Cập nhật các biểu đồ với màu sắc tương ứng
+    updateRevenueChart(revenueChart, incomeData);
+    updateExpenseChart(expenseChart, expenseData);
 
-	}
+    // Cập nhật danh sách mô tả (nếu cần)
+	}catch (error) {
+	        console.error("Error processing chart data:", error);
+	    }
+}
+
+
+export function updateCategoryDetails(elementId, transactions) {
+    const detailsContainer = document.getElementById(elementId);
+    detailsContainer.innerHTML = ''; // Clear previous content
+
+    // Sort transactions by date
+    transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Group transactions by date
+    const groupedTransactions = transactions.reduce((acc, transaction) => {
+        const dateKey = new Date(transaction.date).toDateString(); // Only take the date part
+        if (!acc[dateKey]) acc[dateKey] = []; // If this date is not in the accumulator, initialize it
+        acc[dateKey].push(transaction); // Add the transaction to the corresponding date
+        return acc;
+    }, {});
+
+    // Loop through each day to display the transactions
+    Object.keys(groupedTransactions).forEach(dateKey => {
+        const dailyTransactions = groupedTransactions[dateKey];
+
+        // Create container for each day
+        const dailyContainer = document.createElement('div');
+        dailyContainer.classList.add('transaction-day');
+        detailsContainer.appendChild(dailyContainer);
+
+        // Calculate total amount for the day
+        const dailyTotal = dailyTransactions.reduce((sum, t) => sum + t.amount, 0);
+
+        // Add day header
+        const dateDiv = document.createElement('div');
+        dateDiv.classList.add('transaction-day-head');
+        dateDiv.innerHTML = `<div class="date">${formatDate(dateKey)}</div>
+                             <span class="amount total ${dailyTotal < 0 ? "negative" : "positive"}" >
+                                Tổng: ${dailyTotal.toLocaleString()} đ
+                             </span>`;
+        dailyContainer.appendChild(dateDiv);
+
+        // Display each transaction
+        dailyTransactions.forEach(transaction => {
+            const { categoryName, amount, urlimage, decription } = transaction;
+            const URL_Image = urlimage || 'path_to_fallback_image.png';
+
+            const transactionDiv = document.createElement('div');
+            transactionDiv.classList.add('transaction');
+            transactionDiv.innerHTML = `<div class="icon">
+                                            <img src="${URL_Image.startsWith('http') ? URL_Image : `image/${URL_Image}`}" alt="Category Image" />
+                                        </div>
+                                        <div class="details">
+                                            <div class="category">${categoryName}</div>
+                                            <div class="amount ${amount < 0 ? "negative" : "positive"}">
+                                                ${amount.toLocaleString()} đ
+                                            </div>
+                                        </div>`;
+
+            // Call the function to handle the click event on the icon
+            handleTransactionClick(transactionDiv, categoryName, amount, dateKey,URL_Image, decription);
+
+            dailyContainer.appendChild(transactionDiv);
+        });
+    });
+}
+
+function formatDate(date) {
+    const d = new Date(date);
+    return d.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+const URL_SEARCH = "SearchServlet";
+// Event listener to handle the click on the transaction
+function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, URL_Image, description, transactionId, transactionType) {
+    const iconDiv = transactionDiv.querySelector('.details');
+    iconDiv.addEventListener('click', () => {
+        const targetDiv = document.querySelector('.transaction-content');
+        const existingDetail = document.querySelector('.detail-transaction');
+
+        // Remove existing detail-transaction if it exists
+        if (existingDetail) {
+            existingDetail.remove();
+        }
+
+        if (targetDiv) {
+            targetDiv.style.margin = '0 0 0 250px';
+
+            const newHTML = `
+            <div class="detail-transaction"
+                style="width: 500px; height: auto; margin: 20px 0 0 0; border: 1px solid #ccc; padding: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); max-height: 300px; overflow-y: auto; font-size: 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h2 style="font-size: 25px; margin: 0;">Thông Tin Chi Tiết</h2>
+                    <div>
+                        <a href="#" id="btn-del" style="color: red; text-decoration: none; margin-right: 5px;">XÓA</a>
+                        <a href="#" id="btn-edit" style="color: green; text-decoration: none;">SỬA</a>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin: 10px 0;">
+                    <img src="image/${URL_Image}" alt="icon" style="width: 50px; height: 50px; margin-right: 10px;">
+                    <div>
+                        <h3 style="font-size: 24px; margin: 0; text-align: left;">${categoryName}</h3>
+                        <p style="color: gray; font-size: 20px; margin: 0;">Ghi chú: ${description}</p>
+                        <p style="color: gray; font-size: 20px; margin: 0;">${formatDate(dateKey)}</p>
+                    </div>
+                </div>
+                <div>
+                    <p style="color: gray; font-size: 20px; margin: 0;">Chi tiết về giao dịch</p>
+                    <h1 style="color: #00b2ff; font-size: 40px; margin: 5px 0;">${amount.toLocaleString()} đ</h1>
+                </div>
+            </div>`;
+
+            targetDiv.insertAdjacentHTML('afterend', newHTML);
+
+            // XÓA giao dịch
+            const btnDel = document.getElementById('btn-del');
+            btnDel.addEventListener('click', async () => {
+                const confirmDelete = confirm("Bạn có chắc chắn muốn xóa giao dịch này?");
+                if (confirmDelete) {
+                    try {
+                        const response = await fetch(URL_SEARCH, {
+                            method: 'DELETE',
+                        });
+
+                        if (response.ok) {
+                            alert("Giao dịch đã được xóa!");
+                            transactionDiv.remove(); // Xóa giao diện
+                            const detailToRemove = document.querySelector('.detail-transaction');
+                            if (detailToRemove) detailToRemove.remove();
+                        } else {
+                            alert("Xóa giao dịch thất bại.");
+                        }
+                    } catch (error) {
+                        console.error("Error deleting transaction:", error);
+                    }
+                }
+            });
+
+            // SỬA giao dịch
+            const btnEdit = document.getElementById('btn-edit');
+            btnEdit.addEventListener('click', () => {
+                const editFormHTML = `
+                <div class="edit-transaction-form" style="margin-top: 20px;">
+                    <h3>Chỉnh Sửa Giao Dịch</h3>
+                    <form id="edit-transaction-form">
+                        <label>Tên Danh Mục:</label>
+                        <input type="text" id="edit-categoryName" value="${categoryName}" required />
+                        <label>Số Tiền:</label>
+                        <input type="number" id="edit-amount" value="${amount}" required />
+                        <label>Ghi Chú:</label>
+                        <input type="text" id="edit-description" value="${description}" />
+                        <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
+                    </form>
+                </div>`;
+
+                // Chèn form chỉnh sửa vào giao diện
+                const detailTransaction = document.querySelector('.detail-transaction');
+                detailTransaction.insertAdjacentHTML('beforeend', editFormHTML);
+
+                // Xử lý sự kiện submit form
+                const editForm = document.getElementById('edit-transaction-form');
+                editForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const categoryName = document.getElementById('edit-categoryName').value;
+                    const amount = parseFloat(document.getElementById('edit-amount').value);
+                    const description = document.getElementById('edit-description').value;
+
+                    try {
+                        const response = await fetch(URL_SEARCH, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                categoryName: categoryName,
+                                amount: amount,
+                                description: description,
+                            }),
+							
+							
+							
+                        });
+
+                        if (response.ok) {
+                            alert("Giao dịch đã được cập nhật!");
+                            // Cập nhật giao diện
+                            transactionDiv.querySelector('.category').textContent = categoryName;
+                            transactionDiv.querySelector('.amount').textContent = `${amount.toLocaleString()} đ`;
+                            const detailTransaction = document.querySelector('.detail-transaction');
+                            if (detailTransaction) detailTransaction.remove();
+                        } else {
+                            alert("Cập nhật giao dịch thất bại.");
+                        }
+                    } catch (error) {
+                        console.error("Error updating transaction:", error);
+                    }
+                });
+            });
+        }
+    });
+}
+
+
+
+
 window.processChartData = processChartData;
 // Hàm gộp các giao dịch cùng loại
 function groupTransactionsByCategory(transactions, categoryMap) {
