@@ -87,6 +87,7 @@ export async function processChartData(responseData) {
         amount: income.amount,
 		decription: income.decription,
         categoryID: income.categoryID,
+		incomeID: income.incomeID,
         urlimage: categoryImageMap.get(String(income.categoryID)), // Lấy urlImage từ categoryImageMap
         date: income.date, // Giả sử income có thuộc tính `date`
     }));
@@ -97,6 +98,7 @@ export async function processChartData(responseData) {
         amount: -Math.abs(expense.amount),
 		decription: expense.decription,
         categoryID: expense.categoryID,
+		expenseID: expense.expenseID,
         urlimage: categoryImageMap.get(String(expense.categoryID)), // Lấy urlImage từ categoryImageMap
         date: expense.date, // Giả sử expense có thuộc tính `date`
     }));
@@ -167,7 +169,7 @@ export function updateCategoryDetails(elementId, transactions) {
 
         // Display each transaction
         dailyTransactions.forEach(transaction => {
-            const { categoryName, amount, urlimage, decription } = transaction;
+            const { categoryName, amount, urlimage, decription, expenseID, incomeID, categoryID} = transaction;
             const URL_Image = urlimage || 'path_to_fallback_image.png';
 
             const transactionDiv = document.createElement('div');
@@ -183,7 +185,7 @@ export function updateCategoryDetails(elementId, transactions) {
                                         </div>`;
 
             // Call the function to handle the click event on the icon
-            handleTransactionClick(transactionDiv, categoryName, amount, dateKey,URL_Image, decription);
+            handleTransactionClick(transactionDiv, categoryName, amount, dateKey,URL_Image, decription ,expenseID, incomeID,categoryID);
 
             dailyContainer.appendChild(transactionDiv);
         });
@@ -194,9 +196,10 @@ function formatDate(date) {
     const d = new Date(date);
     return d.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
-const URL_SEARCH = "SearchServlet";
+const DeleteTransactionServlet = "DeleteServlet";
+const UpdateTransactionServlet = "UpdateServlet";
 // Event listener to handle the click on the transaction
-function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, URL_Image, description, transactionId, transactionType) {
+function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, URL_Image, description,expenseID, incomeID, categoryID, transactionId, transactionType) {
     const iconDiv = transactionDiv.querySelector('.details');
     iconDiv.addEventListener('click', () => {
         const targetDiv = document.querySelector('.transaction-content');
@@ -242,8 +245,17 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                 const confirmDelete = confirm("Bạn có chắc chắn muốn xóa giao dịch này?");
                 if (confirmDelete) {
                     try {
-                        const response = await fetch(URL_SEARCH, {
+						const transactionID = expenseID || incomeID; // Use expenseID if it exists, otherwise use incomeID
+						const type = expenseID ? "Expense" : "Income";
+                        const response = await fetch(DeleteTransactionServlet, {
                             method: 'DELETE',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({
+								type: type, 
+								transactionID: transactionID,
+							}),
                         });
 
                         if (response.ok) {
@@ -263,20 +275,38 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
             // SỬA giao dịch
             const btnEdit = document.getElementById('btn-edit');
             btnEdit.addEventListener('click', () => {
-                const editFormHTML = `
-                <div class="edit-transaction-form" style="margin-top: 20px;">
-                    <h3>Chỉnh Sửa Giao Dịch</h3>
-                    <form id="edit-transaction-form">
-                        <label>Tên Danh Mục:</label>
-                        <input type="text" id="edit-categoryName" value="${categoryName}" required />
-                        <label>Số Tiền:</label>
-                        <input type="number" id="edit-amount" value="${amount}" required />
-                        <label>Ghi Chú:</label>
-                        <input type="text" id="edit-description" value="${description}" />
-                        <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
-                    </form>
-                </div>`;
+				const editFormHTML = `
+				                <div class="edit-transaction-form" style="margin-top: 20px;">
+				                    <h3>Chỉnh Sửa Giao Dịch</h3>
+				                    <form id="edit-transaction-form">
+				                        <label>Tên thể loại:</label>
+										<select id="TypeOfTransaction" required>
+											<option value="" disabled selected>Chọn loại giao dịch</option>
+											<option value="expense">Chi tiêu</option>
+											<option value="income">Thu nhập</option>
+										</select>
+										<select class="expense-list" id="expenseCategory" required>
+										<option value="" selected>Chọn nhóm</option>
+										</select>
+										<select class="income-list hidden" id="incomeCategory" required>
+										<option value="" selected>Chọn nhóm</option>
+										</select>
 
+										<input type="text" id="edit-categoryName" value="${categoryName}" required />
+				                        <label>Số Tiền:</label>
+				                        <input type="number" id="edit-amount" value="${amount}" required />
+										<label >Ngày</label>
+										<input type="date" id="id="date"" value="${amount}" required />
+				                        <label>Ghi Chú:</label>
+				                        <input type="text" id="edit-description" id="dateError"value="${description}" />
+				                        <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
+				                    </form>
+				                </div>`;
+
+						
+				
+				
+				
                 // Chèn form chỉnh sửa vào giao diện
                 const detailTransaction = document.querySelector('.detail-transaction');
                 detailTransaction.insertAdjacentHTML('beforeend', editFormHTML);
@@ -290,15 +320,21 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                     const description = document.getElementById('edit-description').value;
 
                     try {
-                        const response = await fetch(URL_SEARCH, {
+						const transactionID = expenseID || incomeID; // Use expenseID if it exists, otherwise use incomeID
+						const type = expenseID ? "Expense" : "Income";
+                        const response = await fetch(UpdateTransactionServlet, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                categoryName: categoryName,
-                                amount: amount,
-                                description: description,
+								categoryID: categoryID, 
+								date: date, 
+								amount: amount, 
+								description: description, 
+								type: type, 
+								transactionID: transactionID,
+								
                             }),
 							
 							
