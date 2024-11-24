@@ -196,8 +196,8 @@ function formatDate(date) {
     const d = new Date(date);
     return d.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
-const DeleteTransactionServlet = "DeleteServlet";
-const UpdateTransactionServlet = "UpdateServlet";
+const DeleteTransactionServlet = "DeleteTransactionServlet";
+const UpdateTransactionServlet = "UpdateTransactionServlet";
 // Event listener to handle the click on the transaction
 // Hàm xử lý khi người dùng nhấn vào giao dịch
 // Hàm xử lý khi người dùng nhấn vào giao dịch
@@ -248,8 +248,8 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                 if (confirmDelete) {
                     try {
                         const transactionID = expenseID || incomeID; // Sử dụng expenseID nếu có, không thì dùng incomeID
-                        const type = expenseID ? "Expense" : "Income";
-                        const response = await fetch(DeleteTransactionServlet, {
+                        const type = expenseID ? "expense" : "income";
+                        const response = await fetch("DeleteTransactionServlet", {
                             method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -258,7 +258,7 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                                 type: type, 
                                 transactionID: transactionID,
                             }),
-                        });
+                        })
 
                         if (response.ok) {
                             alert("Giao dịch đã được xóa!");
@@ -327,7 +327,7 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
                     try {
                         const transactionID = expenseID || incomeID; // Sử dụng expenseID nếu có, không thì dùng incomeID
-                        const type = expenseID ? "Expense" : "Income";
+                        const type = expenseID ? "expense" : "income";
                         const response = await fetch(UpdateTransactionServlet, {
                             method: 'PUT',
                             headers: {

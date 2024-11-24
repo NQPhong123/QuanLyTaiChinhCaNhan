@@ -124,49 +124,53 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 	}
 
 	@Override
-	public void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount, String description) throws SQLException {
+	public void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount, String description)
+			throws SQLException {
 
-	    String query = "INSERT INTO EXPENSE(userID,categoryID,date,amount,description) VALUES(?,?,?,?,?)";
-	    try {
-	        Connection conn = ConnectDB.getInstance().getConnection();
-	        PreparedStatement ptst = conn.prepareStatement(query);
-	        ptst.setInt(1, userID);
-	        ptst.setInt(2, categoryID);
-	        ptst.setObject(3, date);
-	        ptst.setDouble(4, amount);
-	        ptst.setString(5, description);
+		String query = "INSERT INTO EXPENSE(userID,categoryID,date,amount,description) VALUES(?,?,?,?,?)";
+		try {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ptst.setInt(1, userID);
+			ptst.setInt(2, categoryID);
+			ptst.setObject(3, date);
+			ptst.setDouble(4, amount);
+			ptst.setString(5, description);
 
-	        int rowInserted = ptst.executeUpdate();
-	        if (rowInserted > 0) {
-	            System.out.println("Dữ liệu đã được chèn thành công!");
-	        }
-	    } catch (SQLException e) {
-	        throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
-	    }
+			int rowInserted = ptst.executeUpdate();
+			if (rowInserted > 0) {
+				System.out.println("Dữ liệu đã được chèn thành công!");
+			}
+		} catch (SQLException e) {
+			throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
+		}
 	}
-	
+
 	@Override
-	public void UpdateTransasctions(int userID,int transactionID, int categoryID, LocalDate date, double amount, String description) {
+	public void UpdateTransasctions(int userID, int transactionID, int categoryID, LocalDate date, double amount,
+			String description) {
 		String query = "UPDATE expense SET categoryID = ?, amount = ?, description = ?, date = ? WHERE userID = ? AND expenseID = ?";
-		try (Connection conn = ConnectDB.getInstance().getConnection();
-				PreparedStatement ptst = conn.prepareStatement(query)) {
-				ptst.setInt(1,categoryID);
-				ptst.setDouble(2,amount);
-				ptst.setString(3,description);
-				ptst.setString(4,date.toString());
-				ptst.setInt(5, userID);
-				ptst.setInt(6, transactionID);
-				int rowsUpdated = ptst.executeUpdate();
-				System.out.println(rowsUpdated + " expense row(s) updated.");
+		try  {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
+			ptst.setInt(1, categoryID);
+			ptst.setDouble(2, amount);
+			ptst.setString(3, description);
+			ptst.setString(4, date.toString());
+			ptst.setInt(5, userID);
+			ptst.setInt(6, transactionID);
+			int rowsUpdated = ptst.executeUpdate();
+			System.out.println(rowsUpdated + " expense row(s) updated.");
 		} catch (SQLException e) {
 			System.out.println("Error at expense UPDATE TRANSACTION: " + e.getMessage());
 		}
 	}
+
 	@Override
 	public void DeleteTransactions(int userID, int transactionID) {
 		String query = "DELETE FROM expense WHERE userID = ? AND expenseID = ?";
-		try (Connection conn = ConnectDB.getInstance().getConnection();
-				PreparedStatement ptst = conn.prepareStatement(query)) {
+		try {Connection conn = ConnectDB.getInstance().getConnection();
+		PreparedStatement ptst = conn.prepareStatement(query);
 			ptst.setInt(1, userID);
 			ptst.setInt(2, transactionID);
 			int rowsUpdated = ptst.executeUpdate();

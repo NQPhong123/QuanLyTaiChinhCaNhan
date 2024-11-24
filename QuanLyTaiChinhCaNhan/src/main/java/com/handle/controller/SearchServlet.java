@@ -26,7 +26,7 @@ import com.handle.model.Income;
 import com.handle.model.RangeDate;
 import com.handle.model.SearchData;
 import com.handle.model.AmountRange;
-import com.handle.model.Category;
+
 
 @WebServlet("/SearchServlet")
 public class SearchServlet extends HttpServlet {
@@ -64,7 +64,10 @@ public class SearchServlet extends HttpServlet {
 			HttpSession session = request.getSession(false);
 			if (session != null) {
 				userID = (int) session.getAttribute("userID");
-			}
+			}            
+			if (userID == null) {
+                throw new IllegalStateException("User is not logged in.");
+            }
 			System.out.println(userID);
 
 			// Chuẩn bị dữ liệu phản hồi

@@ -6,11 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.handle.model.AmountRange;
+import java.util.List;
+
 import com.handle.model.Income;
 import com.handle.model.RangeDate;
 
@@ -212,8 +210,9 @@ public class IncomeDAO extends TransactionDAO<Income> {
 	public void UpdateTransasctions(int userID, int transactionID, int categoryID, LocalDate date, double amount,
 			String description) {
 		String query = "UPDATE income SET categoryID = ?, amount = ?, description = ?, date = ? WHERE userID = ? AND incomeID = ?";
-		try (Connection conn = ConnectDB.getInstance().getConnection();
-				PreparedStatement ptst = conn.prepareStatement(query)) {
+		try  {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
 			ptst.setInt(1, categoryID);
 			ptst.setDouble(2, amount);
 			ptst.setString(3, description);
@@ -230,8 +229,9 @@ public class IncomeDAO extends TransactionDAO<Income> {
 	@Override
 	public void DeleteTransactions(int userID, int transactionID) {
 		String query = "DELETE FROM income WHERE userID = ? AND incomeID = ?";
-		try (Connection conn = ConnectDB.getInstance().getConnection();
-				PreparedStatement ptst = conn.prepareStatement(query)) {
+		try  {
+			Connection conn = ConnectDB.getInstance().getConnection();
+			PreparedStatement ptst = conn.prepareStatement(query);
 			ptst.setInt(1, userID);
 			ptst.setInt(2, transactionID);
 			int rowsUpdated = ptst.executeUpdate();
