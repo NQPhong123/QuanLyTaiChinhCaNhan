@@ -199,13 +199,15 @@ function formatDate(date) {
 const DeleteTransactionServlet = "DeleteServlet";
 const UpdateTransactionServlet = "UpdateServlet";
 // Event listener to handle the click on the transaction
-function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, URL_Image, description,expenseID, incomeID, categoryID, transactionId, transactionType) {
+// Hàm xử lý khi người dùng nhấn vào giao dịch
+// Hàm xử lý khi người dùng nhấn vào giao dịch
+function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, URL_Image, description, expenseID, incomeID, categoryID, transactionId, transactionType) {
     const iconDiv = transactionDiv.querySelector('.details');
     iconDiv.addEventListener('click', () => {
         const targetDiv = document.querySelector('.transaction-content');
         const existingDetail = document.querySelector('.detail-transaction');
 
-        // Remove existing detail-transaction if it exists
+        // Xóa khối detail-transaction nếu đã có
         if (existingDetail) {
             existingDetail.remove();
         }
@@ -239,23 +241,23 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
             targetDiv.insertAdjacentHTML('afterend', newHTML);
 
-            // XÓA giao dịch
+            // Xử lý sự kiện XÓA giao dịch
             const btnDel = document.getElementById('btn-del');
             btnDel.addEventListener('click', async () => {
                 const confirmDelete = confirm("Bạn có chắc chắn muốn xóa giao dịch này?");
                 if (confirmDelete) {
                     try {
-						const transactionID = expenseID || incomeID; // Use expenseID if it exists, otherwise use incomeID
-						const type = expenseID ? "Expense" : "Income";
+                        const transactionID = expenseID || incomeID; // Sử dụng expenseID nếu có, không thì dùng incomeID
+                        const type = expenseID ? "Expense" : "Income";
                         const response = await fetch(DeleteTransactionServlet, {
                             method: 'DELETE',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								type: type, 
-								transactionID: transactionID,
-							}),
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                type: type, 
+                                transactionID: transactionID,
+                            }),
                         });
 
                         if (response.ok) {
@@ -267,78 +269,78 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                             alert("Xóa giao dịch thất bại.");
                         }
                     } catch (error) {
-                        console.error("Error deleting transaction:", error);
+                        console.error("Lỗi khi xóa giao dịch:", error);
                     }
                 }
             });
 
-            // SỬA giao dịch
+            // Xử lý sự kiện SỬA giao dịch
             const btnEdit = document.getElementById('btn-edit');
             btnEdit.addEventListener('click', () => {
-				const editFormHTML = `
-				                <div class="edit-transaction-form" style="margin-top: 20px;">
-				                    <h3>Chỉnh Sửa Giao Dịch</h3>
-				                    <form id="edit-transaction-form">
-				                        <label>Tên thể loại:</label>
-										<select id="TypeOfTransaction" required>
-											<option value="" disabled selected>Chọn loại giao dịch</option>
-											<option value="expense">Chi tiêu</option>
-											<option value="income">Thu nhập</option>
-										</select>
-										<select class="expense-list" id="expenseCategory" required>
-										<option value="" selected>Chọn nhóm</option>
-										</select>
-										<select class="income-list hidden" id="incomeCategory" required>
-										<option value="" selected>Chọn nhóm</option>
-										</select>
+                // Tạo giao diện mới để chỉnh sửa giao dịch
+                const editFormHTML = `
+				<div class="edit-transaction-form" 
+				     style="margin-top: 20px; padding: 20px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+				            position: absolute; bottom: 0; right: 0; width: 100%; max-width: 500px; 
+				            background-color: #fff; max-height: 300px; overflow-y: auto;">
+                    <h3>Chỉnh Sửa Giao Dịch</h3>
+                    <form id="edit-transaction-form">
+                        <label>Tên thể loại:</label>
+                        <select id="TypeOfTransaction" required>
+                            <option value="" disabled selected>Chọn loại giao dịch</option>
+                            <option value="expense">Chi tiêu</option>
+                            <option value="income">Thu nhập</option>
+                        </select>
+                        <select class="expense-list" id="expenseCategory" required>
+                            <option value="" selected>Chọn nhóm</option>
+                        </select>
+                        <select class="income-list hidden" id="incomeCategory" required>
+                            <option value="" selected>Chọn nhóm</option>
+                        </select>
+                        <input type="text" id="edit-categoryName" value="${categoryName}" required />
+                        <label>Số Tiền:</label>
+                        <input type="number" id="edit-amount" value="${amount}" required />
+                        <label>Ngày</label>
+                        <input type="date" id="edit-date" value="${formatDate(dateKey)}" required />
+                        <label>Ghi Chú:</label>
+                        <input type="text" id="edit-description" value="${description}" />
+                        <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
+                    </form>
+                </div>`;
 
-										<input type="text" id="edit-categoryName" value="${categoryName}" required />
-				                        <label>Số Tiền:</label>
-				                        <input type="number" id="edit-amount" value="${amount}" required />
-										<label >Ngày</label>
-										<input type="date" id="id="date"" value="${amount}" required />
-				                        <label>Ghi Chú:</label>
-				                        <input type="text" id="edit-description" id="dateError"value="${description}" />
-				                        <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
-				                    </form>
-				                </div>`;
+                // Chèn form chỉnh sửa vào giao diện mới
+                const newTransactionFormDiv = document.createElement('div');
+                newTransactionFormDiv.classList.add('new-edit-form-container');
+                newTransactionFormDiv.innerHTML = editFormHTML;
 
-						
-				
-				
-				
-                // Chèn form chỉnh sửa vào giao diện
-                const detailTransaction = document.querySelector('.detail-transaction');
-                detailTransaction.insertAdjacentHTML('beforeend', editFormHTML);
+                document.body.appendChild(newTransactionFormDiv); // Thêm form vào body hoặc bất kỳ container nào bạn muốn
 
-                // Xử lý sự kiện submit form
+                // Xử lý sự kiện submit form chỉnh sửa
                 const editForm = document.getElementById('edit-transaction-form');
                 editForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
+
                     const categoryName = document.getElementById('edit-categoryName').value;
                     const amount = parseFloat(document.getElementById('edit-amount').value);
                     const description = document.getElementById('edit-description').value;
+                    const date = document.getElementById('edit-date').value;
 
                     try {
-						const transactionID = expenseID || incomeID; // Use expenseID if it exists, otherwise use incomeID
-						const type = expenseID ? "Expense" : "Income";
+                        const transactionID = expenseID || incomeID; // Sử dụng expenseID nếu có, không thì dùng incomeID
+                        const type = expenseID ? "Expense" : "Income";
                         const response = await fetch(UpdateTransactionServlet, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-								categoryID: categoryID, 
-								date: date, 
-								amount: amount, 
-								description: description, 
-								type: type, 
-								transactionID: transactionID,
-								
+                                categoryID: categoryID, 
+                                date: date, 
+                                amount: amount, 
+                                description: description, 
+                                type: type, 
+                                transactionID: transactionID,
                             }),
-							
-							
-							
                         });
 
                         if (response.ok) {
@@ -346,13 +348,13 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                             // Cập nhật giao diện
                             transactionDiv.querySelector('.category').textContent = categoryName;
                             transactionDiv.querySelector('.amount').textContent = `${amount.toLocaleString()} đ`;
-                            const detailTransaction = document.querySelector('.detail-transaction');
-                            if (detailTransaction) detailTransaction.remove();
+                            const editFormContainer = document.querySelector('.new-edit-form-container');
+                            if (editFormContainer) editFormContainer.remove(); // Xóa form sửa giao dịch sau khi cập nhật
                         } else {
                             alert("Cập nhật giao dịch thất bại.");
                         }
                     } catch (error) {
-                        console.error("Error updating transaction:", error);
+                        console.error("Lỗi khi cập nhật giao dịch:", error);
                     }
                 });
             });
