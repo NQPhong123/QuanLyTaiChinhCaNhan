@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.handle.model.AmountRange;
 import com.handle.model.Income;
 import com.handle.model.RangeDate;
 
@@ -142,77 +145,106 @@ public class IncomeDAO extends TransactionDAO<Income> {
 			throw new SQLException("Lỗi khi chèn dữ liệu: " + e.getMessage(), e); // Ném lỗi cho hàm khác xử lý
 		}
 	}
+
 	public List<Income> getIncomesByMonth(int userID, int year, int month) {
-	    List<Income> incomes = new ArrayList<>();
-	    String query = "SELECT * FROM income WHERE UserID = ? AND IncomeDate BETWEEN ? AND ?";
+		List<Income> incomes = new ArrayList<>();
+		String query = "SELECT * FROM income WHERE UserID = ? AND IncomeDate BETWEEN ? AND ?";
 
-	    // Lấy ngày đầu và ngày cuối của tháng sử dụng RangeDate
-	    LocalDate startDate = RangeDate.getStartOfMonth(year, month);
-	    LocalDate endDate = RangeDate.getEndOfMonth(year, month);
+		// Lấy ngày đầu và ngày cuối của tháng sử dụng RangeDate
+		LocalDate startDate = RangeDate.getStartOfMonth(year, month);
+		LocalDate endDate = RangeDate.getEndOfMonth(year, month);
 
-	    try (Connection conn = ConnectDB.getInstance().getConnection();
-	         PreparedStatement ptst = conn.prepareStatement(query)) {
-	        ptst.setInt(1, userID);
-	        ptst.setObject(2, startDate);
-	        ptst.setObject(3, endDate);
+		try (Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement ptst = conn.prepareStatement(query)) {
+			ptst.setInt(1, userID);
+			ptst.setObject(2, startDate);
+			ptst.setObject(3, endDate);
 
-	        try (ResultSet rs = ptst.executeQuery()) {
-	            while (rs.next()) {
-	                int incID = rs.getInt("IncomeID");
-	                int uID = rs.getInt("UserID");
-	                int ceID = rs.getInt("categoryID");
-	                double amt = rs.getDouble("amount");
-	                String description = rs.getString("description");
-	                LocalDate date = rs.getDate("IncomeDate").toLocalDate();
-	                Income income = new Income(incID, uID, ceID, amt, description, date);
-	                incomes.add(income);
-	            }
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        System.out.println(e.getMessage());
-	    }
-	    return incomes;
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int incID = rs.getInt("IncomeID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("IncomeDate").toLocalDate();
+					Income income = new Income(incID, uID, ceID, amt, description, date);
+					incomes.add(income);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return incomes;
 	}
+
 	public List<Income> getIncomesByDateRange(int userID, LocalDate startDate, LocalDate endDate) {
-	    List<Income> incomes = new ArrayList<>();
-	    String query = "SELECT * FROM income WHERE UserID = ? AND IncomeDate BETWEEN ? AND ?";
+		List<Income> incomes = new ArrayList<>();
+		String query = "SELECT * FROM income WHERE UserID = ? AND IncomeDate BETWEEN ? AND ?";
 
-	    try (Connection conn = ConnectDB.getInstance().getConnection();
-	         PreparedStatement ptst = conn.prepareStatement(query)) {
-	        ptst.setInt(1, userID);
-	        ptst.setObject(2, startDate);
-	        ptst.setObject(3, endDate);
+		try (Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement ptst = conn.prepareStatement(query)) {
+			ptst.setInt(1, userID);
+			ptst.setObject(2, startDate);
+			ptst.setObject(3, endDate);
 
-	        try (ResultSet rs = ptst.executeQuery()) {
-	            while (rs.next()) {
-	                int incID = rs.getInt("IncomeID");
-	                int uID = rs.getInt("UserID");
-	                int ceID = rs.getInt("categoryID");
-	                double amt = rs.getDouble("amount");
-	                String description = rs.getString("description");
-	                LocalDate date = rs.getDate("IncomeDate").toLocalDate();
-	                Income income = new Income(incID, uID, ceID, amt, description, date);
-	                incomes.add(income);
-	            }
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        System.out.println("Error retrieving incomes by date range: " + e.getMessage());
-	    }
-	    return incomes;
+			try (ResultSet rs = ptst.executeQuery()) {
+				while (rs.next()) {
+					int incID = rs.getInt("IncomeID");
+					int uID = rs.getInt("UserID");
+					int ceID = rs.getInt("categoryID");
+					double amt = rs.getDouble("amount");
+					String description = rs.getString("description");
+					LocalDate date = rs.getDate("IncomeDate").toLocalDate();
+					Income income = new Income(incID, uID, ceID, amt, description, date);
+					incomes.add(income);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error retrieving incomes by date range: " + e.getMessage());
+		}
+		return incomes;
 	}
 
+	@Override
+	public void UpdateTransasctions(int userID, int transactionID, int categoryID, LocalDate date, double amount,
+			String description) {
+		String query = "UPDATE income SET categoryID = ?, amount = ?, description = ?, date = ? WHERE userID = ? AND incomeID = ?";
+		try (Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement ptst = conn.prepareStatement(query)) {
+			ptst.setInt(1, categoryID);
+			ptst.setDouble(2, amount);
+			ptst.setString(3, description);
+			ptst.setString(4, date.toString());
+			ptst.setInt(5, userID);
+			ptst.setInt(6, transactionID);
+			int rowsUpdated = ptst.executeUpdate();
+			System.out.println(rowsUpdated + " income row(s) updated.");
+		} catch (SQLException e) {
+			System.out.println("Error at income UPDATE TRANSACTION: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void DeleteTransactions(int userID, int transactionID) {
+		String query = "DELETE FROM income WHERE userID = ? AND incomeID = ?";
+		try (Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement ptst = conn.prepareStatement(query)) {
+			ptst.setInt(1, userID);
+			ptst.setInt(2, transactionID);
+			int rowsUpdated = ptst.executeUpdate();
+			System.out.println(rowsUpdated + " income row(s) deleted.");
+		} catch (SQLException e) {
+			System.out.println("Error at income DELETE TRANSACTION: " + e.getMessage());
+		}
+	}
 
 	public static void main(String[] args) {
-		
-		  IncomeDAO incomeDAO = new IncomeDAO(); 
-	        LocalDate startDate = LocalDate.of(2024, 10, 1);
-	        LocalDate endDate = LocalDate.of(2024, 11, 20);
-	        RangeDate rangeDate = new RangeDate(startDate, endDate);
-	        List<Income> transactions = incomeDAO.searchTransactions(1, null, rangeDate, null);
-	        for (Income transaction : transactions) {
-	            System.out.println(transaction);
-	        }
+
+		IncomeDAO incomeDAO = new IncomeDAO();
+		incomeDAO.DeleteTransactions(1, 1);
+
 	}
 }

@@ -145,7 +145,36 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 	    }
 	}
 	
-
+	@Override
+	public void UpdateTransasctions(int userID,int transactionID, int categoryID, LocalDate date, double amount, String description) {
+		String query = "UPDATE expense SET categoryID = ?, amount = ?, description = ?, date = ? WHERE userID = ? AND expenseID = ?";
+		try (Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement ptst = conn.prepareStatement(query)) {
+				ptst.setInt(1,categoryID);
+				ptst.setDouble(2,amount);
+				ptst.setString(3,description);
+				ptst.setString(4,date.toString());
+				ptst.setInt(5, userID);
+				ptst.setInt(6, transactionID);
+				int rowsUpdated = ptst.executeUpdate();
+				System.out.println(rowsUpdated + " expense row(s) updated.");
+		} catch (SQLException e) {
+			System.out.println("Error at expense UPDATE TRANSACTION: " + e.getMessage());
+		}
+	}
+	@Override
+	public void DeleteTransactions(int userID, int transactionID) {
+		String query = "DELETE FROM expense WHERE userID = ? AND expenseID = ?";
+		try (Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement ptst = conn.prepareStatement(query)) {
+			ptst.setInt(1, userID);
+			ptst.setInt(2, transactionID);
+			int rowsUpdated = ptst.executeUpdate();
+			System.out.println(rowsUpdated + " expense row(s)  deleted.");
+		} catch (SQLException e) {
+			System.out.println("Error at income DELETE TRANSACTION: " + e.getMessage());
+		}
+	}
 
 	public static void main(String[] args) {
 

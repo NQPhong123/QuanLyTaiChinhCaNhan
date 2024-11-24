@@ -17,13 +17,15 @@ public abstract class TransactionDAO<T> {
 	public abstract List<T> getAllByAmount(double amount);// hàm lấy tất cả Transaction theo amount
 
 	// hàm tìm kiếm giao dịch theo từng điều kiện
-	public List<T> searchTransactions(Integer userID, Integer categoryID, RangeDate rangeDate, AmountRange amountRange) {
+	public List<T> searchTransactions(Integer userID, Integer categoryID, RangeDate rangeDate,
+			AmountRange amountRange) {
 		StringBuilder query = new StringBuilder("SELECT *  FROM " + getGenericTypeName() + " WHERE UserID = " + userID);
 		if (categoryID != null) {
 			query.append(" AND CategoryID=").append(categoryID);
 		}
-		if(rangeDate !=null) {
-			query.append(" AND date BETWEEN '" + rangeDate.getStartDate()).append("' AND '" + rangeDate.getEndDate() + "'");
+		if (rangeDate != null) {
+			query.append(" AND date BETWEEN '" + rangeDate.getStartDate())
+					.append("' AND '" + rangeDate.getEndDate() + "'");
 		}
 		if (amountRange != null) {
 			query.append(" AND amount BETWEEN ").append(amountRange.getMin()).append(" AND " + amountRange.getMax());
@@ -38,6 +40,13 @@ public abstract class TransactionDAO<T> {
 	public abstract void InsertTransaction(int userID, int categoryID, LocalDate date, Double amount,
 			String description) throws SQLException;
 
+	// hàm sửa giao dịch
+	public abstract void UpdateTransasctions(int userID, int transactionID, int categoryID, LocalDate date,
+			double amount, String description);
+
+	//hàm xóa giao dịch
+	public abstract void DeleteTransactions(int userID, int transactionID);
+	
 	// Hàm lấy tên kiểu genneric vì khi <T> runtime sẽ không tồn tại thông tin về
 	// kiểu sẽ được khai báo ở các lớp con
 	@SuppressWarnings("unchecked")
