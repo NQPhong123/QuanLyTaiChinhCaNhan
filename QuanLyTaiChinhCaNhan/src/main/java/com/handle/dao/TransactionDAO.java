@@ -30,6 +30,7 @@ public abstract class TransactionDAO<T> {
 		if (amountRange != null) {
 			query.append(" AND amount BETWEEN ").append(amountRange.getMin()).append(" AND " + amountRange.getMax());
 		}
+		query.append(" ORDER BY DATE DESC");
 		return excuteQuerySearch(query.toString());
 	}
 
