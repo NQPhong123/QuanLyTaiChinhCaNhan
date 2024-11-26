@@ -357,10 +357,21 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
 
 					// Các giá trị khác
-					const amount = parseFloat(document.getElementById('edit-amount').value);
+					let amount = parseFloat(document.getElementById('edit-amount').value);
 					const date = document.getElementById('edit-date').value;
 					const description = document.getElementById('edit-description').value;
 
+					// Đảm bảo giá trị amount luôn âm cho chi tiêu và dương cho thu nhập
+					    if (transactionType === "chonexpense" && amount > 0) {
+					        amount = Math.abs(amount) * -1; // Đảm bảo giá trị là âm cho chi tiêu
+					    } else if (transactionType === "chonincome" && amount < 0) {
+					        amount = Math.abs(amount); // Đảm bảo giá trị là dương cho thu nhập
+					    }
+
+						
+					
+					
+					
 					try {
 						// Sử dụng expenseID hoặc incomeID để xác định loại giao dịch
 						const transactionID = expenseID || incomeID;
@@ -387,7 +398,7 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 							alert("Giao dịch đã được cập nhật!");
 							// Cập nhật giao diện
 							dailyContainer.querySelector('.category').textContent = categoryName;
-							transactionDiv.querySelector('.amount').textContent = `${amount.toLocaleString()} đ`;
+							transactionDiv.querySelector('.amount').textContent = `${amount.toLocaleString('vi-VN')} đ`;
 
 							const imageElement = transactionDiv.querySelector('.category-image');
 							if (imageElement) {
@@ -397,7 +408,7 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
 							updateTotalAmount(dailyContainer)
 
-
+							window.location.reload(true);
 							// Xóa form chỉnh sửa sau khi cập nhật
 							const editFormContainer = document.querySelector('.new-edit-form-container');
 							const detailToRemove = document.querySelector('.detail-transaction');
@@ -433,8 +444,8 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 				// Cập nhật tổng tiền hiển thị trong dailyContainer
 				const totalElement = dailyContainer.querySelector('.transaction-day-head .amount.total');
 				if (totalElement) {
-					totalElement.textContent = `Tổng: ${newTotal.toLocaleString()} đ`;
 					totalElement.className = `amount total ${newTotal < 0 ? "negative" : "positive"}`;
+					totalElement.textContent = `Tổng: ${newTotal.toLocaleString()} đ`;
 				}
 
 				// Nếu không còn giao dịch nào trong dailyContainer, xóa container này
@@ -451,9 +462,6 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
 
 window.processChartData = processChartData;
-
-
-
 
 // t import ko đc 
 //import { getCategories, taiCategory, xuliTransactionTypeChange } from './EditTransactionApi.js';
