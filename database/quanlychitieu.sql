@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 22, 2024 lúc 10:49 AM
--- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.2.12
+-- Host: 127.0.0.1
+-- Generation Time: Nov 26, 2024 at 10:42 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `quanlychitieu`
+-- Database: `quanlychitieu`
 --
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `category`
+-- Table structure for table `category`
 --
 
 CREATE TABLE `category` (
@@ -35,7 +35,7 @@ CREATE TABLE `category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `category`
+-- Dumping data for table `category`
 --
 
 INSERT INTO `category` (`CategoryID`, `CategoryName`, `Type`, `URL_Image`) VALUES
@@ -59,7 +59,7 @@ INSERT INTO `category` (`CategoryID`, `CategoryName`, `Type`, `URL_Image`) VALUE
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `expense`
+-- Table structure for table `expense`
 --
 
 CREATE TABLE `expense` (
@@ -72,29 +72,37 @@ CREATE TABLE `expense` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `expense`
+-- Dumping data for table `expense`
 --
 
 INSERT INTO `expense` (`ExpenseID`, `UserID`, `CategoryID`, `Amount`, `Description`, `Date`) VALUES
-(1, 1, 5, 500000.00, 'Học phí tháng 9', '2024-09-05'),
-(2, 2, 6, 200000.00, 'Bữa ăn ngoài', '2024-09-12'),
-(3, 3, 7, 150000.00, 'Hóa đơn gas tháng 9', '2024-09-20'),
-(4, 1, 8, 100000.00, 'Quà tặng cho bạn', '2024-09-25'),
-(5, 2, 9, 300000.00, 'Sửa chữa nhà', '2024-10-02'),
-(6, 3, 10, 100000.00, 'Mua đồ dùng gia đình', '2024-10-10'),
-(7, 1, 11, 500000.00, 'Đầu tư vào chứng khoán', '2024-10-15'),
-(8, 2, 12, 70000.00, 'Sản phẩm làm đẹp', '2024-10-18'),
-(9, 3, 13, 120000.00, 'Chi phí khác', '2024-10-22'),
-(10, 1, 14, 250000.00, 'Đồ dùng cá nhân', '2024-11-01'),
-(11, 2, 15, 50000.00, 'Hóa đơn điện thoại tháng 11', '2024-11-05'),
-(12, 3, 16, 100000.00, 'Bảo trì phương tiện', '2024-11-12'),
-(13, 1, 5, 600000.00, 'Học phí tháng 11', '2024-11-15'),
-(14, 2, 6, 300000.00, 'Mua thực phẩm', '2024-11-20');
+(15, 9, 5, 800000.00, 'Đóng học phí tháng 9', '2024-09-05'),
+(16, 9, 6, 150000.00, 'Ăn tối ngoài với gia đình', '2024-09-12'),
+(17, 9, 7, 200000.00, 'Thanh toán hóa đơn gas', '2024-09-20'),
+(18, 9, 8, 100000.00, 'Quà sinh nhật cho bạn bè', '2024-09-25'),
+(19, 9, 13, 250000.00, 'Mua sắm không kế hoạch', '2024-10-02'),
+(20, 9, 10, 400000.00, 'Trang trí nội thất', '2024-10-10'),
+(21, 9, 15, 100000.00, 'Hóa đơn điện thoại tháng 10', '2024-10-18'),
+(22, 9, 11, 1000000.00, 'Đầu tư quỹ mở', '2024-10-25'),
+(23, 9, 14, 300000.00, 'Mua đồ cá nhân', '2024-11-05'),
+(24, 9, 16, 150000.00, 'Bảo trì xe máy', '2024-11-12'),
+(25, 9, 6, 250000.00, 'Ăn uống cuối tuần', '2024-11-18'),
+(26, 9, 5, 900000.00, 'Đóng học phí tháng 11', '2024-11-20'),
+(27, 10, 5, 700000.00, 'Học phí khóa tiếng Anh', '2024-09-10'),
+(28, 10, 9, 500000.00, 'Sửa chữa mái nhà', '2024-09-15'),
+(29, 10, 10, 200000.00, 'Mua rèm cửa mới', '2024-09-20'),
+(30, 10, 6, 300000.00, 'Tổ chức tiệc tại nhà', '2024-10-05'),
+(31, 10, 8, 200000.00, 'Quyên góp từ thiện', '2024-10-15'),
+(32, 10, 15, 50000.00, 'Thanh toán hóa đơn điện thoại', '2024-10-20'),
+(33, 10, 11, 2000000.00, 'Đầu tư cổ phiếu', '2024-10-25'),
+(34, 10, 12, 80000.00, 'Mua sản phẩm làm đẹp', '2024-11-01'),
+(35, 10, 13, 150000.00, 'Chi phí không dự kiến', '2024-11-10'),
+(36, 10, 14, 500000.00, 'Mua đồ dùng cá nhân', '2024-11-15');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `income`
+-- Table structure for table `income`
 --
 
 CREATE TABLE `income` (
@@ -107,25 +115,27 @@ CREATE TABLE `income` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `income`
+-- Dumping data for table `income`
 --
 
 INSERT INTO `income` (`incomeID`, `UserID`, `CategoryID`, `Amount`, `Description`, `Date`) VALUES
-(1, 1, 1, 2000000.00, 'Lợi nhuận từ kinh doanh tháng 9', '2024-09-10'),
-(2, 2, 2, 1000000.00, 'Chuyển khoản từ gia đình', '2024-09-15'),
-(3, 3, 3, 1500000.00, 'Thu nhập khác', '2024-09-20'),
-(4, 1, 4, 3000000.00, 'Lương tháng 10', '2024-10-05'),
-(5, 2, 1, 1000000.00, 'Lãi từ đầu tư', '2024-10-10'),
-(6, 3, 2, 1200000.00, 'Thu nhập từ dự án tự do', '2024-10-15'),
-(7, 1, 3, 2000000.00, 'Cổ tức tháng 10', '2024-10-22'),
-(8, 2, 4, 3500000.00, 'Lương tháng 11', '2024-11-05'),
-(9, 3, 1, 1500000.00, 'Thu nhập khác', '2024-11-12'),
-(10, 1, 2, 500000.00, 'Chuyển khoản từ bạn bè', '2024-11-18');
+(11, 9, 1, 5000000.00, 'Lợi nhuận từ kinh doanh', '2024-09-10'),
+(12, 9, 4, 8000000.00, 'Lương tháng 9', '2024-09-30'),
+(13, 9, 2, 1500000.00, 'Chuyển khoản từ bạn bè', '2024-10-05'),
+(14, 9, 3, 3000000.00, 'Thu nhập từ dự án tự do', '2024-10-15'),
+(15, 9, 1, 6000000.00, 'Lợi nhuận từ kinh doanh tháng 10', '2024-10-30'),
+(16, 9, 4, 8500000.00, 'Lương tháng 11', '2024-11-05'),
+(17, 9, 2, 2000000.00, 'Chuyển khoản gia đình hỗ trợ', '2024-11-20'),
+(18, 10, 4, 7500000.00, 'Lương tháng 9', '2024-09-25'),
+(19, 10, 1, 3000000.00, 'Lợi nhuận đầu tư chứng khoán', '2024-10-10'),
+(20, 10, 3, 2500000.00, 'Thu nhập từ việc làm thêm', '2024-10-20'),
+(21, 10, 2, 1200000.00, 'Chuyển khoản từ người thân', '2024-11-01'),
+(22, 10, 4, 7800000.00, 'Lương tháng 11', '2024-11-30');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -136,28 +146,25 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`UserID`, `Email`, `PasswordHash`, `CreateAt`) VALUES
-(1, 'nqphong.male1203@gmail.com', '$2a$10$xDIg61.GtnYt4IVmcmG/xu0XB4ZPmuiO7E4NT38FCcC5FhHnPIifa', '2024-10-08 21:46:26'),
-(2, '2251120232@gmail.com', '$2a$10$7FaXj7NDya4xnXaw0GulhevuEeiXhD6ZCZ1GRvGBdRSu1qUp25VxC', '2024-10-11 20:42:47'),
-(3, 'nqphong.male120311111@gmail.com', '$2a$10$GiRbqe4fdjoYV.vskA1R3OcaxsfM8CDKl7sld2Ebh7rSYAqdIGuIa', '2024-10-11 20:47:54'),
-(6, 'nqphong.male12031111@gmail.com', '$2a$10$IDtorKb4A99zG0RC0axwFeUuLb45a8puz93qZpQ/2IG7mpOvGXwd6', '2024-10-12 10:32:25'),
-(8, 'test@test', '1', '2024-10-21 15:47:00');
+(9, 'nqphong.male1203@gmail.com', '$2a$10$dr66nayDYAvQz5hv225NJeUBsAEnqNEUcUnJ3pVc7Iw9ZGC.71skO', '2024-11-26 16:29:56'),
+(10, '2251120232@ut.edu.vn', '$2a$10$jTC.PJNblKRS6yrrCQJaMuPOnkCW8WLxkin8r/AjtdfV2dlyp7N/C', '2024-11-26 16:30:23');
 
 --
--- Chỉ mục cho các bảng đã đổ
+-- Indexes for dumped tables
 --
 
 --
--- Chỉ mục cho bảng `category`
+-- Indexes for table `category`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`CategoryID`);
 
 --
--- Chỉ mục cho bảng `expense`
+-- Indexes for table `expense`
 --
 ALTER TABLE `expense`
   ADD PRIMARY KEY (`ExpenseID`),
@@ -165,7 +172,7 @@ ALTER TABLE `expense`
   ADD KEY `CategoryID` (`CategoryID`);
 
 --
--- Chỉ mục cho bảng `income`
+-- Indexes for table `income`
 --
 ALTER TABLE `income`
   ADD PRIMARY KEY (`incomeID`),
@@ -173,53 +180,53 @@ ALTER TABLE `income`
   ADD KEY `CategoryID` (`CategoryID`);
 
 --
--- Chỉ mục cho bảng `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`UserID`),
   ADD UNIQUE KEY `Email` (`Email`);
 
 --
--- AUTO_INCREMENT cho các bảng đã đổ
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT cho bảng `category`
+-- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
   MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT cho bảng `expense`
+-- AUTO_INCREMENT for table `expense`
 --
 ALTER TABLE `expense`
-  MODIFY `ExpenseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ExpenseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
--- AUTO_INCREMENT cho bảng `income`
+-- AUTO_INCREMENT for table `income`
 --
 ALTER TABLE `income`
-  MODIFY `incomeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `incomeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT cho bảng `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- Các ràng buộc cho các bảng đã đổ
+-- Constraints for dumped tables
 --
 
 --
--- Các ràng buộc cho bảng `expense`
+-- Constraints for table `expense`
 --
 ALTER TABLE `expense`
   ADD CONSTRAINT `expense_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
   ADD CONSTRAINT `expense_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);
 
 --
--- Các ràng buộc cho bảng `income`
+-- Constraints for table `income`
 --
 ALTER TABLE `income`
   ADD CONSTRAINT `income_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
