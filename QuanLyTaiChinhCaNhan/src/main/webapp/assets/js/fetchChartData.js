@@ -175,7 +175,7 @@ export function updateCategoryDetails(elementId, transactions) {
 			const transactionDiv = document.createElement('div');
 			transactionDiv.classList.add('transaction');
 			transactionDiv.innerHTML = `<div class="icon">
-                                            <img src="${URL_Image.startsWith('http') ? URL_Image : `image/${URL_Image}`}" alt="Category Image" />
+                                            <img src="${URL_Image.startsWith('http') ? URL_Image : `image/${URL_Image}`}" alt="Category Image" class="category-image"/>
                                         </div>
                                         <div class="details">
                                             <div class="category">${categoryName}</div>
@@ -200,6 +200,9 @@ const DeleteTransactionServlet = "DeleteTransactionServlet";
 const UpdateTransactionServlet = "UpdateTransactionServlet";
 // Event listener to handle the click on the transaction
 // Hàm xử lý khi người dùng nhấn vào giao dịch
+
+
+
 // Event listener to handle the click on the transaction
 function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, URL_Image, description, expenseID, incomeID, categoryID, dailyContainer) {
 	const iconDiv = transactionDiv.querySelector('.details');
@@ -222,7 +225,7 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                     <h2 style="font-size: 25px; margin: 0;">Thông Tin Chi Tiết</h2>
                     <div>
                         <a href="#" id="btn-del" style="color: red; text-decoration: none; margin-right: 5px;">XÓA</a>
-                        <a href="#" id="btn-edit" style="color: green; text-decoration: none;">SỬA</a>
+                        <a href="#" id="btnedit" style="color: green; text-decoration: none;">SỬA</a>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; margin: 10px 0;">
@@ -238,7 +241,6 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
                     <h1 style="color: #00b2ff; font-size: 40px; margin: 5px 0;">${amount.toLocaleString()} đ</h1>
                 </div>
             </div>`;
-
 			targetDiv.insertAdjacentHTML('afterend', newHTML);
 
 			// Xử lý sự kiện XÓA giao dịch
@@ -278,28 +280,43 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 			});
 
 			// Xử lý sự kiện SỬA giao dịch
-			const btnEdit = document.getElementById('btn-edit');
+			const btnEdit = document.getElementById('btnedit');
 			btnEdit.addEventListener('click', () => {
 				// Tạo giao diện mới để chỉnh sửa giao dịch
 				const editFormHTML = `
-						        <div class="edit-transaction-form" 
-						             style="margin-top: 20px; padding: 20px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-						                    position: absolute; bottom: 0; right: 0; width: 100%; max-width: 500px; 
-						                    background-color: #fff; max-height: 300px; overflow-y: auto;">
-						            <h3>Chỉnh Sửa Giao Dịch</h3>
-						            <form id="edit-transaction-form">
-						                <label>Tên Danh Mục:</label>
-						                <input type="text" id="edit-categoryName" value="${categoryName}" required />
-						                <label>Số Tiền:</label>
-						                <input type="number" id="edit-amount" value="${amount}" required />
-						                <label>Ngày:</label>
-						                <input type="date" id="edit-date" value="${formatDate(dateKey)}" required />
-						                <label>Ghi Chú:</label>
-						                <input type="text" id="edit-description" value="${description}" />
-						                <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
-						                <button type="button" id="cancel-edit" style="margin-top: 10px; margin-left: 10px;">Hủy</button>
-						            </form>
-						        </div>`;
+			        <div class="edit-transaction-form" 
+					style="margin-top: 20px; padding: 20px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+							position: absolute; bottom: 0; right: 0; width: 100%; max-width: 500px;
+							background-color: #fff; max-height: 300px; overflow-y: auto;">
+			            <h3>Chỉnh Sửa Giao Dịch</h3>
+			            <form id="edit-transaction-form">
+			                <label for="Loaidaodich">Loại Giao Dịch:</label>
+			                <select id="Loaidaodich" required>
+			                    <option value="" disabled selected>Chọn loại giao dịch</option>
+			                    <option value="chonexpense">Chi tiêu</option>
+			                    <option value="chonincome">Thu nhập</option>
+			                </select>
+
+			                <label>Nhóm:</label>
+							<select class="danhsachexpense " id="edit-categoryName" name="expenseCategory" required>
+							    <option value="" selected>Chọn nhóm</option>
+							</select>
+
+			                <select class="danhsachincome hidden" id="edit-categoryName" required>
+			                    <option value=""  selected>Chọn nhóm</option>
+			                </select>
+
+							
+			                <label>Số Tiền:</label>
+			                <input type="number" id="edit-amount" value="${amount}" required />
+			                <label>Ngày:</label>
+			                <input type="date" id="edit-date" value="${formatDate(dateKey)}" required />
+			                <label>Ghi Chú:</label>
+			                <input type="text" id="edit-description" value="${description}" />
+			                <button type="submit" style="margin-top: 10px;">Cập Nhật</button>
+			                <button type="button" id="cancel-edit" style="margin-top: 10px; margin-left: 10px;">Hủy</button>
+			            </form>
+			        </div>`;
 
 				// Chèn form chỉnh sửa vào giao diện
 				const newTransactionFormDiv = document.createElement('div');
@@ -308,7 +325,13 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
 				document.body.appendChild(newTransactionFormDiv);
 
-				// Xử lý sự kiện hủy chỉnh sửa
+
+
+				taiCategory();
+				xuliTransactionTypeChange();
+
+
+
 				const cancelEditBtn = document.getElementById('cancel-edit');
 				cancelEditBtn.addEventListener('click', () => {
 					const editFormContainer = document.querySelector('.new-edit-form-container');
@@ -320,7 +343,20 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 				editForm.addEventListener('submit', async (e) => {
 					e.preventDefault();
 
-					const categoryName = document.getElementById('edit-categoryName').value;
+					// Lấy loại giao dịch (expense hoặc income)
+					const transactionType = document.getElementById('Loaidaodich').value;
+
+					// Lấy giá trị nhóm đã chọn từ danh sách phù hợp
+					const selectedCategoryDropdown = transactionType === "chonexpense"
+						? document.querySelector('.danhsachexpense')
+						: document.querySelector('.danhsachincome');
+
+					const categoryID = selectedCategoryDropdown.value; // Lấy categoryID
+					const categoryName = selectedCategoryDropdown.options[selectedCategoryDropdown.selectedIndex].text; // Lấy categoryName
+					const urlimage = selectedCategoryDropdown.options[selectedCategoryDropdown.selectedIndex].getAttribute('data-image'); // Lấy URL ảnh từ data-image attribute
+
+
+					// Các giá trị khác
 					const amount = parseFloat(document.getElementById('edit-amount').value);
 					const date = document.getElementById('edit-date').value;
 					const description = document.getElementById('edit-description').value;
@@ -343,6 +379,7 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 								description: description,
 								type: type,
 								transactionID: transactionID,
+
 							}),
 						});
 
@@ -352,9 +389,15 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 							dailyContainer.querySelector('.category').textContent = categoryName;
 							transactionDiv.querySelector('.amount').textContent = `${amount.toLocaleString()} đ`;
 
+							const imageElement = transactionDiv.querySelector('.category-image');
+							if (imageElement) {
+								imageElement.src = `image/${urlimage}`;  // Cập nhật đường dẫn ảnh
+							}
 							dailyContainer.querySelector('.date').textContent = new Date(date).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
 							updateTotalAmount(dailyContainer)
+
+
 							// Xóa form chỉnh sửa sau khi cập nhật
 							const editFormContainer = document.querySelector('.new-edit-form-container');
 							const detailToRemove = document.querySelector('.detail-transaction');
@@ -367,12 +410,16 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 						console.error("Lỗi khi cập nhật giao dịch:", error);
 						alert("Đã xảy ra lỗi trong quá trình cập nhật.");
 					}
+
+
+
 				});
 			});
 
 
 			// Function to update the total amount in the daily container
 			function updateTotalAmount(dailyContainer) {
+
 				// Lấy tất cả giao dịch còn lại trong dailyContainer
 				const remainingTransactions = Array.from(dailyContainer.querySelectorAll('.transaction'));
 
@@ -397,7 +444,6 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 			}
 
 
-
 		}
 	});
 }
@@ -405,6 +451,85 @@ function handleTransactionClick(transactionDiv, categoryName, amount, dateKey, U
 
 
 window.processChartData = processChartData;
+
+
+
+
+// t import ko đc 
+//import { getCategories, taiCategory, xuliTransactionTypeChange } from './EditTransactionApi.js';
+async function getCategories() {
+	try {
+		const categories = await fetchCategories();
+		return categories;
+	} catch (error) {
+		console.error("Failed to fetch categories:", error);
+	}
+}
+
+
+async function taiCategory() {
+	const categories = await getCategories();
+	const expenseList = document.querySelector('.danhsachexpense');
+	const incomeList = document.querySelector('.danhsachincome');
+	let expenseContent = '<option value="" selected>Chọn nhóm</option>';
+	let incomeContent = '<option value="" selected>Chọn nhóm</option>';
+
+	if (Array.isArray(categories)) {
+		categories.forEach((category) => {
+			if (category.type === 'Expense') {
+				expenseContent += `
+				                    <option value="${category.categoryID}" data-image="${category.urlimage}">
+				                        ${category.categoryName}
+									
+				                    </option>`;
+			} else if (category.type === 'Income') {
+				incomeContent += `
+				                    <option value="${category.categoryID}" data-image="${category.urlimage}">
+				                        ${category.categoryName}
+									
+				                    </option>`;
+			}
+		});
+		expenseList.innerHTML = expenseContent;
+		incomeList.innerHTML = incomeContent;
+	}
+}
+
+
+
+function xuliTransactionTypeChange() {
+	const transactionType = document.getElementById("Loaidaodich");
+	const expenseList = document.querySelector('.danhsachexpense');
+	const incomeList = document.querySelector('.danhsachincome');
+
+	transactionType.addEventListener("change", () => {
+		if (transactionType.value === "chonexpense") {
+			expenseList.classList.remove("hidden");
+			incomeList.classList.add("hidden");
+			expenseList.setAttribute("required", true);
+			incomeList.removeAttribute("required");
+		} else if (transactionType.value === "chonincome") {
+			incomeList.classList.remove("hidden");
+			expenseList.classList.add("hidden");
+			incomeList.setAttribute("required", true);
+			expenseList.removeAttribute("required");
+		}
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Hàm gộp các giao dịch cùng loại
 function groupTransactionsByCategory(transactions, categoryMap) {
 	const groupedData = new Map();
