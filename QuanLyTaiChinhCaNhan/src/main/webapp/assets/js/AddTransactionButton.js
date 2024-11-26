@@ -160,6 +160,7 @@ function saveTransaction() {
     
     pushDataForSaveTran(transactionType, categoryID, amount, date, decription);
 	addTransaction.closeButton();
+	window.location.reload(true);
 }
 
 addTransaction.openButton = function() {

@@ -136,7 +136,7 @@ export function updateCategoryDetails(elementId, transactions) {
 	detailsContainer.innerHTML = ''; // Clear previous content
 
 	// Sort transactions by date
-	transactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+	transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 	// Group transactions by date
 	const groupedTransactions = transactions.reduce((acc, transaction) => {
