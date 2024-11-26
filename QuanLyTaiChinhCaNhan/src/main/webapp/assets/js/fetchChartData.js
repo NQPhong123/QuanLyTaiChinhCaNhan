@@ -111,7 +111,7 @@ export async function processChartData(responseData) {
 
 		document.getElementById("incomeAmount").textContent = `+${totalIncome.toLocaleString()} đ`;
 		document.getElementById("outcomeAmount").textContent = `-${totalExpense.toLocaleString()} đ`;
-		const totalAmount = totalIncome + totalExpense;
+		const totalAmount = totalIncome - totalExpense;
 
 		// Cập nhật tổng số tiền
 		document.getElementById("totalAmountDisplay").textContent = `${totalAmount.toLocaleString()} đ`;
