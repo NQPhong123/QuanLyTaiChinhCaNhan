@@ -27,7 +27,6 @@ import com.handle.model.RangeDate;
 import com.handle.model.SearchData;
 import com.handle.model.AmountRange;
 
-
 @WebServlet("/SearchServlet")
 public class SearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -54,20 +53,21 @@ public class SearchServlet extends HttpServlet {
 			RangeDate rangeDate = searchData.getRangeDate();
 			AmountRange amountRange = searchData.getAmountRange();
 			// Lấy categoryName từ CategoryDAO
-			CategoryDAO categoryDAO = new CategoryDAO();
-			String categoryName = categoryDAO.getCategoryNameByID(categoryID); // Truy vấn tên category
-			String URL_Image = categoryDAO.getCategoryImageURLByID(categoryID); // Truy vấn tên category
+			/* CategoryDAO categoryDAO = new CategoryDAO(); */
 			
-			 
-
+			/*
+			 * String categoryName = categoryDAO.getCategoryNameByID(categoryID); // Truy
+			 * vấn tên category String URL_Image =
+			 * categoryDAO.getCategoryImageURLByID(categoryID); // Truy vấn tên category
+			 */
 			Integer userID = null;
 			HttpSession session = request.getSession(false);
 			if (session != null) {
 				userID = (int) session.getAttribute("userID");
-			}            
+			}
 			if (userID == null) {
-                throw new IllegalStateException("User is not logged in.");
-            }
+				throw new IllegalStateException("User is not logged in.");
+			}
 			System.out.println(userID);
 
 			// Chuẩn bị dữ liệu phản hồi
@@ -77,10 +77,11 @@ public class SearchServlet extends HttpServlet {
 			responseData.put("categoryID", categoryID);
 			responseData.put("rangeDate", rangeDate);
 			responseData.put("amountRange", amountRange);
-			
-			  responseData.put("categoryName", categoryName); // Thêm categoryName vào response
-			   responseData.put("URL_Image", URL_Image);
-			 
+
+			/*
+			 * responseData.put("categoryName", categoryName); // Thêm categoryName vào
+			 * response responseData.put("URL_Image", URL_Image);
+			 */
 
 			// Lấy dữ liệu thu nhập và chi tiêu theo categoryID, date, amountRange
 			IncomeDAO incomes = new IncomeDAO();

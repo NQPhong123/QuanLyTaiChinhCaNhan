@@ -12,6 +12,7 @@ if (emailUser == null) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="image/icon_page.png" type="image/png">
     <title>Báo cáo tài chính</title>
     <style>
         /* Styles */

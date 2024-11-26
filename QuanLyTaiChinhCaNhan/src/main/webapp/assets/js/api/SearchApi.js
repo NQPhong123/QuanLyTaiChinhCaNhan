@@ -7,7 +7,6 @@ export function pushData(categoryID, rangeDate, amountRange) {
         rangeDate: rangeDate,
         amountRange: amountRange,
     };
-    console.log("Dữ liệu gửi lên:", JSON.stringify(searchData));
 
     return fetch(URL_SEARCH, { // Thay đổi: trả về Promise từ fetch
         method: "POST",

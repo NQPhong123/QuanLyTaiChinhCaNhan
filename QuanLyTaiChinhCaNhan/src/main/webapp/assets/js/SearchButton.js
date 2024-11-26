@@ -171,11 +171,11 @@ function getDataForSearch() {
 function nouiSliders() {
 	const slider = document.getElementById('slider');
 	noUiSlider.create(slider, {
-		start: [0, 1000000],        // Giá trị bắt đầu cho hai tay cầm
+		start: [0, 1000000000],        // Giá trị bắt đầu cho hai tay cầm
 		connect: true,          // Đoạn giữa hai tay cầm sẽ được tô màu
 		range: {
 			'min': 0,
-			'max': 1000000
+			'max': 1000000000
 		}
 	});
 
@@ -241,6 +241,8 @@ function handleCategoryClick() {
 			const getCategoryName = document.querySelector(".category.selected span").innerHTML;
 			btnCategory.textContent = getCategoryName;
 			btnCategory.setAttribute('id', this.getAttribute('id'));
+			
+			selectSearchCategoryButton.closeButton();
 		});
 	});
 }
