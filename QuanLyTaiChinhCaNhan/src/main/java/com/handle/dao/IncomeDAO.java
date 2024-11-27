@@ -97,7 +97,7 @@ public class IncomeDAO extends TransactionDAO<Income> {
 
 	@Override
 	public List<Income> excuteQuerySearch(String query) {
-		System.out.println("Executing query: " + query);
+		/* System.out.println("Executing query: " + query); */
 		List<Income> incomes = new ArrayList<>();
 		try {
 			Connection conn = ConnectDB.getInstance().getConnection();

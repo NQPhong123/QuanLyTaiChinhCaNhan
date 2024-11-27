@@ -131,6 +131,7 @@ async function renderCategory() {
 
 // Hàm chuyển đổi ngày từ "dd/MM/yyyy" sang "yyyy-MM-dd"
 function convertDateToISO(dateString) {
+	if(dateString === "Select time range" || !dateString) return;
     const [day, month, year] = dateString.trim().split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
@@ -169,11 +170,11 @@ function getDataForSearch() {
 function nouiSliders() {
 	const slider = document.getElementById('slider');
 	noUiSlider.create(slider, {
-		start: [0, 1000000000],        // Giá trị bắt đầu cho hai tay cầm
+		start: [0, 10000000],        // Giá trị bắt đầu cho hai tay cầm
 		connect: true,          // Đoạn giữa hai tay cầm sẽ được tô màu
 		range: {
 			'min': 0,
-			'max': 1000000000
+			'max': 10000000
 		}
 	});
 

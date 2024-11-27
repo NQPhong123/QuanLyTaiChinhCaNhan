@@ -98,7 +98,7 @@ public class ExpenseDAO extends TransactionDAO<Expense> {
 
 	@Override
 	public List<Expense> excuteQuerySearch(String query) {
-		System.out.println("Executing query: " + query);
+		/* System.out.println("Executing query: " + query); */
 		List<Expense> expenses = new ArrayList<>();
 
 		try {

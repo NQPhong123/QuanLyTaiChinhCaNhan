@@ -137,11 +137,7 @@ function validateForm() {
         isValid = false;
     }
 
-    const note = document.getElementById("ghi-chu").value.trim();
-    if (!note) {
-        showError("noteError", "Vui lòng nhập ghi chú.");
-        isValid = false;
-    }
+
 
     return isValid;
 }
