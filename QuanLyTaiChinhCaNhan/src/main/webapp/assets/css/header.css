@@ -9,41 +9,46 @@
 }
 
 .sidebar {
-	width: 15%;
-	height: 100vh;
-	background-color: #fff;
-	position: fixed;
-	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    width: 15%;
+    height: 100vh;
+    background-color: #fff;
+    position: fixed;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar .menu-item {
-	padding: 15px 20px;
-	display: flex;
-	align-items: center;
-	color: #666;
-	text-decoration: none;
-	font-size: 14px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    border: 2px solid transparent; /* Boder mặc định là trong suốt */
+    transition: all 0.3s; /* Hiệu ứng mượt */
 }
 
 .sidebar .menu-item:hover {
-	background-color: #f0f0f0;
+    background-color: #80ffff;
+    border: 2px solid #ddd; /* Border xuất hiện khi hover */
+   color: #666;
 }
 
 .sidebar .menu-item i {
-	margin-right: 10px;
+    margin-right: 10px;
 }
 
 .sidebar .menu-item.active {
-	color: #4caf50;
+    
+    
 }
 
 .sidebar .menu-item.active i {
-	color: #4caf50;
 }
 
 .sidebar .menu-item:last-child {
-	margin-top: auto;
+    margin-top: auto;
 }
+
 
 .header {
 	display: flex;
