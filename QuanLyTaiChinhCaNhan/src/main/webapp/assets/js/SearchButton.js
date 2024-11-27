@@ -46,9 +46,7 @@ selectSearchCategoryButton.htmlContent = `<div class="select-category-container"
             <button class="tab active expense-tab">EXPENSE</button>
             <button class="tab income-tab">INCOME</button>
         </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Search">
-        </div>
+
 
         <!-- Expense Category List -->
         <div class="category-list expense-list">

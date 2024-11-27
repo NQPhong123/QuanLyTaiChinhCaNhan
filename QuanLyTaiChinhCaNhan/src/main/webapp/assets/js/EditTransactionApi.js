@@ -67,8 +67,6 @@ btnEdit.btnedit = function() {
     
     taiCategory();
     xuliTransactionTypeChange();
-
-   
 };
 
 window.btnEdit = btnEdit;
